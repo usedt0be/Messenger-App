@@ -7,12 +7,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
+import com.example.otpverification.app.OTPVerificationApp
+import com.example.otpverification.presentation.navigation.NavigationGraph
 import com.example.otpverification.ui.theme.OTPVerificationTheme
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (applicationContext as OTPVerificationApp).appComponent.inject(this)
         setContent {
             OTPVerificationTheme {
                 // A surface container using the 'background' color from the theme
@@ -20,6 +28,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    NavigationGraph(
+                        activity = this ,
+                        factory = factory
+                    )
                 }
             }
         }

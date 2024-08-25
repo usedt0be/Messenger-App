@@ -3,13 +3,16 @@ package com.example.otpverification.app
 import android.app.Application
 import com.example.otpverification.core.components.AppComponent
 import com.example.otpverification.core.components.DaggerAppComponent
+import com.google.firebase.FirebaseApp
 
-class MessengerApp: Application() {
 
-    private lateinit var appComponent: AppComponent
+class OTPVerificationApp: Application() {
+
+    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
         appComponent = buildAppComponent()
     }
 
