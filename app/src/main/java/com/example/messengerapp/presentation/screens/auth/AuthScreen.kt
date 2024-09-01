@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.auth
+package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
 import android.widget.Toast
@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.messengerapp.R
+import com.example.messengerapp.presentation.component.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
@@ -162,13 +163,6 @@ fun AuthScreen(
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(top = 24.dp)
-                    .graphicsLayer {
-                        if (showDialog) {
-                            // Keep the button visible and not affected by the blur
-                            alpha = 1f
-                        }
-                    }
-
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.forward_ic),

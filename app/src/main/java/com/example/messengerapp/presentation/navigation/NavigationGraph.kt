@@ -7,9 +7,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.messengerapp.presentation.auth.OtpScreen
-import com.example.messengerapp.presentation.auth.AuthScreen
-import com.example.messengerapp.presentation.auth.VerifyScreen
+import com.example.messengerapp.presentation.screens.auth.OtpScreen
+import com.example.messengerapp.presentation.screens.auth.AuthScreen
+import com.example.messengerapp.presentation.screens.auth.VerifyScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
