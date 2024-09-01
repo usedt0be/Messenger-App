@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OTP Verification"
+rootProject.name = "Messenger App"
 include(":app")
  

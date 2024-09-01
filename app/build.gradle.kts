@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.otpverification"
+    namespace = "com.example.messengerapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.otpverification"
+        applicationId = "com.example.messengerapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
