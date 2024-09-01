@@ -27,14 +27,10 @@ class AuthRepositoryImpl @Inject constructor(
 
 
     override fun registerUserWithPhoneNumber(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
-
-
         return callbackFlow {
 
             val onVerificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-
-                }
+                override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 
                 override fun onVerificationFailed(exception: FirebaseException) {
                     trySend(ResultState.Error(exception))
@@ -45,7 +41,6 @@ class AuthRepositoryImpl @Inject constructor(
                     trySend(ResultState.Success("Otp sent successfully"))
                     onVerificationCode = verificationCode
                 }
-
             }
             trySend(ResultState.Loading())
 
@@ -57,12 +52,10 @@ class AuthRepositoryImpl @Inject constructor(
                 .build()
             PhoneAuthProvider.verifyPhoneNumber(options)
 
-
             awaitClose {
                 close()
             }
         }
-
     }
 
     override fun signWithCredential(otp: String): Flow<ResultState<String>> {
@@ -85,4 +78,11 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getCurrentUserId(): String {
+        return firebaseAuth.currentUser?.uid!!
+
+    }
+
+
 }
