@@ -1,14 +1,24 @@
 package com.example.messengerapp.presentation.screens.registration
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -20,29 +30,100 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.R
 
 
 @Composable
 fun RegistrationScreen() {
-    val snackBarState by remember{ mutableStateOf(SnackbarHostState()) }
 
+    val snackBarState by remember{ mutableStateOf(SnackbarHostState()) }
 
     var firstName by remember { mutableStateOf("") }
 
-
-
     var secondName by remember { mutableStateOf("") }
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF7F779E),
+            MaterialTheme.colorScheme.primary,
+        ),
+    )
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
+    
+    val painter = rememberAsyncImagePainter(
+        model = imageUri ?: R.drawable.add_photo_ic,
+        placeholder = painterResource(id = R.drawable.add_photo_ic)
+    )
 
     Scaffold() {
         paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(start = 32.dp, end = 32.dp, top = 58.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            IconButton(
+                onClick = {
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .background(
+                        brush = gradient,
+                        shape = CircleShape
+                    )
+                    .size(80.dp)
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale =  if(imageUri != null){
+                        ContentScale.FillBounds
+                    }else{
+                        ContentScale.None
+                         },
+                    modifier =
+                        if(imageUri != null) {
+                            Modifier.fillMaxSize()
+
+                        } else {
+                            Modifier
+                        }
+
+                )
+
+            }
+
+
+
+            Text(
+                text = "Profile info",
+                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+            )
+
             OutlinedTextField(
                 value = firstName ,
                 onValueChange = {
@@ -58,7 +139,6 @@ fun RegistrationScreen() {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -78,7 +158,6 @@ fun RegistrationScreen() {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
             )
 
 
@@ -101,4 +180,11 @@ fun RegistrationScreen() {
         }
     }
 
+}
+
+
+@Preview
+@Composable
+fun RegistrationScreenPreview() {
+    RegistrationScreen()
 }

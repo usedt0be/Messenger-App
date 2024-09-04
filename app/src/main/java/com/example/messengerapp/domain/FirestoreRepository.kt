@@ -8,8 +8,8 @@ interface FirestoreRepository {
 
     fun insert(user: User): Flow<ResultState<String>>
 
-
-    fun getUsers(): Flow<ResultState<User>>
+//
+//    fun getUsers(): Flow<ResultState<User>>
 
 
     fun update(user: User): Flow<ResultState<User>>
