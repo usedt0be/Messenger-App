@@ -82,7 +82,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getCurrentUserId(): Flow<String> {
-
         return flow{
             emit(firebaseAuth.currentUser?.uid!!)
         }

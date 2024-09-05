@@ -46,9 +46,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.R
 import com.example.messengerapp.data.firebase.UserEntity
+import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -59,12 +61,13 @@ import java.time.Duration
 
 @Composable
 fun RegistrationScreen(
+    navController: NavController,
     authViewModel: AuthViewModel
 ) {
 
     val snackBarHostState by remember{ mutableStateOf(SnackbarHostState()) }
 
-    var uid by remember { mutableStateOf("") }
+    var uid by remember { mutableStateOf<String?>(null) }
 
     var firstName by remember { mutableStateOf("") }
 
@@ -78,7 +81,6 @@ fun RegistrationScreen(
             MaterialTheme.colorScheme.primary,
         ),
     )
-
 
 
     Log.d("uri", "$imageUri")
@@ -194,15 +196,12 @@ fun RegistrationScreen(
                     .fillMaxWidth()
             )
 
-            Text(
-                text = "Id:${uid}  \n  Img:${imageUri} \n firstName: ${firstName} "
-            )
-
             FloatingActionButton(
                 onClick = {
                     scope.launch(Dispatchers.IO) {
                         authViewModel.insertUser(user = UserEntity(
                             userId = uid,
+                            phoneNumber = authViewModel.userNumber.value!!,
                             imageUrl = imageUri.toString(),
                             firstName = firstName,
                             secondName = secondName
@@ -214,6 +213,7 @@ fun RegistrationScreen(
                                             message = "registration successful",
                                             duration = SnackbarDuration.Short
                                         )
+                                        navController.navigate(Screens.ProfileScreen.route)
                                     }
                                 }
                                 is ResultState.Loading -> {

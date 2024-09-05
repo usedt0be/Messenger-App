@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.presentation.screens.auth.OtpScreen
 import com.example.messengerapp.presentation.screens.auth.AuthScreen
 import com.example.messengerapp.presentation.screens.VerifyScreen
+import com.example.messengerapp.presentation.screens.messenger.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
@@ -49,13 +50,22 @@ fun NavigationGraph(
         composable(
             route = Screens.RegistrationScreen.route
         ) {
-            RegistrationScreen(authViewModel = authViewModel)
+            RegistrationScreen(
+                navController = navController,
+                authViewModel = authViewModel
+            )
         }
 
         composable(
             route = Screens.VerifyScreen.route
         ) {
             VerifyScreen()
+        }
+        
+        composable(
+            route = Screens.ProfileScreen.route
+        ) {
+            ProfileScreen(authViewModel = authViewModel)
         }
 
     }

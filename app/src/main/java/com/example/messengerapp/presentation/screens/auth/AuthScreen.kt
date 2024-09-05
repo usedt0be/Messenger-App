@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -58,8 +57,6 @@ fun AuthScreen(
 
     val scope = rememberCoroutineScope()
 
-    var isLoading by remember {mutableStateOf(false)}
-
     val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
 
     if(showDialog) {
@@ -84,23 +81,20 @@ fun AuthScreen(
                         ).collect {
                             when (it) {
                                 is ResultState.Success -> {
+                                    authViewModel.checkUserDoesNotExists(number)
+                                    authViewModel.userNumber.value = number
                                     withContext(Dispatchers.Main) {
-                                        Toast.makeText(activity, "${it.data}", Toast.LENGTH_SHORT)
-                                            .show()
                                         showDialog = false
-                                        isLoading = false
                                         navController.navigate(Screens.OtpScreen.route)
                                     }
                                 }
 
                                 is ResultState.Loading -> {
                                     showDialog = true
-                                    isLoading = true
                                 }
 
                                 is ResultState.Error -> {
                                     showDialog = false
-                                    isLoading = false
                                 }
                             }
                         }
@@ -137,7 +131,7 @@ fun AuthScreen(
             Text(text = "Enter your phone number")
 
             OutlinedTextField(
-                value = number ,
+                value = number,
                 onValueChange = {
                     number = it
                 },

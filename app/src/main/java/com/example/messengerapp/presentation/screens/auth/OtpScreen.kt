@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -29,16 +31,11 @@ fun OtpScreen(
     navController: NavController
 ) {
 
-    var otp by remember {
-        mutableStateOf("")
-    }
-
-    var isLoading by remember {
-        mutableStateOf(false)
-    }
+    var otp by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
+    val uid = authViewModel.uid.collectAsState().value
 
     Column(
         modifier = Modifier,
@@ -58,22 +55,24 @@ fun OtpScreen(
 
         Button(
             onClick = {
-                scope.launch(Dispatchers.Main) {
+                scope.launch(Dispatchers.IO) {
                     authViewModel.signInWithCredential(
                         otp
                     ).collect {
                         when(it) {
                             is ResultState.Success -> {
-                                navController.navigate(Screens.RegistrationScreen.route)
-                                isLoading = false
+                                if(authViewModel.userNotExists.value == true) {
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate(Screens.RegistrationScreen.route)
+                                    }
+                                } else {
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate(Screens.ProfileScreen.route)
+                                    }
+                                }
                             }
-                            is ResultState.Loading -> {
-                                isLoading = true
-
-                            }
-                            is ResultState.Error -> {
-                                isLoading = false
-                            }
+                            is ResultState.Loading -> {}
+                            is ResultState.Error -> {}
                         }
 
                     }

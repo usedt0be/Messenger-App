@@ -10,8 +10,12 @@ interface FirestoreRepository {
 
 
 
-    fun getCurrentUserDetails(uid: String): Flow<ResultState<UserEntity>>
 
+
+    fun getCurrentUserDetails(uid: String): Flow<ResultState<List<UserEntity>>>
+
+
+    fun checkUserExists(uid: String): Flow<Boolean>
 
 
 //
