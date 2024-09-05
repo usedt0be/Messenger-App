@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 
 
 @Immutable
-data class User(
+data class UserEntity(
     val userId: String? = "",
     val firstName: String? = "",
     val secondName: String? = "",

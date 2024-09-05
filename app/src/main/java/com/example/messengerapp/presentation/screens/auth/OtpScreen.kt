@@ -64,7 +64,7 @@ fun OtpScreen(
                     ).collect {
                         when(it) {
                             is ResultState.Success -> {
-                                navController.navigate(Screens.VerifyScreen.route)
+                                navController.navigate(Screens.RegistrationScreen.route)
                                 isLoading = false
                             }
                             is ResultState.Loading -> {

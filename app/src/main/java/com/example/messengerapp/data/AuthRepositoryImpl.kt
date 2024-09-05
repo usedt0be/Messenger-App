@@ -12,6 +12,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -79,9 +81,11 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentUserId(): String {
-        return firebaseAuth.currentUser?.uid!!
+    override fun getCurrentUserId(): Flow<String> {
 
+        return flow{
+            emit(firebaseAuth.currentUser?.uid!!)
+        }
     }
 
 
