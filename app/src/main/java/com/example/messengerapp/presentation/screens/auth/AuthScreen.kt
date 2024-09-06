@@ -80,17 +80,18 @@ fun AuthScreen(
                             activity
                         ).collect {
                             when (it) {
+                                is ResultState.Loading -> {
+                                    authViewModel.userNumber.value = number
+                                    showDialog = true
+                                }
+
                                 is ResultState.Success -> {
                                     authViewModel.checkUserDoesNotExists(number)
-                                    authViewModel.userNumber.value = number
+
                                     withContext(Dispatchers.Main) {
                                         showDialog = false
                                         navController.navigate(Screens.OtpScreen.route)
                                     }
-                                }
-
-                                is ResultState.Loading -> {
-                                    showDialog = true
                                 }
 
                                 is ResultState.Error -> {

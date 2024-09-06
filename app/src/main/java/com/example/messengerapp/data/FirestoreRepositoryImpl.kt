@@ -31,26 +31,17 @@ class FirestoreRepositoryImpl(
         }
     }
 
-    override fun getCurrentUserDetails(uid: String): Flow<ResultState<List<UserEntity>>> = callbackFlow {
+    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow {
         trySend(ResultState.Loading())
-        Log.d("user_uid_call", uid)
+        Log.d("user_phoneNumber", phoneNumber)
         firestore.collection("users")
-            .document(uid)
+            .whereEqualTo("phoneNumber", phoneNumber)
             .get()
-            .addOnSuccessListener {document ->
-               val user = document.data?.map {
-                   UserEntity(
-                       userId = document["userId"] as String?,
-                       phoneNumber = document["phoneNumber"] as String?,
-                       firstName = document["firstName"] as String?,
-                       secondName = document["secondName"] as String?,
-                       imageUrl = document["imageUrl"] as String?
-
-                   )
-               }
-
-                trySend(ResultState.Success(user!!))
-//                Log.d("user_", "${user?.values}")
+            .addOnSuccessListener {
+                val user = it.documents.first().toObject(UserEntity::class.java)
+                if(user!=null) {
+                    trySend(ResultState.Success(user))
+                }
             }
             .addOnFailureListener{
                     trySend(ResultState.Error(it))
@@ -60,22 +51,37 @@ class FirestoreRepositoryImpl(
         }
     }
 
-    override fun checkUserExists(uid: String): Flow<Boolean> {
-        return  flow {
-            val documentSnapshot =firestore.collection("users").document(uid).get()
-            emit(documentSnapshot.result.exists())
-        }.flowOn(Dispatchers.IO)
+    override fun getCurrentDocument(uid: String): Flow<ResultState<String>> {
+        return  callbackFlow {
+            trySend(ResultState.Loading())
+            Log.d("user_uid_call", uid)
+            firestore.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener {
+                    val doc = it.data?.entries.toString()
+                    trySend(ResultState.Success(doc))
+                }
+                .addOnFailureListener {
+                    trySend(ResultState.Error(it))
+                }
+                awaitClose {
+                    close()
+                }
+        }
     }
 
-    fun checkUserDoesNotExists(phoneNumber: String): Flow<Boolean> {
+
+    fun checkUserExists(phoneNumber: String): Flow<Boolean> {
         return flow<Boolean> {
             val querySnapshot = firestore.collection("users")
                 .whereEqualTo("phoneNumber", phoneNumber)
                 .get()
                 .await()
-            emit(querySnapshot.isEmpty)
+            emit(!querySnapshot.isEmpty)
         }.flowOn(Dispatchers.IO)
 
     }
+
 
 }

@@ -32,9 +32,11 @@ class AuthViewModel  @Inject constructor(
 
     private val _userNotExists = MutableStateFlow<Boolean?>(null)
 
-    val userNotExists = _userNotExists.asStateFlow()
+    val userExists = _userNotExists.asStateFlow()
 
+    private val _currentUser = MutableStateFlow<UserEntity?>(null)
 
+    val currentUser = _currentUser.asStateFlow()
 
     fun signInWithCredential(
         otp: String
@@ -64,24 +66,26 @@ class AuthViewModel  @Inject constructor(
 
     suspend fun checkUserDoesNotExists(phoneNumber: String) {
         viewModelScope.launch {
-            firestoreRepositoryImpl.checkUserDoesNotExists(phoneNumber).collect{ userExists ->
-                Log.d("user_not_exists", "$userExists")
+            firestoreRepositoryImpl.checkUserExists(phoneNumber).collect{ userExists ->
+                Log.d("user_exists", "$userExists")
                 _userNotExists.value = userExists
             }
         }
     }
 
-    fun getUserInfo(uid: String) {
+    fun getCurrentUser(phoneNumber: String) {
         viewModelScope.launch {
-            firestoreRepositoryImpl.getCurrentUserDetails(uid).collect { resultState ->
-                when (resultState) {
+            firestoreRepositoryImpl.getCurrentUser(phoneNumber = phoneNumber).collect { currentUser ->
+                when (currentUser) {
                     is ResultState.Loading -> {
                         Log.d("user_info", "Loading...")
                     }
 
                     is ResultState.Success -> {
-                        val user = resultState.data
-                        Log.d("user_info", "User info: ${user}")
+                        Log.d("user_info", "${currentUser.data}")
+                        if(currentUser.data != null) {
+                           _currentUser.value =  currentUser.data
+                        }
                     }
 
                     is ResultState.Error -> {
@@ -93,5 +97,15 @@ class AuthViewModel  @Inject constructor(
         }
     }
 
+
+//    fun userExists(uid: String) {
+//        Log.d("uid uses in existsFunc:", uid)
+//        viewModelScope.launch {
+//            firestoreRepositoryImpl.userExists(uid).collect{
+//                val docs = it
+//                Log.d("user_existS", "$docs")
+//            }
+//        }
+//    }
 
 }

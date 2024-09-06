@@ -61,17 +61,21 @@ fun OtpScreen(
                     ).collect {
                         when(it) {
                             is ResultState.Success -> {
-                                if(authViewModel.userNotExists.value == true) {
-                                    withContext(Dispatchers.Main) {
-                                        navController.navigate(Screens.RegistrationScreen.route)
-                                    }
-                                } else {
+                                if(authViewModel.userExists.value == true) {
                                     withContext(Dispatchers.Main) {
                                         navController.navigate(Screens.ProfileScreen.route)
                                     }
+                                } else {
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate(Screens.RegistrationScreen.route)
+                                    }
                                 }
                             }
-                            is ResultState.Loading -> {}
+                            is ResultState.Loading -> {
+                                if(authViewModel.userExists.value != false) {
+                                    authViewModel.getCurrentUser(authViewModel.userNumber.value!!)
+                                }
+                            }
                             is ResultState.Error -> {}
                         }
 

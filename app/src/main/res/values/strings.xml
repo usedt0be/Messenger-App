@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Messenger App</string>
+    <string name="user_photo">userPhoto</string>
 </resources>

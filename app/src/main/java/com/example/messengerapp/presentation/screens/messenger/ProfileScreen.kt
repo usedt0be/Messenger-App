@@ -7,16 +7,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
+import com.example.messengerapp.R
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
 @Composable
 fun ProfileScreen(authViewModel: AuthViewModel) {
+
+    val currentUser = authViewModel.currentUser.collectAsState().value
 
     LaunchedEffect(key1 = Unit) {
         authViewModel.getCurrentUid()
@@ -27,11 +30,10 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
-        Button(onClick = {
-            authViewModel.getUserInfo(authViewModel.uid.value.toString())
-        }) {
-            Text(text = "Get info")
-        }
+
+
+
+        Text(text = "${currentUser?.phoneNumber}")
     }
 
 }
