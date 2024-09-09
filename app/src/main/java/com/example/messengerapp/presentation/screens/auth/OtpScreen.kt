@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.auth
+package com.example.messengerapp.presentation.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.messengerapp.presentation.component.OtpTextField
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -28,16 +31,11 @@ fun OtpScreen(
     navController: NavController
 ) {
 
-    var otp by remember {
-        mutableStateOf("")
-    }
-
-    var isLoading by remember {
-        mutableStateOf(false)
-    }
+    var otp by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
+    val uid = authViewModel.uid.collectAsState().value
 
     Column(
         modifier = Modifier,
@@ -57,22 +55,28 @@ fun OtpScreen(
 
         Button(
             onClick = {
-                scope.launch(Dispatchers.Main) {
+                scope.launch(Dispatchers.IO) {
                     authViewModel.signInWithCredential(
                         otp
                     ).collect {
                         when(it) {
                             is ResultState.Success -> {
-                                navController.navigate(Screens.VerifyScreen.route)
-                                isLoading = false
+                                if(authViewModel.userExists.value == true) {
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate(Screens.ProfileScreen.route)
+                                    }
+                                } else {
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate(Screens.RegistrationScreen.route)
+                                    }
+                                }
                             }
                             is ResultState.Loading -> {
-                                isLoading = true
-
+                                if(authViewModel.userExists.value != false) {
+                                    authViewModel.getCurrentUser(authViewModel.userNumber.value!!)
+                                }
                             }
-                            is ResultState.Error -> {
-                                isLoading = false
-                            }
+                            is ResultState.Error -> {}
                         }
 
                     }

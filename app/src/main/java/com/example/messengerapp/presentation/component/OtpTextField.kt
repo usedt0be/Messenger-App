@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.auth
+package com.example.messengerapp.presentation.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

@@ -12,6 +12,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,14 +29,10 @@ class AuthRepositoryImpl @Inject constructor(
 
 
     override fun registerUserWithPhoneNumber(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
-
-
         return callbackFlow {
 
             val onVerificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-
-                }
+                override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 
                 override fun onVerificationFailed(exception: FirebaseException) {
                     trySend(ResultState.Error(exception))
@@ -45,7 +43,6 @@ class AuthRepositoryImpl @Inject constructor(
                     trySend(ResultState.Success("Otp sent successfully"))
                     onVerificationCode = verificationCode
                 }
-
             }
             trySend(ResultState.Loading())
 
@@ -57,12 +54,10 @@ class AuthRepositoryImpl @Inject constructor(
                 .build()
             PhoneAuthProvider.verifyPhoneNumber(options)
 
-
             awaitClose {
                 close()
             }
         }
-
     }
 
     override fun signWithCredential(otp: String): Flow<ResultState<String>> {
@@ -85,4 +80,12 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getCurrentUserId(): Flow<String> {
+        return flow{
+            emit(firebaseAuth.currentUser?.uid!!)
+        }
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.auth
+package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
 import android.widget.Toast
@@ -27,12 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.messengerapp.R
+import com.example.messengerapp.presentation.component.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
@@ -57,8 +57,6 @@ fun AuthScreen(
 
     val scope = rememberCoroutineScope()
 
-    var isLoading by remember {mutableStateOf(false)}
-
     val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
 
     if(showDialog) {
@@ -82,24 +80,22 @@ fun AuthScreen(
                             activity
                         ).collect {
                             when (it) {
+                                is ResultState.Loading -> {
+                                    authViewModel.userNumber.value = number
+                                    showDialog = true
+                                }
+
                                 is ResultState.Success -> {
+                                    authViewModel.checkUserDoesNotExists(number)
+
                                     withContext(Dispatchers.Main) {
-                                        Toast.makeText(activity, "${it.data}", Toast.LENGTH_SHORT)
-                                            .show()
                                         showDialog = false
-                                        isLoading = false
                                         navController.navigate(Screens.OtpScreen.route)
                                     }
                                 }
 
-                                is ResultState.Loading -> {
-                                    showDialog = true
-                                    isLoading = true
-                                }
-
                                 is ResultState.Error -> {
                                     showDialog = false
-                                    isLoading = false
                                 }
                             }
                         }
@@ -136,7 +132,7 @@ fun AuthScreen(
             Text(text = "Enter your phone number")
 
             OutlinedTextField(
-                value = number ,
+                value = number,
                 onValueChange = {
                     number = it
                 },
@@ -162,13 +158,6 @@ fun AuthScreen(
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(top = 24.dp)
-                    .graphicsLayer {
-                        if (showDialog) {
-                            // Keep the button visible and not affected by the blur
-                            alpha = 1f
-                        }
-                    }
-
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.forward_ic),

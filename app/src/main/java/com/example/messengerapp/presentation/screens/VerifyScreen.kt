@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.auth
+package com.example.messengerapp.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

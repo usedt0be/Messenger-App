@@ -58,12 +58,19 @@ dependencies {
 
     //firebase-auth
     implementation(libs.firebase.auth)
+    //firebase-firestore
+    implementation(libs.firebase.firestore)
+    //firebase-storage
+    implementation(libs.firebase.storage)
 
     //lifecycle-viewModel-compose
     implementation(libs.androidx.lifecycle.viewmodel)
 
     //navigation
     implementation(libs.navigation.compose)
+
+    //coil
+    implementation(libs.coil.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

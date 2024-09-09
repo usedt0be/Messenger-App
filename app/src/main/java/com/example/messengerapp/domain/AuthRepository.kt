@@ -17,4 +17,6 @@ interface AuthRepository {
         otp:String
     ): Flow<ResultState<String>>
 
+    fun getCurrentUserId(): Flow<String>
+
 }
