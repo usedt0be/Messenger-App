@@ -1,4 +1,4 @@
-package com.example.messengerapp.data
+package com.example.messengerapp.data.repository
 
 import android.app.Activity
 import android.util.Log

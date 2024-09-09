@@ -1,21 +1,17 @@
 package com.example.messengerapp.presentation.screens.messenger
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.messengerapp.R
+import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
@@ -29,6 +25,10 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
         Spacer(modifier = Modifier.height(20.dp))
+
+        val painter = rememberAsyncImagePainter(model = currentUser?.imageUrl)
+
+        Image(painter = painter, contentDescription = "")
 
         Text("$currentUser")
 

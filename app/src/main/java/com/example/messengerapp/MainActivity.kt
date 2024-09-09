@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.messengerapp.app.MessengerApp
+import com.example.messengerapp.core.app.MessengerApp
 import com.example.messengerapp.presentation.navigation.NavigationGraph
 import com.example.messengerapp.ui.theme.MessengerTheme
 import javax.inject.Inject

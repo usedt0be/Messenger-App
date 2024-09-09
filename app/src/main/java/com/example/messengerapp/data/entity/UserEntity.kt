@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.firebase
+package com.example.messengerapp.data.entity
 
 import androidx.compose.runtime.Immutable
 
