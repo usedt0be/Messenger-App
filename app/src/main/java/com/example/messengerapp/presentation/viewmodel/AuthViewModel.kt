@@ -86,6 +86,7 @@ class AuthViewModel  @Inject constructor(
                         if(currentUser.data != null) {
                            _currentUser.value =  currentUser.data
                         }
+                        Log.d("user_info", "${_currentUser.value}")
                     }
 
                     is ResultState.Error -> {

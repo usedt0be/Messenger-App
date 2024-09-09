@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.firebase.auth)
     //firebase-firestore
     implementation(libs.firebase.firestore)
+    //firebase-storage
+    implementation(libs.firebase.storage)
 
     //lifecycle-viewModel-compose
     implementation(libs.androidx.lifecycle.viewmodel)
