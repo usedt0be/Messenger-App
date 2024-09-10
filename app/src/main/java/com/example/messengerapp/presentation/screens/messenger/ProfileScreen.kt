@@ -2,16 +2,35 @@ package com.example.messengerapp.presentation.screens.messenger
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.messengerapp.R
+import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.presentation.component.ProfileItem
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
@@ -19,22 +38,87 @@ import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 fun ProfileScreen(authViewModel: AuthViewModel) {
 
     val currentUser = authViewModel.currentUser.collectAsState().value
+    Scaffold(
+    )
+    { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
         ) {
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        val painter = rememberAsyncImagePainter(model = currentUser?.imageUrl)
+            val painter = rememberAsyncImagePainter(
+                model = currentUser?.imageUrl, placeholder = painterResource(
+                id = R.drawable.add_photo_ic
+            ))
 
-        Image(painter = painter, contentDescription = "")
 
-        Text("$currentUser")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
 
-        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.widthIn(42.dp))
 
-        Text("${currentUser?.phoneNumber}")
+                Text("${currentUser?.firstName}")
+            }
+
+
+
+            Column(
+                modifier = Modifier.padding(top = 20.dp)
+            ) {
+                Text(
+                    text = "Account",
+                    modifier = Modifier.padding(start = 8.dp, top = 6.dp)
+                )
+
+                ProfileItem(
+                    modifier = Modifier.padding(top = 6.dp),
+                    onClick = {},
+                    text = currentUser?.phoneNumber ?: "",
+                    description = "Press to change phone number"
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(start = 8.dp))
+
+                ProfileItem(
+                    modifier = Modifier.padding(top = 2.dp),
+                    onClick = {},
+                    text = "Bio",
+                    description = "Write a little about yourself"
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(start = 8.dp))
+            }
+
+        }
+
     }
 
+
 }
+
+
+
+
+//@Preview
+//@Composable
+//fun ProfileScreenPreview() {
+//    ProfileScreen(currentUser = UserEntity(
+//        userId = "11124124",
+//        phoneNumber = "89545788315",
+//        firstName = "Alex",
+//        secondName = "Value",
+//        imageUrl = "https://f4.bcbits.com/img/a2718942742_10.jpg"
+//    ))
+//}
