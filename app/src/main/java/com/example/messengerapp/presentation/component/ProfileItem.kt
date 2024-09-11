@@ -27,19 +27,14 @@ fun ProfileItem(
                 onClick()
             }
     ) {
-
         Text(
             text = text,
-            modifier = Modifier.padding(start = 8.dp, top = 6.dp)
         )
-
-        Spacer(modifier = Modifier.heightIn(6.dp))
 
         Text(
             text = description,
-            modifier = Modifier.padding(start = 8.dp, top = 6.dp)
+            modifier = Modifier.padding(top = 6.dp)
         )
-
     }
 
 }

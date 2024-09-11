@@ -24,9 +24,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.R
 import com.example.messengerapp.data.entity.UserEntity
@@ -35,9 +37,16 @@ import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
 @Composable
-fun ProfileScreen(authViewModel: AuthViewModel) {
+fun ProfileScreen(
+    authViewModel: AuthViewModel
+) {
 
     val currentUser = authViewModel.currentUser.collectAsState().value
+
+    val painter = rememberAsyncImagePainter(
+        model = currentUser?.imageUrl,
+    )
+
     Scaffold(
     )
     { paddingValues ->
@@ -49,25 +58,22 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            val painter = rememberAsyncImagePainter(
-                model = currentUser?.imageUrl, placeholder = painterResource(
-                id = R.drawable.add_photo_ic
-            ))
-
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 4.dp,end = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Image(
                     painter = painter,
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
                 )
 
-                Spacer(modifier = Modifier.widthIn(42.dp))
+                Spacer(modifier = Modifier.widthIn(20.dp))
 
                 Text("${currentUser?.firstName}")
             }
@@ -76,29 +82,31 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
 
             Column(
                 modifier = Modifier.padding(top = 20.dp)
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = "Account",
-                    modifier = Modifier.padding(start = 8.dp, top = 6.dp)
+                    modifier = Modifier.padding(top = 6.dp, start = 12.dp)
                 )
 
+
                 ProfileItem(
-                    modifier = Modifier.padding(top = 6.dp),
+                    modifier = Modifier.padding(top = 10.dp, start = 12.dp),
                     onClick = {},
-                    text = currentUser?.phoneNumber ?: "",
+                    text = currentUser?.phoneNumber ?: "dd",
                     description = "Press to change phone number"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(start = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(top = 2.dp,start = 12.dp))
 
                 ProfileItem(
-                    modifier = Modifier.padding(top = 2.dp),
+                    modifier = Modifier.padding(top = 2.dp, start = 12.dp),
                     onClick = {},
                     text = "Bio",
                     description = "Write a little about yourself"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(start = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(top = 2.dp ,start = 12.dp))
             }
 
         }
