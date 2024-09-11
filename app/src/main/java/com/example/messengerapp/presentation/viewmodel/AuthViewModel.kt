@@ -31,8 +31,8 @@ class AuthViewModel  @Inject constructor(
     private val _userNumber = MutableStateFlow<String?>(null)
     val userNumber = _userNumber
 
-    private val _userNotExists = MutableStateFlow<Boolean?>(null)
-    val userExists = _userNotExists.asStateFlow()
+    private val _userExists = MutableStateFlow<Boolean?>(null)
+    val userExists = _userExists.asStateFlow()
 
     private val _currentUser = MutableStateFlow<UserEntity?>(null)
     val currentUser = _currentUser.asStateFlow()
@@ -72,11 +72,11 @@ class AuthViewModel  @Inject constructor(
     }
 
 
-    suspend fun checkUserDoesNotExists(phoneNumber: String) {
+    suspend fun checkUserExists(phoneNumber: String) {
         viewModelScope.launch {
             firestoreRepositoryImpl.checkUserExists(phoneNumber).collect{ userExists ->
                 Log.d("user_exists", "$userExists")
-                _userNotExists.value = userExists
+                _userExists.value = userExists
             }
         }
     }

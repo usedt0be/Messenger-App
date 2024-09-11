@@ -31,6 +31,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +73,8 @@ fun RegistrationScreen(
     var secondName by remember { mutableStateOf("") }
 
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val userNumber = authViewModel.userNumber.collectAsState().value!!
 
     val gradient = Brush.verticalGradient(
         colors = listOf(
@@ -202,13 +205,14 @@ fun RegistrationScreen(
                                 is ResultState.Success -> {
                                     authViewModel.insertUser(user = UserEntity(
                                         userId = uid,
-                                        phoneNumber = authViewModel.userNumber.value!!,
+                                        phoneNumber = userNumber,
                                         imageUrl = uploadImageResult.data.toString(),
                                         firstName = firstName,
                                         secondName = secondName
                                     )).collect { insertUserResult ->
                                         when(insertUserResult) {
                                             is ResultState.Success -> {
+                                                authViewModel.getCurrentUser(userNumber)
                                                 withContext(Dispatchers.Main) {
                                                     snackBarHostState.showSnackbar(
                                                         message = "registration successful",

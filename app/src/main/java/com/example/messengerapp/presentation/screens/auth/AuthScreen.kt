@@ -1,7 +1,6 @@
 package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -86,7 +85,7 @@ fun AuthScreen(
                                 }
 
                                 is ResultState.Success -> {
-                                    authViewModel.checkUserDoesNotExists(number)
+                                    authViewModel.checkUserExists(number)
 
                                     withContext(Dispatchers.Main) {
                                         showDialog = false
