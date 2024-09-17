@@ -1,7 +1,7 @@
-package com.example.messengerapp.data
+package com.example.messengerapp.data.repository
 
 import android.util.Log
-import com.example.messengerapp.data.firebase.UserEntity
+import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.FirestoreRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,26 +48,6 @@ class FirestoreRepositoryImpl(
             }
         awaitClose {
             close()
-        }
-    }
-
-    override fun getCurrentDocument(uid: String): Flow<ResultState<String>> {
-        return  callbackFlow {
-            trySend(ResultState.Loading())
-            Log.d("user_uid_call", uid)
-            firestore.collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener {
-                    val doc = it.data?.entries.toString()
-                    trySend(ResultState.Success(doc))
-                }
-                .addOnFailureListener {
-                    trySend(ResultState.Error(it))
-                }
-                awaitClose {
-                    close()
-                }
         }
     }
 

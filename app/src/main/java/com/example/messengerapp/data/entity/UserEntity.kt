@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.firebase
+package com.example.messengerapp.data.entity
 
 import androidx.compose.runtime.Immutable
 
@@ -10,12 +10,4 @@ data class UserEntity(
     val firstName: String? = "",
     val secondName: String? = "",
     val imageUrl: String? = ""
-) {
-    fun toMap() {
-        "userId" to userId
-        "phoneNumber" to phoneNumber
-        "firstName" to firstName
-        "secondName" to secondName
-        "imageUrl" to imageUrl
-    }
-}
+)

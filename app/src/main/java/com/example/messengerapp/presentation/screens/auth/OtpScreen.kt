@@ -35,8 +35,6 @@ fun OtpScreen(
 
     val scope = rememberCoroutineScope()
 
-    val uid = authViewModel.uid.collectAsState().value
-
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Center,

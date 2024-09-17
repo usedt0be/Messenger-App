@@ -7,10 +7,17 @@ import com.example.messengerapp.MainActivity
 import com.example.messengerapp.core.annotations.ApplicationContext
 import com.example.messengerapp.core.di.ViewModelFactoryModule
 import com.example.messengerapp.presentation.di.FirestoreModule
+import com.example.messengerapp.presentation.di.StorageModule
 import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [AuthModule::class, FirestoreModule::class ,ViewModelFactoryModule::class, ViewModelModule::class])
+@Component(modules = [
+    AuthModule::class,
+    FirestoreModule::class ,
+    StorageModule::class,
+    ViewModelFactoryModule::class,
+    ViewModelModule::class,
+])
 interface AppComponent {
 
     @Component.Builder

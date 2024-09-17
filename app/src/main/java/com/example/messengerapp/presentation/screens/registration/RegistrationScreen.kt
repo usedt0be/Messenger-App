@@ -2,7 +2,6 @@ package com.example.messengerapp.presentation.screens.registration
 
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +31,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,20 +49,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.R
-import com.example.messengerapp.data.firebase.UserEntity
+import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Duration
 
 
 @Composable
 fun RegistrationScreen(
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
 
     val snackBarHostState by remember{ mutableStateOf(SnackbarHostState()) }
@@ -75,6 +74,8 @@ fun RegistrationScreen(
 
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
+    val userNumber = authViewModel.userNumber.collectAsState().value!!
+
     val gradient = Brush.verticalGradient(
         colors = listOf(
             Color(0xFF7F779E),
@@ -82,8 +83,13 @@ fun RegistrationScreen(
         ),
     )
 
+    LaunchedEffect(key1 = Unit) {
+        authViewModel.getCurrentUid()
+        uid = authViewModel.uid.value
+    }
 
-    Log.d("uri", "$imageUri")
+
+    Log.d("user_image_uri", "$imageUri")
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -98,17 +104,13 @@ fun RegistrationScreen(
         painterResource(id = R.drawable.add_photo_ic)
     } else {
         rememberAsyncImagePainter(
-            model = imageUri
+            model = imageUri?: "default_profile_image_$uid"
         )
     }
 
     val scope = rememberCoroutineScope()
 
 
-    LaunchedEffect(key1 = Unit) {
-        authViewModel.getCurrentUid()
-        uid = authViewModel.uid.value
-    }
 
     Scaffold(
         snackbarHost = {
@@ -152,7 +154,6 @@ fun RegistrationScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-
 
 
             Text(
@@ -199,32 +200,46 @@ fun RegistrationScreen(
             FloatingActionButton(
                 onClick = {
                     scope.launch(Dispatchers.IO) {
-                        authViewModel.insertUser(user = UserEntity(
-                            userId = uid,
-                            phoneNumber = authViewModel.userNumber.value!!,
-                            imageUrl = imageUri.toString(),
-                            firstName = firstName,
-                            secondName = secondName
-                        )).collect {
-                            when(it) {
+                        authViewModel.uploadImage(imageUri!!,uid!!).collect{ uploadImageResult ->
+                            when(uploadImageResult) {
                                 is ResultState.Success -> {
-                                    withContext(Dispatchers.Main) {
-                                        snackBarHostState.showSnackbar(
-                                            message = "registration successful",
-                                            duration = SnackbarDuration.Short
-                                        )
-                                        navController.navigate(Screens.ProfileScreen.route)
-                                    }
-                                }
-                                is ResultState.Loading -> {
+                                    authViewModel.insertUser(user = UserEntity(
+                                        userId = uid,
+                                        phoneNumber = userNumber,
+                                        imageUrl = uploadImageResult.data.toString(),
+                                        firstName = firstName,
+                                        secondName = secondName
+                                    )).collect { insertUserResult ->
+                                        when(insertUserResult) {
+                                            is ResultState.Success -> {
+                                                authViewModel.getCurrentUser(userNumber)
+                                                withContext(Dispatchers.Main) {
+                                                    snackBarHostState.showSnackbar(
+                                                        message = "registration successful",
+                                                        duration = SnackbarDuration.Short
+                                                    )
+                                                    navController.navigate(Screens.ProfileScreen.route)
+                                                }
+                                            }
+                                            is ResultState.Loading -> {
+                                            }
 
+                                            is ResultState.Error -> {
+                                            }
+                                        }
+                                    }
                                 }
 
                                 is ResultState.Error -> {
 
                                 }
+                                is ResultState.Loading-> {
+
+                                }
                             }
                         }
+
+
                     }
                 },
                 shape = CircleShape,

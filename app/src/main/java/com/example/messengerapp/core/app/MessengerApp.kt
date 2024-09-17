@@ -1,4 +1,4 @@
-package com.example.messengerapp.app
+package com.example.messengerapp.core.app
 
 import android.app.Application
 import com.example.messengerapp.core.components.AppComponent
