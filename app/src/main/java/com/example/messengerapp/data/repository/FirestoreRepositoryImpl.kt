@@ -9,11 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class FirestoreRepositoryImpl(
+class FirestoreRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): FirestoreRepository {
     override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
@@ -49,6 +51,24 @@ class FirestoreRepositoryImpl(
         awaitClose {
             close()
         }
+    }
+
+    suspend fun getUser(phoneNumber: String): Flow<ResultState<UserEntity>>  {
+        return flow {
+            emit(ResultState.Loading())
+
+            firestore.collection("users")
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .get()
+                .addOnSuccessListener {
+                    val user = it.documents.first().toObject(UserEntity::class.java)
+                    if(user!=null) {
+
+                    }
+                }
+
+        }
+
     }
 
 

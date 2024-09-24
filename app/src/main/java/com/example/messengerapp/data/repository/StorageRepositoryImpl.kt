@@ -8,8 +8,9 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class StorageRepositoryImpl(
+class StorageRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage
 ):StorageRepository {
     override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> = callbackFlow{

@@ -34,7 +34,7 @@ fun ConfirmNumberDialog(
         ) {
 
             Text(
-                text = "Правильно ли указан номер?",
+                text = "Number is correct?",
                 modifier = Modifier
             )
 
@@ -53,7 +53,7 @@ fun ConfirmNumberDialog(
                         onDismiss()
                     }
                 ) {
-                    Text(text = "Изменить")
+                    Text(text = "Change number")
                 }
 
                 TextButton(
@@ -61,7 +61,7 @@ fun ConfirmNumberDialog(
                         onConfirm()
                     }
                 ) {
-                    Text(text = "Да")
+                    Text(text = "Yes")
                 }
             }
 
