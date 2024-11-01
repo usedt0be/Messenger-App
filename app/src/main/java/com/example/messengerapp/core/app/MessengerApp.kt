@@ -21,6 +21,5 @@ class MessengerApp: Application() {
         return DaggerAppComponent.builder()
             .applicationContext(this)
             .build()
-
     }
 }

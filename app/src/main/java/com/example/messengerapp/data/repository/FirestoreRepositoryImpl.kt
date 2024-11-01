@@ -19,7 +19,6 @@ class FirestoreRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): FirestoreRepository {
     override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
-        trySend(ResultState.Loading())
         firestore.collection("users")
             .add(user)
             .addOnSuccessListener {
@@ -33,7 +32,7 @@ class FirestoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow {
+    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow{
         trySend(ResultState.Loading())
         Log.d("user_phoneNumber", phoneNumber)
         firestore.collection("users")
@@ -53,26 +52,8 @@ class FirestoreRepositoryImpl @Inject constructor(
         }
     }
 
-    suspend fun getUser(phoneNumber: String): Flow<ResultState<UserEntity>>  {
-        return flow {
-            emit(ResultState.Loading())
 
-            firestore.collection("users")
-                .whereEqualTo("phoneNumber", phoneNumber)
-                .get()
-                .addOnSuccessListener {
-                    val user = it.documents.first().toObject(UserEntity::class.java)
-                    if(user!=null) {
-
-                    }
-                }
-
-        }
-
-    }
-
-
-    fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+    override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
         return flow<Boolean> {
             val querySnapshot = firestore.collection("users")
                 .whereEqualTo("phoneNumber", phoneNumber)
@@ -82,6 +63,4 @@ class FirestoreRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     }
-
-
 }

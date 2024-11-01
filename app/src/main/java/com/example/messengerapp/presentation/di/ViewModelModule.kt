@@ -16,3 +16,4 @@ interface ViewModelModule {
     @ViewModelKey(AuthViewModel::class)
     fun provideAuthViewModel(authViewModel: AuthViewModel): ViewModel
 }
+

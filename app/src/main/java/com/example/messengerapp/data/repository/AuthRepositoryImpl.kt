@@ -27,10 +27,8 @@ class AuthRepositoryImpl @Inject constructor(
         Log.d("VERIFY_authREPO", "AuthRepository created")
     }
 
-
     override fun registerUserWithPhoneNumber(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
         return callbackFlow {
-
             val onVerificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 

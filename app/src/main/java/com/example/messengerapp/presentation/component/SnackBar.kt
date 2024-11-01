@@ -17,8 +17,6 @@ import androidx.compose.ui.unit.dp
 fun SnackBar(
     message: String
 ) {
-
-
     Snackbar(
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 40.dp)
@@ -36,7 +34,6 @@ fun SnackBar(
         )
 
     }
-
 }
 
 
