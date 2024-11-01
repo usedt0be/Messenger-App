@@ -2,4 +2,5 @@
     <string name="app_name">Messenger App</string>
     <string name="user_photo">userPhoto</string>
     <string name="profile_image">profile image</string>
+    <string name="icon_of_screen">Icon of screen</string>
 </resources>

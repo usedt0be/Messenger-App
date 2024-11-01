@@ -21,14 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.presentation.component.ProfileItem
+import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 
 
 @Composable
 fun ProfileScreen(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    navController: NavController
 ) {
 
     val currentUser = authViewModel.currentUser.collectAsState().value
@@ -38,6 +41,7 @@ fun ProfileScreen(
     )
 
     Scaffold(
+        bottomBar = { NavBottomBar(navController = navController )}
     )
     { paddingValues ->
         Column(
@@ -49,8 +53,9 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(start = 4.dp,end = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -71,7 +76,8 @@ fun ProfileScreen(
 
 
             Column(
-                modifier = Modifier.padding(top = 20.dp)
+                modifier = Modifier
+                    .padding(top = 20.dp)
                     .fillMaxWidth()
             ) {
                 Text(

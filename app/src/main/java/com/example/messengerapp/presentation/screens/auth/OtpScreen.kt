@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,7 +60,7 @@ fun OtpScreen(
                             is ResultState.Success -> {
                                 if(authViewModel.userExists.value == true) {
                                     withContext(Dispatchers.Main) {
-                                        navController.navigate(Screens.ProfileScreen.route)
+                                        navController.navigate(Screens.BottomScreens.ProfileScreen.route)
                                     }
                                 } else {
                                     withContext(Dispatchers.Main) {

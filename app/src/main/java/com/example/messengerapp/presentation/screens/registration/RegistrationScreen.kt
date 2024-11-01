@@ -219,7 +219,7 @@ fun RegistrationScreen(
                                                         message = "registration successful",
                                                         duration = SnackbarDuration.Short
                                                     )
-                                                    navController.navigate(Screens.ProfileScreen.route)
+                                                    navController.navigate(Screens.BottomScreens.ProfileScreen.route)
                                                 }
                                             }
                                             is ResultState.Loading -> {
