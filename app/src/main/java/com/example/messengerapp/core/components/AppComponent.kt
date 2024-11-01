@@ -19,7 +19,6 @@ import dagger.Component
     ViewModelModule::class,
 ])
 interface AppComponent {
-
     @Component.Builder
     interface Builder {
 
@@ -30,6 +29,5 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
-
     fun inject(activity: MainActivity)
 }

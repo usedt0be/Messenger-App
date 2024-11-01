@@ -9,10 +9,11 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-abstract class ViewModelModule {
+interface ViewModelModule {
 
     @Binds
     @IntoMap
     @ViewModelKey(AuthViewModel::class)
-    abstract fun provideAuthViewModel(authViewModel: AuthViewModel): ViewModel
+    fun provideAuthViewModel(authViewModel: AuthViewModel): ViewModel
 }
+

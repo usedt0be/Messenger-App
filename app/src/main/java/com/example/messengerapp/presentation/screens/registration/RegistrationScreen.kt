@@ -100,6 +100,7 @@ fun RegistrationScreen(
     }
 
 
+
     val painter = if(imageUri == null) {
         painterResource(id = R.drawable.add_photo_ic)
     } else {

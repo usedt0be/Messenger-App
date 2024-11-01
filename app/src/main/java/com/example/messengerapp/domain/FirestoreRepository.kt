@@ -9,7 +9,7 @@ interface FirestoreRepository {
 
     fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>>
 
-
+    fun checkUserExists(phoneNumber: String): Flow<Boolean>
 
 //    fun getUsers(): Flow<ResultState<User>>
 

@@ -9,15 +9,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class FirestoreRepositoryImpl(
+class FirestoreRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): FirestoreRepository {
     override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
-        trySend(ResultState.Loading())
         firestore.collection("users")
             .add(user)
             .addOnSuccessListener {
@@ -31,7 +32,7 @@ class FirestoreRepositoryImpl(
         }
     }
 
-    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow {
+    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow{
         trySend(ResultState.Loading())
         Log.d("user_phoneNumber", phoneNumber)
         firestore.collection("users")
@@ -52,7 +53,7 @@ class FirestoreRepositoryImpl(
     }
 
 
-    fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+    override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
         return flow<Boolean> {
             val querySnapshot = firestore.collection("users")
                 .whereEqualTo("phoneNumber", phoneNumber)
@@ -62,6 +63,4 @@ class FirestoreRepositoryImpl(
         }.flowOn(Dispatchers.IO)
 
     }
-
-
 }

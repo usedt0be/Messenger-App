@@ -3,20 +3,20 @@ package com.example.messengerapp.presentation.di
 import com.example.messengerapp.data.repository.AuthRepositoryImpl
 import com.example.messengerapp.domain.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
 
 @Module
-object AuthModule {
+interface AuthModule {
+    @Binds
+    fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
-    @Provides
-    fun providesFirebaseAuth(): FirebaseAuth {
-        return FirebaseAuth.getInstance()
-    }
-
-    @Provides
-    fun provideAuthRepository(firebaseAuth: FirebaseAuth): AuthRepository {
-        return AuthRepositoryImpl(firebaseAuth)
+    companion object {
+        @Provides
+        fun providesFirebaseAuth(): FirebaseAuth {
+            return FirebaseAuth.getInstance()
+        }
     }
 }
