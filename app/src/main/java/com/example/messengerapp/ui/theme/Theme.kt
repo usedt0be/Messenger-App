@@ -26,7 +26,12 @@ private val LightColorScheme = lightColorScheme(
     primary = Purple1,
     secondary = Purple2,
     tertiary = Purple3,
-    error = Color(0xffF44336)
+    error = Color(0xffF44336),
+    onTertiary = Color(0xff6C78E6),
+    onSecondary = Color(0xffF678BA),
+    background = Color(0xff312C39),
+    surface = Color(0xff403A47)
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
