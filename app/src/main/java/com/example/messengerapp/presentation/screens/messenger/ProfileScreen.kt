@@ -1,5 +1,6 @@
 package com.example.messengerapp.presentation.screens.messenger
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,21 +12,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.messengerapp.presentation.component.LogOutDialog
 import com.example.messengerapp.presentation.component.ProfileItem
 import com.example.messengerapp.presentation.navigation.NavBottomBar
+import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
+import com.example.messengerapp.util.ResultState
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -34,14 +46,17 @@ fun ProfileScreen(
     navController: NavController
 ) {
 
-    val currentUser = authViewModel.currentUser.collectAsState().value
+    val user = authViewModel.currentUser.collectAsState().value
+    Log.d("userUi", "$user")
 
-    val painter = rememberAsyncImagePainter(
-        model = currentUser?.imageUrl,
-    )
+    val painter = rememberAsyncImagePainter(model = user?.imageUrl)
+
+    var showLogOutDialog by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        bottomBar = { NavBottomBar(navController = navController )}
+        bottomBar = { NavBottomBar(navController = navController) }
     )
     { paddingValues ->
         Column(
@@ -49,7 +64,7 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
 
-        ) {
+            ) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Row(
@@ -70,10 +85,8 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.widthIn(20.dp))
 
-                Text("${currentUser?.firstName}")
+                Text("${user?.firstName}")
             }
-
-
 
             Column(
                 modifier = Modifier
@@ -85,15 +98,14 @@ fun ProfileScreen(
                     modifier = Modifier.padding(top = 6.dp, start = 12.dp)
                 )
 
-
                 ProfileItem(
                     modifier = Modifier.padding(top = 10.dp, start = 12.dp),
                     onClick = {},
-                    text = currentUser?.phoneNumber ?: "dd",
+                    text = user?.phoneNumber ?: "null",
                     description = "Press to change phone number"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(top = 2.dp,start = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(top = 2.dp, start = 12.dp))
 
                 ProfileItem(
                     modifier = Modifier.padding(top = 2.dp, start = 12.dp),
@@ -102,14 +114,46 @@ fun ProfileScreen(
                     description = "Write a little about yourself"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(top = 2.dp ,start = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(top = 2.dp, start = 12.dp))
+
+
+                Button(
+                    onClick = { showLogOutDialog = true },
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Log out",
+                        modifier = Modifier,
+                        color = Color.White
+                    )
+                }
             }
-
         }
-
     }
 
+    if (showLogOutDialog) {
+        LogOutDialog(
+            onDismiss = {
+                showLogOutDialog = false
+                navController.popBackStack()
+            },
+            onConfirm = {
+                coroutineScope.launch {
+                    authViewModel.logOut().collect { logOutResult ->
+                        when (logOutResult) {
+                            is ResultState.Success -> {
+                                navController.navigate(Screens.SignUpScreen.route)
+                            }
 
+                            else -> {
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
 }
 
 

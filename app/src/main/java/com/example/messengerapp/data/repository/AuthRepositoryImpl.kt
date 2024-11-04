@@ -2,6 +2,7 @@ package com.example.messengerapp.data.repository
 
 import android.app.Activity
 import android.util.Log
+import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.FirebaseException
@@ -12,8 +13,6 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -25,6 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     init {
         Log.d("VERIFY_authREPO", "AuthRepository created")
+        Log.d("VERIFY_already_authorized", "${firebaseAuth.currentUser != null}")
     }
 
     override fun registerUserWithPhoneNumber(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
@@ -79,10 +79,21 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentUserId(): Flow<String> {
-        return flow{
-            emit(firebaseAuth.currentUser?.uid!!)
-        }
+    override fun logOut(): Flow<ResultState<String>> {
+       return callbackFlow {
+           firebaseAuth.signOut()
+           trySend(ResultState.Success("Signed Out"))
+           awaitClose {
+               close()
+           }
+       }
+    }
+
+
+    override suspend fun getAuthData(): AuthData {
+        val uid = firebaseAuth.currentUser?.uid!!
+        val phoneNumber = firebaseAuth.currentUser?.phoneNumber!!
+        return AuthData(uid = uid, phoneNumber = phoneNumber)
     }
 
 

@@ -14,21 +14,29 @@ import com.example.messengerapp.presentation.screens.messenger.ContactsListScree
 import com.example.messengerapp.presentation.screens.messenger.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
 fun NavigationGraph(
+    firebaseAuth: FirebaseAuth,
     activity: Activity,
     factory: ViewModelProvider.Factory,
     authViewModel: AuthViewModel = viewModel(factory = factory)
 ) {
     val navController = rememberNavController()
 
+    val currentUser = firebaseAuth.currentUser
+
     NavHost(
         navController = navController,
-        startDestination = Screens.SignUpScreen.route
+        startDestination = if(currentUser != null) {
+            authViewModel.getCurrentUser(currentUser.phoneNumber!!)
+            Screens.BottomScreens.ProfileScreen.route
+        } else {
+            Screens.SignUpScreen.route
+        }
     ) {
-
         composable(
             route = Screens.SignUpScreen.route
         ) {
@@ -43,7 +51,7 @@ fun NavigationGraph(
             route = Screens.OtpScreen.route
         ) {
             OtpScreen(
-                navController =navController,
+                navController = navController,
                 authViewModel = authViewModel
             )
         }
@@ -53,7 +61,7 @@ fun NavigationGraph(
         ) {
             RegistrationScreen(
                 navController = navController,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
             )
         }
 
@@ -62,8 +70,8 @@ fun NavigationGraph(
             route = Screens.BottomScreens.ProfileScreen.route
         ) {
             ProfileScreen(
+                navController = navController,
                 authViewModel = authViewModel,
-                navController = navController
             )
         }
         

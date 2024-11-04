@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -51,7 +50,7 @@ fun AuthScreen(
 
     val defaultNumberLength by remember { mutableIntStateOf(11) }
 
-    var number by remember { mutableStateOf("") }
+    var number by remember { mutableStateOf("+7") }
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -87,7 +86,6 @@ fun AuthScreen(
 
                                 is ResultState.Success -> {
                                     authViewModel.checkUserExists(number)
-
                                     withContext(Dispatchers.Main) {
                                         showDialog = false
                                         navController.navigate(Screens.OtpScreen.route)
@@ -133,8 +131,8 @@ fun AuthScreen(
 
             OutlinedTextField(
                 value = number,
-                onValueChange = {
-                    number = it
+                onValueChange = {input ->
+                    number = input
                 },
                 label = {
                     Text(
@@ -164,12 +162,8 @@ fun AuthScreen(
                     contentDescription = null
                 )
             }
-
         }
-
     }
-
-
 }
 
 //@Composable

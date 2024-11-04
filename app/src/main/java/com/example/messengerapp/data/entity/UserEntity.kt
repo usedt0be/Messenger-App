@@ -5,9 +5,9 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class UserEntity(
-    val userId: String? = "",
-    val phoneNumber: String? = "",
-    val firstName: String? = "",
-    val secondName: String? = "",
-    val imageUrl: String? = ""
+    val userId: String? = null,
+    val phoneNumber: String? = null,
+    val firstName: String? = null,
+    val secondName: String? = null,
+    val imageUrl: String? = null
 )

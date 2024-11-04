@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
@@ -19,6 +18,7 @@ class FirestoreRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): FirestoreRepository {
     override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
+        Log.d("user_insert", "$user")
         firestore.collection("users")
             .add(user)
             .addOnSuccessListener {

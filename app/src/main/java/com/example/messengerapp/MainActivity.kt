@@ -11,12 +11,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.messengerapp.core.app.MessengerApp
 import com.example.messengerapp.presentation.navigation.NavigationGraph
 import com.example.messengerapp.ui.theme.MessengerTheme
+import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +34,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavigationGraph(
                         activity = this ,
-                        factory = factory
+                        factory = factory,
+                        firebaseAuth = firebaseAuth
                     )
                 }
             }

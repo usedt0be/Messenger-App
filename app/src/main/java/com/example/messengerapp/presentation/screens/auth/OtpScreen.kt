@@ -57,6 +57,11 @@ fun OtpScreen(
                         otp
                     ).collect {
                         when(it) {
+                            is ResultState.Loading -> {
+                                if(authViewModel.userExists.value == true) {
+                                    authViewModel.getCurrentUser(authViewModel.userNumber.value!!)
+                                }
+                            }
                             is ResultState.Success -> {
                                 if(authViewModel.userExists.value == true) {
                                     withContext(Dispatchers.Main) {
@@ -68,17 +73,10 @@ fun OtpScreen(
                                     }
                                 }
                             }
-                            is ResultState.Loading -> {
-                                if(authViewModel.userExists.value != false) {
-                                    authViewModel.getCurrentUser(authViewModel.userNumber.value!!)
-                                }
-                            }
                             is ResultState.Error -> {}
                         }
-
                     }
                 }
-
             },
             modifier = Modifier.padding(
                 top = 14.dp
