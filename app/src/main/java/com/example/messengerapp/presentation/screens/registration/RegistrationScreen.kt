@@ -229,7 +229,7 @@ fun RegistrationScreen(
                                                             message = "registration successful",
                                                             duration = SnackbarDuration.Short
                                                         )
-                                                        navController.navigate(Screens.BottomScreens.ProfileScreen.route) {
+                                                        navController.navigate(Screens.BottomBarScreens.ProfileScreen.route) {
                                                             popUpTo(navController.graph.startDestinationId) {inclusive = true}
                                                         }
                                                     }

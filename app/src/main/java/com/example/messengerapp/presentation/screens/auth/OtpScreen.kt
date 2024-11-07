@@ -65,7 +65,7 @@ fun OtpScreen(
                             is ResultState.Success -> {
                                 if(authViewModel.userExists.value == true) {
                                     withContext(Dispatchers.Main) {
-                                        navController.navigate(Screens.BottomScreens.ProfileScreen.route)
+                                        navController.navigate(Screens.BottomBarScreens.ProfileScreen.route)
                                     }
                                 } else {
                                     withContext(Dispatchers.Main) {

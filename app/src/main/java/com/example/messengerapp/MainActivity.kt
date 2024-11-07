@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.messengerapp.core.app.MessengerApp
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.presentation.navigation.NavigationGraph
-import com.example.messengerapp.ui.theme.MessengerTheme
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 

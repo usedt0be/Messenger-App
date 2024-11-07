@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -26,6 +25,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
+import com.example.messengerapp.core.theme.AppTheme
 
 
 @Composable
@@ -34,12 +34,12 @@ fun NavBottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val screens = listOf(
-        Screens.BottomScreens.ContactsScreen, Screens.BottomScreens.ChatListScreen, Screens.BottomScreens.ProfileScreen
+        Screens.BottomBarScreens.ContactsScreen, Screens.BottomBarScreens.ChatListScreen, Screens.BottomBarScreens.ProfileScreen
     )
 
     NavigationBar(
         modifier = Modifier.fillMaxHeight(0.08f),
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = AppTheme.colors.backgroundBottomMenu
     ) {
         screens.forEach { screen ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
@@ -72,8 +72,11 @@ fun NavBottomBar(navController: NavController) {
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.onSecondary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onTertiary,
+                    selectedIconColor = AppTheme.colors.accentSecondary,
+                    unselectedIconColor =  AppTheme.colors.textSecondary,
+                    selectedTextColor = AppTheme.colors.accentSecondary,
+                    unselectedTextColor =  AppTheme.colors.textSecondary,
+
                 )
             )
         }

@@ -79,7 +79,7 @@ data class AppTypography internal constructor(
     )
 )
 
-val MaterialTypography =  Typography()
+
 
 val LocalAppTypography = staticCompositionLocalOf {
     AppTypography()

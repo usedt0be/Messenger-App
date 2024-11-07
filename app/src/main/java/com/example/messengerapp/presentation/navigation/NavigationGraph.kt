@@ -32,7 +32,7 @@ fun NavigationGraph(
         navController = navController,
         startDestination = if(currentUser != null) {
             authViewModel.getCurrentUser(currentUser.phoneNumber!!)
-            Screens.BottomScreens.ProfileScreen.route
+            Screens.BottomBarScreens.ProfileScreen.route
         } else {
             Screens.SignUpScreen.route
         }
@@ -67,7 +67,7 @@ fun NavigationGraph(
 
         
         composable(
-            route = Screens.BottomScreens.ProfileScreen.route
+            route = Screens.BottomBarScreens.ProfileScreen.route
         ) {
             ProfileScreen(
                 navController = navController,
@@ -75,12 +75,12 @@ fun NavigationGraph(
             )
         }
         
-        composable (route = Screens.BottomScreens.ChatListScreen.route ) {
+        composable (route = Screens.BottomBarScreens.ChatListScreen.route ) {
             ChatsListScreen(navController = navController)
         }
 
 
-        composable (route = Screens.BottomScreens.ContactsScreen.route ) {
+        composable (route = Screens.BottomBarScreens.ContactsScreen.route ) {
             ContactsListScreen(navController = navController)
         }
 
