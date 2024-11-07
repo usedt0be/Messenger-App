@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.messengerapp.core.app.MessengerApp
+import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.presentation.navigation.NavigationGraph
 import com.example.messengerapp.ui.theme.MessengerTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -26,8 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         (applicationContext as MessengerApp).appComponent.inject(this)
         setContent {
-            MessengerTheme {
-                // A surface container using the 'background' color from the theme
+            AppTheme{
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

@@ -3,6 +3,7 @@ package com.example.messengerapp.presentation.screens.messenger
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,8 +32,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.messengerapp.presentation.component.AccountInfoItem
 import com.example.messengerapp.presentation.component.LogOutDialog
-import com.example.messengerapp.presentation.component.ProfileItem
+
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
@@ -57,14 +59,14 @@ fun ProfileScreen(
 
     Scaffold(
         bottomBar = { NavBottomBar(navController = navController) }
-    )
-    { paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
 
             ) {
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Row(
@@ -93,24 +95,26 @@ fun ProfileScreen(
                     .padding(top = 20.dp)
                     .fillMaxWidth()
             ) {
+
+
                 Text(
                     text = "Account",
                     modifier = Modifier.padding(top = 6.dp, start = 12.dp)
                 )
 
-                ProfileItem(
+                AccountInfoItem(
                     modifier = Modifier.padding(top = 10.dp, start = 12.dp),
                     onClick = {},
-                    text = user?.phoneNumber ?: "null",
+                    info = user?.phoneNumber ?: "null",
                     description = "Press to change phone number"
                 )
 
                 HorizontalDivider(modifier = Modifier.padding(top = 2.dp, start = 12.dp))
 
-                ProfileItem(
+                AccountInfoItem(
                     modifier = Modifier.padding(top = 2.dp, start = 12.dp),
                     onClick = {},
-                    text = "Bio",
+                    info = "Bio",
                     description = "Write a little about yourself"
                 )
 

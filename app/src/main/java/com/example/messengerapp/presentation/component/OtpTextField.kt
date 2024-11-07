@@ -1,5 +1,6 @@
 package com.example.messengerapp.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.messengerapp.core.theme.AppTheme
 
 
 @Composable
@@ -31,7 +32,9 @@ fun OtpTextField(
 
 
     BasicTextField(
-        modifier = modifier.padding(top = 120.dp),
+        modifier = modifier
+            .padding(top = 120.dp)
+            .background(color = AppTheme.colors.backgroundPrimary),
         value = otp ,
         onValueChange = {
             if (it.length <= 6) {
@@ -43,7 +46,7 @@ fun OtpTextField(
         ),
         decorationBox = {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 repeat(otpLength) { index ->
                     val char = when {
@@ -51,43 +54,58 @@ fun OtpTextField(
                         else -> otp[index].toString()
                     }
                     val isCurrent = otp.length == index
+
                     Box(
                         modifier = Modifier
                             .width(40.dp)
                             .height(54.dp)
+                            .background(
+                                color = AppTheme.colors.secondary,
+                                shape = RoundedCornerShape(12.dp)
+                            )
                             .border(
                                 width = if (isCurrent) {
                                     2.dp
                                 } else {
-                                    1.dp
+                                    0.dp
                                 },
                                 color = if (isCurrent) {
-                                    Color.LightGray
+                                    AppTheme.colors.accentPrimary
                                 } else {
-                                    Color.DarkGray
+                                    Color.Transparent
                                 },
-                                shape = RoundedCornerShape(8.dp)
+                                shape = RoundedCornerShape(12.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                        text = char,
-                        textAlign = TextAlign.Center,
-                        fontSize = 24.sp,
-                        )
+                            text = char,
+                            style = AppTheme.typography.subtitle,
+                            color = AppTheme.colors.textPrimary,
+                            )
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(
+                        modifier = Modifier.width(
+                            width =
+                            if (index < otpLength - 1) {
+                                8.dp
+                            } else {
+                                0.dp
+                            }
+                        )
+                    )
                 }
             }
         }
     )
 }
 
-//@Preview
-//@Composable
-//fun OtpTextFieldPreview() {
-//    OtpTextField(
-//
-//    )
-//}
+@Preview
+@Composable
+fun OtpTextFieldPreview() {
+    OtpTextField(
+        otp = "435258",
+        onOtpChange = {}
+    )
+}

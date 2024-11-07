@@ -1,6 +1,7 @@
 package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.messengerapp.R
+import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.presentation.component.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
@@ -58,64 +60,21 @@ fun AuthScreen(
 
     val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
 
-    if(showDialog) {
-        ConfirmNumberDialog(
-            number = number,
-            onDismiss = {
-                showDialog = false
-            },
-            onConfirm = {
-                if(number.length < defaultNumberLength) {
-                    scope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = "Please enter a valid number",
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                } else {
-                    scope.launch(Dispatchers.IO) {
-                        authViewModel.signUpUserWithPhoneNumber(
-                            number,
-                            activity
-                        ).collect {
-                            when (it) {
-                                is ResultState.Loading -> {
-                                    authViewModel.userNumber.value = number
-                                    showDialog = true
-                                }
-
-                                is ResultState.Success -> {
-                                    authViewModel.checkUserExists(number)
-                                    withContext(Dispatchers.Main) {
-                                        showDialog = false
-                                        navController.navigate(Screens.OtpScreen.route)
-                                    }
-                                }
-
-                                is ResultState.Error -> {
-                                    showDialog = false
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-
-
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { snackBarData ->
-                SnackBar(message = snackBarData.visuals.message)
+                SnackBar(
+                    message = snackBarData.visuals.message,
+                    onDismiss = {snackBarData.dismiss()}
+                )
             }
         }
-    ) {
-        paddingValues ->
+    ) { paddingValues ->
+
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = paddingValues)
+            .background(AppTheme.colors.backgroundPrimary)
             .then(
                 if (showDialog) {
                     Modifier.blur(radius = 10.dp)
@@ -163,6 +122,51 @@ fun AuthScreen(
                 )
             }
         }
+    }
+
+    if(showDialog) {
+        ConfirmNumberDialog(
+            number = number,
+            onDismiss = {
+                showDialog = false
+            },
+            onConfirm = {
+                if(number.length < defaultNumberLength) {
+                    scope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = "Please enter a valid number",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                } else {
+                    scope.launch(Dispatchers.IO) {
+                        authViewModel.signUpUserWithPhoneNumber(
+                            number,
+                            activity
+                        ).collect {
+                            when (it) {
+                                is ResultState.Loading -> {
+                                    authViewModel.userNumber.value = number
+                                    showDialog = true
+                                }
+
+                                is ResultState.Success -> {
+                                    authViewModel.checkUserExists(number)
+                                    withContext(Dispatchers.Main) {
+                                        showDialog = false
+                                        navController.navigate(Screens.OtpScreen.route)
+                                    }
+                                }
+
+                                is ResultState.Error -> {
+                                    showDialog = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 }
 
