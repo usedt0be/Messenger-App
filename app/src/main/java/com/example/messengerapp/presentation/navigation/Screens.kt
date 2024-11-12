@@ -13,42 +13,26 @@ sealed class Screens(
 
     data object RegistrationScreen: Screens(route = "registration_screen")
 
-    sealed class BottomScreens(route: String, val name: String, val icon: Int?):Screens(route) {
-        data object ProfileScreen: BottomScreens(
+    sealed class BottomBarScreens(route: String, val name: String, val icon: Int?):Screens(route) {
+        data object ProfileScreen: BottomBarScreens(
             route = "profile_screen",
             name = "Settings",
             icon = R.drawable.settings_ic
         )
 
-        data object ChatListScreen: BottomScreens(
+        data object ChatListScreen: BottomBarScreens(
             route = "chat_list",
             name = "Chats",
             icon = R.drawable.message_ic
         )
 
-        data object ContactsScreen: BottomScreens(
+        data object ContactsScreen: BottomBarScreens(
             route = "contacts_screen",
             name = "Contacts",
             icon = R.drawable.contacts_ic
         )
     }
 
-//    data object ProfileScreen: Screens(
-//        route = "profile_screen",
-//        name = "Settings",
-//        icon = R.drawable.settings_ic
-//    )
-//
-//    data object ChatListScreen: Screens(
-//        route = "chat_list",
-//        name = "Chats",
-//        icon = R.drawable.message_ic
-//        )
-//
-//    data object ContactsScreen: Screens(
-//        route = "contacts_screen",
-//        name = "Contacts",
-//        icon = R.drawable.contacts_ic
-//    )
+
 
 }

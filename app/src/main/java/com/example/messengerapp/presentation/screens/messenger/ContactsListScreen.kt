@@ -1,6 +1,8 @@
 package com.example.messengerapp.presentation.screens.messenger
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -25,13 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
+import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsListScreen(navController: NavController) {
+fun ContactsListScreen(navController: NavController = rememberNavController()) {
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetScope = rememberCoroutineScope()
@@ -66,6 +69,8 @@ fun ContactsListScreen(navController: NavController) {
 
         Column(
             modifier = Modifier
+                .fillMaxSize()
+                .background(color = AppTheme.colors.backgroundPrimary)
                 .padding(paddingValues)
         ) {
             Text(text = "Contacts Screen")

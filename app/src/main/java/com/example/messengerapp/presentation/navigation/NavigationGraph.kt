@@ -1,6 +1,5 @@
 package com.example.messengerapp.presentation.navigation
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun NavigationGraph(
     firebaseAuth: FirebaseAuth,
-    activity: Activity,
     factory: ViewModelProvider.Factory,
     authViewModel: AuthViewModel = viewModel(factory = factory)
 ) {
@@ -32,7 +30,7 @@ fun NavigationGraph(
         navController = navController,
         startDestination = if(currentUser != null) {
             authViewModel.getCurrentUser(currentUser.phoneNumber!!)
-            Screens.BottomScreens.ProfileScreen.route
+            Screens.BottomBarScreens.ProfileScreen.route
         } else {
             Screens.SignUpScreen.route
         }
@@ -41,7 +39,7 @@ fun NavigationGraph(
             route = Screens.SignUpScreen.route
         ) {
             AuthScreen(
-                activity = activity,
+//                activity = activity,
                 navController = navController,
                 authViewModel = authViewModel,
             )
@@ -67,7 +65,7 @@ fun NavigationGraph(
 
         
         composable(
-            route = Screens.BottomScreens.ProfileScreen.route
+            route = Screens.BottomBarScreens.ProfileScreen.route
         ) {
             ProfileScreen(
                 navController = navController,
@@ -75,12 +73,12 @@ fun NavigationGraph(
             )
         }
         
-        composable (route = Screens.BottomScreens.ChatListScreen.route ) {
+        composable (route = Screens.BottomBarScreens.ChatListScreen.route ) {
             ChatsListScreen(navController = navController)
         }
 
 
-        composable (route = Screens.BottomScreens.ContactsScreen.route ) {
+        composable (route = Screens.BottomBarScreens.ContactsScreen.route ) {
             ContactsListScreen(navController = navController)
         }
 

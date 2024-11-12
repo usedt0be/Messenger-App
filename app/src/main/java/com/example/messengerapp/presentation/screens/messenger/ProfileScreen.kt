@@ -1,7 +1,10 @@
 package com.example.messengerapp.presentation.screens.messenger
 
+import android.app.Activity
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,24 +30,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.data.entity.AuthData
+import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.domain.AuthRepository
+import com.example.messengerapp.domain.FirestoreRepository
+import com.example.messengerapp.domain.StorageRepository
+import com.example.messengerapp.presentation.component.AccountInfoItem
 import com.example.messengerapp.presentation.component.LogOutDialog
-import com.example.messengerapp.presentation.component.ProfileItem
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
-    navController: NavController
+    navController: NavController = rememberNavController()
 ) {
 
     val user = authViewModel.currentUser.collectAsState().value
@@ -57,14 +69,14 @@ fun ProfileScreen(
 
     Scaffold(
         bottomBar = { NavBottomBar(navController = navController) }
-    )
-    { paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
+                .background(color = AppTheme.colors.backgroundPrimary)
                 .fillMaxSize()
                 .padding(paddingValues),
-
             ) {
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Row(
@@ -85,49 +97,63 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.widthIn(20.dp))
 
-                Text("${user?.firstName}")
+                Text(
+                    text = "${user?.firstName}",
+                    color = AppTheme.colors.textPrimary,
+                    style = AppTheme.typography.bodyRegular
+                )
             }
 
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp)
+                    .background(color = AppTheme.colors.backgroundSecondary)
                     .fillMaxWidth()
             ) {
+
                 Text(
                     text = "Account",
+                    style = AppTheme.typography.body1,
+                    color = AppTheme.colors.accentPrimary,
                     modifier = Modifier.padding(top = 6.dp, start = 12.dp)
                 )
 
-                ProfileItem(
+                AccountInfoItem(
                     modifier = Modifier.padding(top = 10.dp, start = 12.dp),
                     onClick = {},
-                    text = user?.phoneNumber ?: "null",
+                    info = user?.phoneNumber ?: "null",
                     description = "Press to change phone number"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(top = 2.dp, start = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp))
 
-                ProfileItem(
-                    modifier = Modifier.padding(top = 2.dp, start = 12.dp),
+                AccountInfoItem(
+                    modifier = Modifier.padding(start = 12.dp),
                     onClick = {},
-                    text = "Bio",
+                    info = "Bio",
                     description = "Write a little about yourself"
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(top = 2.dp, start = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp))
+            }
 
+            Spacer(modifier = Modifier.weight(1f))
 
-                Button(
-                    onClick = { showLogOutDialog = true },
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = "Log out",
-                        modifier = Modifier,
-                        color = Color.White
-                    )
-                }
+            Button(
+                onClick = { showLogOutDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppTheme.colors.accentSecondary,
+                    contentColor = AppTheme.colors.textButton
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(bottom = 14.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Log out",
+                    modifier = Modifier
+                )
             }
         }
     }
@@ -159,14 +185,52 @@ fun ProfileScreen(
 
 
 
-//@Preview
-//@Composable
-//fun ProfileScreenPreview() {
-//    ProfileScreen(currentUser = UserEntity(
-//        userId = "11124124",
-//        phoneNumber = "89545788315",
-//        firstName = "Alex",
-//        secondName = "Value",
-//        imageUrl = "https://f4.bcbits.com/img/a2718942742_10.jpg"
-//    ))
-//}
+@Preview
+@Composable
+fun ProfileScreenPreview() {
+    val authRepository = object : AuthRepository {
+        override fun registerUserWithPhoneNumber(
+            phoneNumber: String,
+            activity: Activity
+        ): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun logOut(): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun getAuthData(): AuthData {
+            TODO("Not yet implemented")
+        }
+    }
+    val storageRepository = object : StorageRepository {
+        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+    }
+    val firestoreRepo = object : FirestoreRepository {
+        override fun insert(user: UserEntity): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+            TODO("Not yet implemented")
+        }
+
+    }
+    val authViewModel = AuthViewModel(
+        authRepository = authRepository,
+        storageRepository = storageRepository,
+        firestoreRepository = firestoreRepo
+    )
+    ProfileScreen(authViewModel = authViewModel)
+}
