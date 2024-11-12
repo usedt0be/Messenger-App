@@ -12,7 +12,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun AppTheme(
-    colors: AppColors= AppTheme.colors,
+    colors: AppColors = AppTheme.colors,
     typography: AppTypography = AppTheme.typography,
     content: @Composable () -> Unit
 ) {
@@ -28,7 +28,6 @@ fun AppTheme(
     }
 
     MaterialTheme(
-
         typography = Typography
     ) {
         CompositionLocalProvider(

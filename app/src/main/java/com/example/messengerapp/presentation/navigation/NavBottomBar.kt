@@ -2,8 +2,6 @@ package com.example.messengerapp.presentation.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,8 +36,7 @@ fun NavBottomBar(navController: NavController) {
     )
 
     NavigationBar(
-        modifier = Modifier.fillMaxHeight(0.08f),
-        containerColor = AppTheme.colors.backgroundBottomMenu
+        containerColor = AppTheme.colors.backgroundBottomMenu,
     ) {
         screens.forEach { screen ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
@@ -51,23 +48,22 @@ fun NavBottomBar(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-
                 },
                 icon = {
                     Column(
-                        modifier = Modifier,
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = screen.icon!!),
                             contentDescription = stringResource(R.string.icon_of_screen),
+                            modifier = Modifier.padding(top = 2.dp)
                         )
-
-                        Spacer(modifier = Modifier.padding(top = 4.dp))
 
                         Text(
                             text = screen.name,
+                            style = AppTheme.typography.caption2,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
                 },
@@ -76,7 +72,6 @@ fun NavBottomBar(navController: NavController) {
                     unselectedIconColor =  AppTheme.colors.textSecondary,
                     selectedTextColor = AppTheme.colors.accentSecondary,
                     unselectedTextColor =  AppTheme.colors.textSecondary,
-
                 )
             )
         }

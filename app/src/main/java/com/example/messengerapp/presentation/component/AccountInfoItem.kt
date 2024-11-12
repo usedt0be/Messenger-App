@@ -30,7 +30,6 @@ fun AccountInfoItem(
             .background(
                 color = AppTheme.colors.backgroundSecondary
             )
-            .padding(start = 8.dp, end = 8.dp)
     ) {
         Text(
             text = info,
@@ -40,9 +39,9 @@ fun AccountInfoItem(
 
         Text(
             text = description,
-            style = AppTheme.typography.caption2,
+            style = AppTheme.typography.caption1,
             color = AppTheme.colors.textTertiary,
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = 14.dp)
         )
     }
 

@@ -1,6 +1,5 @@
 package com.example.messengerapp.presentation.navigation
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun NavigationGraph(
     firebaseAuth: FirebaseAuth,
-    activity: Activity,
     factory: ViewModelProvider.Factory,
     authViewModel: AuthViewModel = viewModel(factory = factory)
 ) {
@@ -41,7 +39,7 @@ fun NavigationGraph(
             route = Screens.SignUpScreen.route
         ) {
             AuthScreen(
-                activity = activity,
+//                activity = activity,
                 navController = navController,
                 authViewModel = authViewModel,
             )
