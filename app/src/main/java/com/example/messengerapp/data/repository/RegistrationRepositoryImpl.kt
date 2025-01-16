@@ -2,17 +2,37 @@ package com.example.messengerapp.data.repository
 
 import android.net.Uri
 import android.util.Log
-import com.example.messengerapp.domain.StorageRepository
+import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.util.ResultState
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class StorageRepositoryImpl @Inject constructor(
+class RegistrationRepositoryImpl @Inject constructor(
+    private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage
-):StorageRepository {
+): RegistrationRepository {
+
+    override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
+        Log.d("user_insert", "$user")
+        firestore.collection("users")
+            .add(user)
+            .addOnSuccessListener {
+                trySend(ResultState.Success("Data is inserted"))
+            }
+            .addOnFailureListener {
+                trySend(ResultState.Error(it))
+            }
+        awaitClose {
+            close()
+        }
+    }
+
+
     override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> = callbackFlow{
         trySend(ResultState.Loading())
         val storageReference = storage.reference.child("users_profile_images/ $userId.jpg ")
@@ -35,4 +55,5 @@ class StorageRepositoryImpl @Inject constructor(
             close()
         }
     }
+
 }

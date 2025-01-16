@@ -10,8 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.FirestoreRepository
-import com.example.messengerapp.domain.StorageRepository
+import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,15 +23,11 @@ import javax.inject.Inject
 
 class AuthViewModel  @Inject constructor(
     private val authRepository: AuthRepository,
-    private val firestoreRepository: FirestoreRepository,
-    private val storageRepository: StorageRepository,
+    private val registrationRepository: RegistrationRepository,
 ): ViewModel()  {
-
 
     val authData: MutableState<AuthData?> = mutableStateOf(null)
 
-//    private val _uid = MutableStateFlow<String?>(null)
-//    val uid : StateFlow<String?> = _uid.asStateFlow()
 
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
@@ -43,7 +38,6 @@ class AuthViewModel  @Inject constructor(
 
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
-//    val id: MutableState<String?> = mutableStateOf(null)
 
     fun signInWithCredential(
         otp: String
@@ -55,7 +49,7 @@ class AuthViewModel  @Inject constructor(
         phoneNumber: String,
         activity: Activity
     ): Flow<ResultState<String>> {
-       return authRepository.registerUserWithPhoneNumber(phoneNumber, activity)
+       return authRepository.verifyPhoneNumberWithOtp(phoneNumber, activity)
     }
 
 //    suspend fun getCurrentUid() {
@@ -70,18 +64,18 @@ class AuthViewModel  @Inject constructor(
 
 
     fun uploadImage(imageUri: Uri, userId: String): Flow<ResultState<String>> {
-        return storageRepository.uploadImage(imageUri,userId)
+        return registrationRepository.uploadImage(imageUri,userId)
     }
 
 
     fun insertUser(user: UserEntity): Flow<ResultState<String>> {
-        return firestoreRepository.insert(user)
+        return registrationRepository.insert(user)
     }
 
 
     suspend fun checkUserExists(phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            firestoreRepository.checkUserExists(phoneNumber).collect{ userExists ->
+            authRepository.checkUserExists(phoneNumber).collect{ userExists ->
                 Log.d("user_exists", "$userExists")
                 _userExists.value = userExists
             }
@@ -93,7 +87,7 @@ class AuthViewModel  @Inject constructor(
     fun getCurrentUser(phoneNumber: String) {
         Log.d("user_phone (getCurrentUser)", phoneNumber)
         viewModelScope.launch(Dispatchers.IO) {
-            firestoreRepository.getCurrentUser(phoneNumber = phoneNumber).collect { currentUser ->
+            authRepository.getCurrentUser(phoneNumber = phoneNumber).collect { currentUser ->
                 when (currentUser) {
                     is ResultState.Loading -> {
                         Log.d("user_info", "Loading...")
