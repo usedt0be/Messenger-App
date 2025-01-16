@@ -78,7 +78,13 @@ fun ContactsListScreen(navController: NavController = rememberNavController()) {
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                onDismissRequest = { /*TODO*/ },
+                onDismissRequest = {
+                    sheetScope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        showBottomSheet = false
+                    }
+                },
                 sheetState = sheetState
             ) {
                 Text(text = "Add contact")

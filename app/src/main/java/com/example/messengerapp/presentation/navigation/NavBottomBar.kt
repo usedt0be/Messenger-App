@@ -32,7 +32,9 @@ fun NavBottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val screens = listOf(
-        Screens.BottomBarScreens.ContactsScreen, Screens.BottomBarScreens.ChatListScreen, Screens.BottomBarScreens.ProfileScreen
+        Screens.BottomBarScreens.ContactsScreen,
+        Screens.BottomBarScreens.ChatListScreen,
+        Screens.BottomBarScreens.ProfileScreen
     )
 
     NavigationBar(

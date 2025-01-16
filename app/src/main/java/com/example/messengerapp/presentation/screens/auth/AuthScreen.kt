@@ -43,8 +43,7 @@ import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.FirestoreRepository
-import com.example.messengerapp.domain.StorageRepository
+import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.presentation.component.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
@@ -212,7 +211,7 @@ fun AuthScreen(
 @Preview
 fun AuthScreenPreview() {
     val authRepository = object : AuthRepository {
-        override fun registerUserWithPhoneNumber(
+        override fun verifyPhoneNumberWithOtp(
             phoneNumber: String,
             activity: Activity
         ): Flow<ResultState<String>> {
@@ -227,17 +226,7 @@ fun AuthScreenPreview() {
             TODO("Not yet implemented")
         }
 
-        override suspend fun getAuthData(): AuthData {
-            TODO("Not yet implemented")
-        }
-    }
-    val storageRepository = object : StorageRepository {
-        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-    }
-    val firestoreRepo = object : FirestoreRepository {
-        override fun insert(user: UserEntity): Flow<ResultState<String>> {
+        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
             TODO("Not yet implemented")
         }
 
@@ -245,15 +234,25 @@ fun AuthScreenPreview() {
             TODO("Not yet implemented")
         }
 
-        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+        override suspend fun getAuthData(): AuthData {
             TODO("Not yet implemented")
         }
+    }
+
+    val firestoreRepo = object : RegistrationRepository {
+        override fun insert(user: UserEntity): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
 
     }
     val authViewModel = AuthViewModel(
         authRepository = authRepository,
-        storageRepository = storageRepository,
-        firestoreRepository = firestoreRepo
+        registrationRepository = firestoreRepo
     )
     AuthScreen(
 //        activity = Activity(),

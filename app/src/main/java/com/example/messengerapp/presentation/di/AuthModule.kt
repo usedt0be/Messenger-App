@@ -18,5 +18,6 @@ interface AuthModule {
         fun providesFirebaseAuth(): FirebaseAuth {
             return FirebaseAuth.getInstance()
         }
+
     }
 }
