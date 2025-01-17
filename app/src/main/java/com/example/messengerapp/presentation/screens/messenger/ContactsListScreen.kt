@@ -3,17 +3,15 @@ package com.example.messengerapp.presentation.screens.messenger
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,28 +26,23 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.presentation.component.ContactsBottomSheet
 import com.example.messengerapp.presentation.navigation.NavBottomBar
-import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactsListScreen(navController: NavController = rememberNavController()) {
 
     var showBottomSheet by remember { mutableStateOf(false) }
-    val sheetScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false,
-    )
 
 
     Scaffold(
+        modifier = Modifier
+            .imePadding(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    sheetScope.launch {
-                        showBottomSheet = true
-                    }
+                    showBottomSheet = true
                 },
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.onTertiary
@@ -62,10 +55,7 @@ fun ContactsListScreen(navController: NavController = rememberNavController()) {
         },
         bottomBar = {
             NavBottomBar(navController = navController)
-        },
-
-
-        ) { paddingValues ->
+        }) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -76,31 +66,11 @@ fun ContactsListScreen(navController: NavController = rememberNavController()) {
             Text(text = "Contacts Screen")
         }
 
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    sheetScope.launch {
-                        sheetState.hide()
-                    }.invokeOnCompletion {
-                        showBottomSheet = false
-                    }
-                },
-                sheetState = sheetState
-            ) {
-                Text(text = "Add contact")
-
-
-                Button(onClick = {
-                    sheetScope.launch { sheetState.hide() }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            showBottomSheet = false
-                        }
-                    }
-                }) {
-                    Text("Hide bottom sheet")
-                }
-            }
-        }
+        ContactsBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            isVisible = showBottomSheet,
+            onCreateContact = { _, _, _ -> },
+        )
     }
 }
 

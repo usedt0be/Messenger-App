@@ -133,13 +133,10 @@ fun AuthScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-//                colors = TextFieldDefaults.colors(
-//                    focusedIndicatorColor = AppTheme.colors.onSuccess
-//                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp, top = 8.dp, end = 12.dp),
-                )
+            )
 
 
             FloatingActionButton(
