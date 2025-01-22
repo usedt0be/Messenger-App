@@ -40,7 +40,7 @@ class AuthRepositoryImpl @Inject constructor(
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 
                 override fun onVerificationFailed(exception: FirebaseException) {
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                 }
 
                 override fun onCodeSent(verificationCode: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -72,12 +72,12 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener {
                     if(it.isSuccessful) {
-                        trySend((ResultState.Success("otp verified")))
+                        trySend((ResultState.Success(data = "otp verified")))
                     }
                     close()
                 }
                 .addOnFailureListener{  exception ->
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                     close(exception)
                 }
             awaitClose {
@@ -110,7 +110,7 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
             .addOnFailureListener{
-                trySend(ResultState.Error(it))
+                trySend(ResultState.Error(it.message))
             }
         awaitClose {
             close()

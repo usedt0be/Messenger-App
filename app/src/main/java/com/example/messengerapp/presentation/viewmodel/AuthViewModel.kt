@@ -95,9 +95,10 @@ class AuthViewModel  @Inject constructor(
 
                     is ResultState.Success -> {
                         Log.d("user_info", "${currentUser.data}")
-                        if(currentUser.data != null) {
-                           _currentUser.value =  currentUser.data
-                        }
+                        _currentUser.value =  currentUser.data
+//                        if(currentUser.data != null) {
+//                           _currentUser.value =  currentUser.data
+//                        }
                         Log.d("user_info", "${_currentUser.value}")
                     }
 

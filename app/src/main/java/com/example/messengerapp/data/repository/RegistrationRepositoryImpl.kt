@@ -24,8 +24,8 @@ class RegistrationRepositoryImpl @Inject constructor(
             .addOnSuccessListener {
                 trySend(ResultState.Success("Data is inserted"))
             }
-            .addOnFailureListener {
-                trySend(ResultState.Error(it))
+            .addOnFailureListener { exception ->
+                trySend(ResultState.Error(exception.message))
             }
         awaitClose {
             close()
@@ -47,8 +47,8 @@ class RegistrationRepositoryImpl @Inject constructor(
                     }
 
                 }
-                .addOnFailureListener {
-                    trySend(ResultState.Error(it))
+                .addOnFailureListener { exception ->
+                    trySend(ResultState.Error(exception.message))
                 }
         }
         awaitClose {
