@@ -22,19 +22,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.presentation.component.ContactsBottomSheet
 import com.example.messengerapp.presentation.navigation.NavBottomBar
+import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun ContactsListScreen(navController: NavController = rememberNavController()) {
+fun ContactsListScreen(
+    navController: NavController = rememberNavController(),
+    contactsViewModel: ContactsViewModel
+) {
 
     var showBottomSheet by remember { mutableStateOf(false) }
 
+//    var firstName by remember { mutableStateOf("") }
+//    var secondName by remember { mutableStateOf("") }
+//    var phoneNumber by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
@@ -69,7 +80,11 @@ fun ContactsListScreen(navController: NavController = rememberNavController()) {
         ContactsBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             isVisible = showBottomSheet,
-            onCreateContact = { _, _, _ -> },
+            onCreateContact = { _, _, phoneNumber ->
+                scope.launch(Dispatchers.IO) {
+                    contactsViewModel.getContact(phoneNumber)
+                }
+            },
         )
     }
 }
@@ -79,5 +94,8 @@ fun ContactsListScreen(navController: NavController = rememberNavController()) {
 @Composable
 fun ContactsListPreview() {
     val navController = rememberNavController()
-    ContactsListScreen(navController = navController)
+    ContactsListScreen(
+        navController = navController,
+        contactsViewModel = viewModel()
+        )
 }

@@ -10,22 +10,22 @@ import dagger.Provides
 
 
 @Module
-interface FirestoreModule {
+interface RegistrationModule {
 
     @Binds
     fun providesFirestoreRepositoryImpl(registrationRepositoryImpl: RegistrationRepositoryImpl): RegistrationRepository
 
-    companion object {
-        @Provides
-        fun providesFirestoreDb(): FirebaseFirestore {
-            return FirebaseFirestore.getInstance()
-        }
-
-        @Provides
-        fun provideFirebaseStorage(): FirebaseStorage {
-            return FirebaseStorage.getInstance()
-        }
-
-    }
+//    companion object {
+//        @Provides
+//        fun providesFirestoreDb(): FirebaseFirestore {
+//            return FirebaseFirestore.getInstance()
+//        }
+//
+//        @Provides
+//        fun provideFirebaseStorage(): FirebaseStorage {
+//            return FirebaseStorage.getInstance()
+//        }
+//
+//    }
 
 }

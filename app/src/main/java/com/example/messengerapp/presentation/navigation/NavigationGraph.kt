@@ -13,6 +13,7 @@ import com.example.messengerapp.presentation.screens.messenger.ContactsListScree
 import com.example.messengerapp.presentation.screens.messenger.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
+import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -79,7 +80,11 @@ fun NavigationGraph(
 
 
         composable (route = Screens.BottomBarScreens.ContactsScreen.route ) {
-            ContactsListScreen(navController = navController)
+            val contactsViewModel: ContactsViewModel = viewModel(factory = factory)
+            ContactsListScreen(
+                navController = navController,
+                contactsViewModel = contactsViewModel
+            )
         }
 
     }

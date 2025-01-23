@@ -13,11 +13,11 @@ interface AuthModule {
     @Binds
     fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
-    companion object {
-        @Provides
-        fun providesFirebaseAuth(): FirebaseAuth {
-            return FirebaseAuth.getInstance()
-        }
-
-    }
+//    companion object {
+//        @Provides
+//        fun providesFirebaseAuth(): FirebaseAuth {
+//            return FirebaseAuth.getInstance()
+//        }
+//
+//    }
 }

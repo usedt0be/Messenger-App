@@ -2,7 +2,7 @@ package com.example.messengerapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.ContactsRepository
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ class ContactsViewModel @Inject constructor(
     private val contactsRepository: ContactsRepository
 ): ViewModel() {
 
-    private val _contact = MutableStateFlow<UserEntity?>(null)
+    private val _contact = MutableStateFlow<UserDto?>(null)
     val contact = _contact.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)

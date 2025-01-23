@@ -1,5 +1,6 @@
 package com.example.messengerapp.presentation.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -63,9 +64,11 @@ fun ContactsBottomSheet(
             modifier = modifier,
             contentWindowInsets = {WindowInsets.ime}
         ) {
+
             var firstName by remember { mutableStateOf("") }
             var secondName by remember { mutableStateOf("") }
-            var phoneNumber by remember { mutableStateOf("") }
+            var phoneNumber by remember { mutableStateOf("+") }
+            Log.d("phoneNumber", phoneNumber)
 
 
 
