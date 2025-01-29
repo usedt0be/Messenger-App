@@ -11,6 +11,7 @@ import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
+import com.example.messengerapp.util.CountriesUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -39,6 +40,12 @@ class AuthViewModel  @Inject constructor(
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
 
+
+
+    private val currentCountryCode = mutableStateOf("")
+    val countryDataList = CountriesUtils.countriesList
+
+
     fun signInWithCredential(
         otp: String
     ): Flow<ResultState<String>> {
@@ -51,16 +58,6 @@ class AuthViewModel  @Inject constructor(
     ): Flow<ResultState<String>> {
        return authRepository.verifyPhoneNumberWithOtp(phoneNumber, activity)
     }
-
-//    suspend fun getCurrentUid() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            authRepository.getCurrentUserId().collect{ uid ->
-//                Log.d("user_uid", uid)
-//                _uid.value = uid
-//                id.value = uid
-//            }
-//        }
-//    }
 
 
     fun uploadImage(imageUri: Uri, userId: String): Flow<ResultState<String>> {
@@ -122,5 +119,15 @@ class AuthViewModel  @Inject constructor(
         return logOutResult
     }
 
+    fun findCountryCode(query: String) {
+        countryDataList.filter { countryData ->
+            countryData.countryName.contains(query, ignoreCase = true)
+        }
+    }
+
+
+    fun setCountryCode(countryCode: String){
+        currentCountryCode.value = countryCode
+    }
 
 }

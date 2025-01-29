@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,6 +49,7 @@ import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.presentation.component.ConfirmNumberDialog
+import com.example.messengerapp.presentation.component.CountryCodePicker
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
@@ -55,6 +60,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
 //    activity: Activity,
@@ -70,9 +76,15 @@ fun AuthScreen(
 
     var showDialog by remember { mutableStateOf(false) }
 
+    val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
+
     val scope = rememberCoroutineScope()
 
-    val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
+    val sheetState = rememberModalBottomSheetState()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    val searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
         snackbarHost = {
@@ -84,7 +96,6 @@ fun AuthScreen(
             }
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -108,6 +119,12 @@ fun AuthScreen(
                     .fillMaxSize(0.35f)
             )
 
+
+            Button(
+                onClick = {showBottomSheet = true}
+            ) {
+                Text(text = "Change Country")
+            }
 
             Text(
                 text = "Enter your phone number",
@@ -157,6 +174,22 @@ fun AuthScreen(
                     painter = painterResource(id = R.drawable.forward_ic),
                     contentDescription = null
                 )
+            }
+
+            if(showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+                    CountryCodePicker(
+                        countryList = authViewModel.countryDataList,
+                        query = searchQuery,
+                        onQueryChange = authViewModel::findCountryCode,
+                        onCountryItemClick = authViewModel::setCountryCode
+                    )
+                }
             }
         }
     }

@@ -81,6 +81,5 @@ fun NavigationGraph(
         composable (route = Screens.BottomBarScreens.ContactsScreen.route ) {
             ContactsListScreen(navController = navController)
         }
-
     }
 }
