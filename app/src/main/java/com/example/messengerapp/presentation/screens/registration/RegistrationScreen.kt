@@ -68,11 +68,8 @@ fun RegistrationScreen(
     val snackBarHostState by remember{ mutableStateOf(SnackbarHostState()) }
 
     var firstName by remember { mutableStateOf("") }
-
     var secondName by remember { mutableStateOf("") }
-
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
-
 
     val authDataSaver = Saver<AuthData?, List<String>>(
         save = { authData -> authData?.let { listOf(it.uid, it.phoneNumber) }},

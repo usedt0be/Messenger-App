@@ -63,8 +63,8 @@ fun OtpScreen(
 
         OtpTextField(
             otp = otp,
-            onOtpChange = {
-                otp = it
+            onOtpChange = { otpChanged ->
+                otp = otpChanged
             },
             modifier = Modifier.padding(32.dp)
         )

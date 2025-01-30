@@ -1,6 +1,9 @@
 package com.example.messengerapp.presentation.component
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,45 +16,73 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.messengerapp.R
+import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.data.entity.CountryData
+import com.example.messengerapp.util.CountriesUtils
 
 
 @Composable
 fun CountryCodePicker(
-    query: String,
     onQueryChange: (String) -> Unit,
     countryList: List<CountryData>,
     onCountryItemClick: (String) -> Unit,
 ){
 
+    var searchQuery by remember { mutableStateOf("") }
+
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .background(color = AppTheme.colors.backgroundSecondary),
+        containerColor = AppTheme.colors.backgroundSecondary,
+        contentColor = AppTheme.colors.backgroundSecondary,
     ) { paddingValues ->
 
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(
+            modifier = Modifier.padding(paddingValues)
+                .fillMaxSize()
+                .background(AppTheme.colors.backgroundSecondary)
+        ) {
             Text(
-                text = "Change country code"
+                text = "Change country code",
+                modifier = Modifier.padding(start = 8.dp, top = 8.dp),
+                style = AppTheme.typography.subtitle,
+                color = AppTheme.colors.textPrimary,
             )
 
             SearchTextField(
-                query = query,
+                query = searchQuery,
                 onQueryChange = { changedQuery ->
                     onQueryChange(changedQuery)
-                }
+                    searchQuery = changedQuery
+                },
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+                    .background(color = AppTheme.colors.backgroundSecondary)
             )
-            LazyColumn {
+
+            LazyColumn(modifier = Modifier
+                .padding(start = 8.dp, top = 16.dp, end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(space = 8.dp)
+            ) {
                 items(countryList) { countryData ->
                     CountryDataItem(
                         countryData = countryData,
                         onCountryItemClick = { countryItemData ->
+                            Log.d("queryCountryClick", "$countryItemData")
                             onCountryItemClick(countryItemData.countryPhoneCode)
                         }
                     )
@@ -78,21 +109,26 @@ fun CountryDataItem(
         Icon(
             imageVector = ImageVector.vectorResource(id = countryData.countryFlag),
             contentDescription = null,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.alpha(0.92f),
+            tint = Color.Unspecified
         )
 
         Text(
             text = countryData.countryName,
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = Modifier.padding(start = 8.dp),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            style = AppTheme.typography.body2,
+            color = AppTheme.colors.textSecondary
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
             text = countryData.countryPhoneCode,
-            modifier = Modifier.padding(end = 4.dp)
+            modifier = Modifier.padding(end = 4.dp),
+            style = AppTheme.typography.body2,
+            color = AppTheme.colors.textSecondary
         )
     }
 }
@@ -108,5 +144,18 @@ fun CountryCodeItemPreview(){
             countryFlag = R.drawable.ic_us_united_states_of_america,
         ),
         onCountryItemClick = {}
+    )
+}
+
+
+
+@Preview
+@Composable
+fun CountryCodePicker() {
+    CountryCodePicker(
+//        query = "",
+        onQueryChange = {},
+        onCountryItemClick = {},
+        countryList = CountriesUtils.countriesList
     )
 }

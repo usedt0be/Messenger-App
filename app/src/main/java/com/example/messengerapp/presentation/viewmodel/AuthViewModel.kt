@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.entity.AuthData
+import com.example.messengerapp.data.entity.CountryData
 import com.example.messengerapp.data.entity.UserEntity
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
@@ -41,9 +42,9 @@ class AuthViewModel  @Inject constructor(
 
 
 
-
     private val currentCountryCode = mutableStateOf("")
-    val countryDataList = CountriesUtils.countriesList
+    private val rootCountryList = CountriesUtils.countriesList
+    val countriesDataList : MutableState<List<CountryData>> = mutableStateOf(rootCountryList)
 
 
     fun signInWithCredential(
@@ -120,7 +121,8 @@ class AuthViewModel  @Inject constructor(
     }
 
     fun findCountryCode(query: String) {
-        countryDataList.filter { countryData ->
+//        Log.d("queryViewModel", query)
+        countriesDataList.value = rootCountryList.filter { countryData ->
             countryData.countryName.contains(query, ignoreCase = true)
         }
     }
