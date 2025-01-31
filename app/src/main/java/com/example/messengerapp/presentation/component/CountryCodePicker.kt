@@ -39,7 +39,7 @@ import com.example.messengerapp.util.CountriesUtils
 fun CountryCodePicker(
     onQueryChange: (String) -> Unit,
     countryList: List<CountryData>,
-    onCountryItemClick: (String) -> Unit,
+    onCountryItemClick: (CountryData) -> Unit,
 ){
 
     var searchQuery by remember { mutableStateOf("") }
@@ -83,7 +83,7 @@ fun CountryCodePicker(
                         countryData = countryData,
                         onCountryItemClick = { countryItemData ->
                             Log.d("queryCountryClick", "$countryItemData")
-                            onCountryItemClick(countryItemData.countryPhoneCode)
+                            onCountryItemClick(countryItemData)
                         }
                     )
                 }

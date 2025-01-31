@@ -27,9 +27,7 @@ class AuthViewModel  @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationRepository: RegistrationRepository,
 ): ViewModel()  {
-
     val authData: MutableState<AuthData?> = mutableStateOf(null)
-
 
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
@@ -37,14 +35,17 @@ class AuthViewModel  @Inject constructor(
     private val _currentUser = MutableStateFlow<UserEntity?>(null)
     val currentUser = _currentUser.asStateFlow()
 
-
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
-
-
-    private val currentCountryCode = mutableStateOf("")
     private val rootCountryList = CountriesUtils.countriesList
     val countriesDataList : MutableState<List<CountryData>> = mutableStateOf(rootCountryList)
+
+    private val _currentCountry = MutableStateFlow<CountryData?>(null)
+    val currentCountry = _currentCountry.asStateFlow()
+
+
+    private val _fullPhoneNumber = MutableStateFlow<String?>(null)
+    val fullPhoneNumber = _fullPhoneNumber.asStateFlow()
 
 
     fun signInWithCredential(
@@ -70,8 +71,7 @@ class AuthViewModel  @Inject constructor(
         return registrationRepository.insert(user)
     }
 
-
-    suspend fun checkUserExists(phoneNumber: String) {
+    fun checkUserExists(phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
             authRepository.checkUserExists(phoneNumber).collect{ userExists ->
                 Log.d("user_exists", "$userExists")
@@ -79,7 +79,6 @@ class AuthViewModel  @Inject constructor(
             }
         }
     }
-
 
 
     fun getCurrentUser(phoneNumber: String) {
@@ -106,13 +105,13 @@ class AuthViewModel  @Inject constructor(
     }
 
 
-    suspend fun getAuthData(){
-        viewModelScope.launch(Dispatchers.IO) {
+    fun getAuthData(){
+        viewModelScope .launch(Dispatchers.IO) {
             authData.value = authRepository.getAuthData()
         }
     }
 
-    suspend fun logOut(): Flow<ResultState<String>> {
+     suspend fun logOut(): Flow<ResultState<String>> {
         val logOutResult = viewModelScope.async(Dispatchers.IO) {
             authRepository.logOut()
         }.await()
@@ -121,15 +120,19 @@ class AuthViewModel  @Inject constructor(
     }
 
     fun findCountryCode(query: String) {
-//        Log.d("queryViewModel", query)
         countriesDataList.value = rootCountryList.filter { countryData ->
             countryData.countryName.contains(query, ignoreCase = true)
         }
     }
 
+    fun setCountry(countryData: CountryData) {
+        _currentCountry.value = countryData
+    }
 
-    fun setCountryCode(countryCode: String){
-        currentCountryCode.value = countryCode
+    fun setUserNumber(number: String){
+        val countryCode = currentCountry.value?.countryPhoneCode
+        _fullPhoneNumber.value = "$countryCode$number"
+        Log.d("numberCurr", "${_fullPhoneNumber.value}, ${_fullPhoneNumber.value?.length}")
     }
 
 }

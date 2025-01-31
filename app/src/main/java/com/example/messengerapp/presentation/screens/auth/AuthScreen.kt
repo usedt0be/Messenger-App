@@ -2,25 +2,17 @@ package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -28,7 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,14 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -58,6 +47,8 @@ import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.presentation.component.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.CountryCodePicker
+import com.example.messengerapp.presentation.component.CountryField
+import com.example.messengerapp.presentation.component.PhoneNumberField
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
@@ -68,17 +59,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
-//    activity: Activity,
     authViewModel: AuthViewModel,
     navController: NavController = rememberNavController(),
 ) {
     val activity = LocalContext.current as? Activity
 
-    val defaultNumberLength by remember { mutableIntStateOf(11) }
-    var number by remember { mutableStateOf("+7") }
+    val defaultNumberLength by remember { mutableIntStateOf(12) }
+    var number by remember { mutableStateOf("") }
 
     var showDialog by remember { mutableStateOf(false) }
     val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
@@ -86,8 +76,7 @@ fun AuthScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    val focusManager = LocalFocusManager.current
-    val isImeVisible = WindowInsets.isImeVisible
+    val currentCountryData = authViewModel.currentCountry.collectAsState().value
 
     Scaffold(
         snackbarHost = {
@@ -99,6 +88,7 @@ fun AuthScreen(
             }
         }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,57 +109,55 @@ fun AuthScreen(
                 contentDescription = null,
                 tint = AppTheme.colors.textPrimary,
                 modifier = Modifier
-                    .fillMaxSize(0.35f)
+                    .fillMaxSize(0.30f)
             )
-
-
-            Button(
-                onClick = {showBottomSheet = true}
-            ) {
-                Text(text = "Change Country")
-            }
+            Text(
+                text = "Phone number" ,
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = AppTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = AppTheme.colors.textPrimary
+            )
 
             Text(
-                text = "Enter your phone number",
+                text = "Select your country code and \nenter the phone number",
                 style = AppTheme.typography.body2,
-                color = AppTheme.colors.textSecondary
+                color = AppTheme.colors.textSecondary,
+                modifier = Modifier.padding(top = 0.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
 
-            OutlinedTextField(
-                value = number,
-                onValueChange = { input ->
-                    number = input
+            CountryField(
+                countryData = currentCountryData,
+                onCountryTextFieldClick = {showBottomSheet = true},
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 12.dp, top = 16.dp, end = 12.dp)
+            )
+
+            PhoneNumberField(
+                phoneCode = currentCountryData?.countryPhoneCode,
+                number = number,
+                onNumberChange = { changedNumber ->
+                    number = changedNumber
                 },
-                textStyle = TextStyle(
-                    color = AppTheme.colors.textPrimary
-                ),
-                label = {
-                    Text(
-                        text = "Phone number",
-                        style = AppTheme.typography.caption1,
-                        color = AppTheme.colors.textTertiary
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                    }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, top = 8.dp, end = 12.dp)
-                    .onFocusChanged { focusState ->
-                        Log.d("focusState", "$focusState")
-                    }
-                )
+                modifier = Modifier.padding(top = 16.dp)
+            )
 
 
             FloatingActionButton(
                 onClick = {
-                    showDialog = true
+                    authViewModel.setUserNumber(number)
+                    if(authViewModel.fullPhoneNumber.value?.length == defaultNumberLength) {
+                        showDialog = true
+                    } else {
+                        scope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = "Enter the correct number",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
                 },
                 shape = CircleShape,
                 modifier = Modifier
@@ -183,14 +171,10 @@ fun AuthScreen(
                     contentDescription = null
                 )
             }
+
         }
     }
 
-    LaunchedEffect(isImeVisible) {
-        if(!isImeVisible) {
-            focusManager.clearFocus()
-        }
-    }
 
     if(showBottomSheet) {
         ModalBottomSheet(
@@ -203,26 +187,30 @@ fun AuthScreen(
             CountryCodePicker(
                 countryList = authViewModel.countriesDataList.value,
                 onQueryChange = authViewModel::findCountryCode,
-                onCountryItemClick = authViewModel::setCountryCode
+                onCountryItemClick = { currentCountryData ->
+                    authViewModel.setCountry(countryData = currentCountryData)
+                    showBottomSheet = false
+                }
             )
         }
     }
 
     if (showDialog) {
+        val fullNumber = authViewModel.fullPhoneNumber.collectAsState().value
         ConfirmNumberDialog(
-            number = number,
+            number = fullNumber!!,
             onDismiss = {
                 showDialog = false
             },
             onConfirm = {
-                if (number.length < defaultNumberLength) {
-                    scope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = "Please enter a valid number",
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                } else {
+//                if (number.length < defaultNumberLength) {
+//                    scope.launch {
+//                        snackBarHostState.showSnackbar(
+//                            message = "Please enter a valid number",
+//                            duration = SnackbarDuration.Short
+//                        )
+//                    }
+//                } else {
                     scope.launch(Dispatchers.IO) {
                         authViewModel.signUpUserWithPhoneNumber(
                             number,
@@ -248,7 +236,7 @@ fun AuthScreen(
                             }
                         }
                     }
-                }
+//                }
             }
         )
     }
