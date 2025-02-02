@@ -108,11 +108,10 @@ fun AuthScreen(
                 imageVector = ImageVector.vectorResource(R.drawable.messenger_logo),
                 contentDescription = null,
                 tint = AppTheme.colors.textPrimary,
-                modifier = Modifier
-                    .fillMaxSize(0.30f)
+                modifier = Modifier.fillMaxSize(0.30f)
             )
             Text(
-                text = "Phone number" ,
+                text = "Phone number",
                 modifier = Modifier.padding(bottom = 8.dp),
                 style = AppTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -123,15 +122,17 @@ fun AuthScreen(
                 text = "Select your country code and \nenter the phone number",
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.textSecondary,
-                modifier = Modifier.padding(top = 0.dp)
+                modifier = Modifier
+                    .padding(top = 0.dp)
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
 
             CountryField(
                 countryData = currentCountryData,
-                onCountryTextFieldClick = {showBottomSheet = true},
-                modifier = Modifier.fillMaxWidth()
+                onCountryTextFieldClick = { showBottomSheet = true },
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(start = 12.dp, top = 16.dp, end = 12.dp)
             )
 
@@ -148,7 +149,7 @@ fun AuthScreen(
             FloatingActionButton(
                 onClick = {
                     authViewModel.setUserNumber(number)
-                    if(authViewModel.fullPhoneNumber.value?.length == defaultNumberLength) {
+                    if (authViewModel.fullPhoneNumber.value?.length == defaultNumberLength) {
                         showDialog = true
                     } else {
                         scope.launch {
@@ -167,78 +168,58 @@ fun AuthScreen(
                 contentColor = AppTheme.colors.textButton
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.forward_ic),
-                    contentDescription = null
+                    painter = painterResource(id = R.drawable.forward_ic), contentDescription = null
                 )
             }
 
         }
     }
 
-
-    if(showBottomSheet) {
+    if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
                 showBottomSheet = false
-            },
-            sheetState = sheetState,
-            containerColor = AppTheme.colors.backgroundSecondary
+            }, sheetState = sheetState, containerColor = AppTheme.colors.backgroundSecondary
         ) {
-            CountryCodePicker(
-                countryList = authViewModel.countriesDataList.value,
+            CountryCodePicker(countryList = authViewModel.countriesDataList.value,
                 onQueryChange = authViewModel::findCountryCode,
                 onCountryItemClick = { currentCountryData ->
                     authViewModel.setCountry(countryData = currentCountryData)
                     showBottomSheet = false
-                }
-            )
+                })
         }
     }
 
     if (showDialog) {
         val fullNumber = authViewModel.fullPhoneNumber.collectAsState().value
-        ConfirmNumberDialog(
-            number = fullNumber!!,
-            onDismiss = {
-                showDialog = false
-            },
-            onConfirm = {
-//                if (number.length < defaultNumberLength) {
-//                    scope.launch {
-//                        snackBarHostState.showSnackbar(
-//                            message = "Please enter a valid number",
-//                            duration = SnackbarDuration.Short
-//                        )
-//                    }
-//                } else {
-                    scope.launch(Dispatchers.IO) {
-                        authViewModel.signUpUserWithPhoneNumber(
-                            number,
-                            activity!!
-                        ).collect {
-                            when (it) {
-                                is ResultState.Loading -> {
-                                    authViewModel.userNumber.value = number
-                                    showDialog = true
-                                }
+        ConfirmNumberDialog(number = fullNumber!!, onDismiss = {
+            showDialog = false
+        }, onConfirm = {
+            scope.launch(Dispatchers.IO) {
+                authViewModel.signUpUserWithPhoneNumber(
+                    fullNumber, activity!!
+                ).collect {
+                    when (it) {
+                        is ResultState.Loading -> {
+                            authViewModel.userNumber.value = fullNumber
+                            showDialog = true
+                        }
 
-                                is ResultState.Success -> {
-                                    authViewModel.checkUserExists(number)
-                                    withContext(Dispatchers.Main) {
-                                        showDialog = false
-                                        navController.navigate(Screens.OtpScreen.route)
-                                    }
-                                }
-
-                                is ResultState.Error -> {
-                                    showDialog = false
-                                }
+                        is ResultState.Success -> {
+                            authViewModel.checkUserExists(fullNumber)
+                            withContext(Dispatchers.Main) {
+                                showDialog = false
+                                navController.navigate(Screens.OtpScreen.route)
                             }
                         }
+
+                        is ResultState.Error -> {
+                            showDialog = false
+                        }
                     }
-//                }
+                }
             }
-        )
+        })
     }
 }
 

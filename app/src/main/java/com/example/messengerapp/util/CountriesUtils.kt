@@ -17,6 +17,7 @@ object CountriesUtils {
         CountryData(countryName = "Brazil", countryPhoneCode = "+55", countryFlag = R.drawable.br_brazil),
         CountryData(countryName = "Bahamas", countryPhoneCode = "+1", countryFlag = R.drawable.bs_bahamas),
         CountryData(countryName = "United States", countryPhoneCode = "+1", countryFlag = R.drawable.ic_us_united_states_of_america),
+        CountryData(countryName = "Russia", countryPhoneCode = "+7", countryFlag = R.drawable.ic_us_united_states_of_america),
     )
 }
 
