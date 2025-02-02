@@ -1,6 +1,6 @@
 [versions]
 agp = "8.3.2"
-kotlin = "1.9.0"
+kotlin = "1.9.23"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -16,6 +16,7 @@ dagger = "2.51.1"
 navigationCompose = "2.8.3"
 coil = "2.7.0"
 accompanist = "0.32.0"
+phoneNumber = "8.13.7"
 
 
 [libraries]
@@ -55,7 +56,7 @@ coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coil"}
 
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
-
+phoneNumber = { group = "com.googlecode.libphonenumber", name = "libphonenumber", version.ref = "phoneNumber" }
 [plugins]
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }

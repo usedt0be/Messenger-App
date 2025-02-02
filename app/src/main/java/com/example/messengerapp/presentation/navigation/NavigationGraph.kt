@@ -86,6 +86,5 @@ fun NavigationGraph(
                 contactsViewModel = contactsViewModel
             )
         }
-
     }
 }

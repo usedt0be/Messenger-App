@@ -71,13 +71,14 @@ fun RegistrationScreen(
     var secondName by remember { mutableStateOf("") }
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
-
     val authDataSaver = Saver<AuthData?, List<String>>(
         save = { authData -> authData?.let { listOf(it.uid, it.phoneNumber) }},
         restore = {savedData -> AuthData(uid = savedData[0], phoneNumber = savedData[1]) }
     )
 
     val authData by rememberSaveable(stateSaver = authDataSaver) { authViewModel.authData }
+
+    val interactionSource = remember { MutableInteractionSource() }
 
 
     val gradient = Brush.verticalGradient(
@@ -105,7 +106,6 @@ fun RegistrationScreen(
         }
     }
 
-
     val painter = if(imageUri == null) {
         painterResource(id = R.drawable.add_photo_ic)
     } else {
@@ -113,8 +113,6 @@ fun RegistrationScreen(
             model = imageUri?: "default_profile_image_${authData?.uid}"
         )
     }
-
-
 
     Scaffold(
         snackbarHost = {
@@ -145,7 +143,7 @@ fun RegistrationScreen(
                         shape = CircleShape
                     )
                     .size(80.dp)
-                    .indication(interactionSource = MutableInteractionSource(), indication = null)
+                    .indication(interactionSource = interactionSource, indication = null)
             ) {
                 Image(
                     painter = painter,
