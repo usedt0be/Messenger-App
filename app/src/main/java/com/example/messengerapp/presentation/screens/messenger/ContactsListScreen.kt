@@ -80,9 +80,13 @@ fun ContactsListScreen(
         ContactsBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             isVisible = showBottomSheet,
-            onCreateContact = { _, _, phoneNumber ->
+            onCreateContact = { firstName, secondName, phoneNumber ->
                 scope.launch(Dispatchers.IO) {
-                    contactsViewModel.getContact(phoneNumber)
+                    contactsViewModel.getContact(
+                        firstName = firstName,
+                        secondName = secondName,
+                        phoneNumber = phoneNumber
+                    )
                 }
             },
         )

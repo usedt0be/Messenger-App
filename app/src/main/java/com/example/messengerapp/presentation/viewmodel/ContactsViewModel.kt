@@ -21,24 +21,21 @@ class ContactsViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    suspend fun getContact(phoneNumber: String) {
+    suspend fun getContact(firstName: String, secondName: String?, phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            contactsRepository.addContact(phoneNumber).collect {userResultState ->
-                when(userResultState) {
-                    is ResultState.Loading -> {
-
+            contactsRepository.addContact(
+                firstName = firstName,
+                secondName = secondName,
+                phoneNumber = phoneNumber
+            ).collect{ resultState ->
+                    when(resultState) {
+                        is ResultState.Loading -> {}
+                        is ResultState.Success -> {}
+                        is ResultState.Error -> {}
                     }
-                    is ResultState.Success -> {
-                        _contact.value = userResultState.data
-                    }
-                    is ResultState.Error -> {
-                       _errorMessage.value = userResultState.message
-                    }
-                }
             }
+
         }
     }
-
-
 
 }

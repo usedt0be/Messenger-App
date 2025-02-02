@@ -5,8 +5,9 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class ContactDto(
-    val id: String,
-    val firstName: String,
-    val secondName: String?,
-    val phoneNumber: String
+    val id: String? = null,
+    val firstName: String? = null,
+    val secondName: String? = null,
+    val phoneNumber: String? = null,
+    val photoUrl: String? = null
 )
