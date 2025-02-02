@@ -3,7 +3,7 @@ package com.example.messengerapp.data.repository
 import android.app.Activity
 import android.util.Log
 import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.FirebaseException
@@ -40,7 +40,7 @@ class AuthRepositoryImpl @Inject constructor(
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 
                 override fun onVerificationFailed(exception: FirebaseException) {
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                 }
 
                 override fun onCodeSent(verificationCode: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -72,12 +72,12 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener {
                     if(it.isSuccessful) {
-                        trySend((ResultState.Success("otp verified")))
+                        trySend((ResultState.Success(data = "otp verified")))
                     }
                     close()
                 }
                 .addOnFailureListener{  exception ->
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                     close(exception)
                 }
             awaitClose {
@@ -97,20 +97,20 @@ class AuthRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> = callbackFlow{
+    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> = callbackFlow{
         trySend(ResultState.Loading())
         Log.d("user_phoneNumber", phoneNumber)
         firestore.collection("users")
             .whereEqualTo("phoneNumber", phoneNumber)
             .get()
             .addOnSuccessListener {
-                val user = it.documents.first().toObject(UserEntity::class.java)
+                val user = it.documents.first().toObject(UserDto::class.java)
                 if(user!=null) {
                     trySend(ResultState.Success(user))
                 }
             }
             .addOnFailureListener{
-                trySend(ResultState.Error(it))
+                trySend(ResultState.Error(it.message))
             }
         awaitClose {
             close()

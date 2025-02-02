@@ -1,4 +1,4 @@
-package com.example.messengerapp.core.di
+package com.example.messengerapp.core.viewmodel.di
 
 import androidx.lifecycle.ViewModelProvider
 import com.example.messengerapp.core.viewmodel.DaggerViewModelFactory

@@ -2,7 +2,7 @@ package com.example.messengerapp.data.repository
 
 import android.net.Uri
 import android.util.Log
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,15 +17,15 @@ class RegistrationRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage
 ): RegistrationRepository {
 
-    override fun insert(user: UserEntity): Flow<ResultState<String>> = callbackFlow {
+    override fun insert(user: UserDto): Flow<ResultState<String>> = callbackFlow {
         Log.d("user_insert", "$user")
         firestore.collection("users")
             .add(user)
             .addOnSuccessListener {
                 trySend(ResultState.Success("Data is inserted"))
             }
-            .addOnFailureListener {
-                trySend(ResultState.Error(it))
+            .addOnFailureListener { exception ->
+                trySend(ResultState.Error(exception.message))
             }
         awaitClose {
             close()
@@ -47,8 +47,8 @@ class RegistrationRepositoryImpl @Inject constructor(
                     }
 
                 }
-                .addOnFailureListener {
-                    trySend(ResultState.Error(it))
+                .addOnFailureListener { exception ->
+                    trySend(ResultState.Error(exception.message))
                 }
         }
         awaitClose {

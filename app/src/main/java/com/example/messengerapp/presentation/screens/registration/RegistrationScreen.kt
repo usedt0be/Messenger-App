@@ -51,7 +51,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.R
 import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
@@ -68,9 +68,7 @@ fun RegistrationScreen(
     val snackBarHostState by remember{ mutableStateOf(SnackbarHostState()) }
 
     var firstName by remember { mutableStateOf("") }
-
     var secondName by remember { mutableStateOf("") }
-
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
 
@@ -213,7 +211,7 @@ fun RegistrationScreen(
                                 when (uploadImageResult) {
                                     is ResultState.Success -> {
                                         authViewModel.insertUser(
-                                            user = UserEntity(
+                                            user = UserDto(
                                                 userId = authData?.uid,
                                                 phoneNumber = authData?.phoneNumber,
                                                 imageUrl = uploadImageResult.data.toString(),

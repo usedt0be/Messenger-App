@@ -41,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.presentation.component.ConfirmNumberDialog
@@ -133,13 +133,10 @@ fun AuthScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-//                colors = TextFieldDefaults.colors(
-//                    focusedIndicatorColor = AppTheme.colors.onSuccess
-//                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp, top = 8.dp, end = 12.dp),
-                )
+            )
 
 
             FloatingActionButton(
@@ -230,7 +227,7 @@ fun AuthScreenPreview() {
             TODO("Not yet implemented")
         }
 
-        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserEntity>> {
+        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
             TODO("Not yet implemented")
         }
 
@@ -240,7 +237,7 @@ fun AuthScreenPreview() {
     }
 
     val firestoreRepo = object : RegistrationRepository {
-        override fun insert(user: UserEntity): Flow<ResultState<String>> {
+        override fun insert(user: UserDto): Flow<ResultState<String>> {
             TODO("Not yet implemented")
         }
 

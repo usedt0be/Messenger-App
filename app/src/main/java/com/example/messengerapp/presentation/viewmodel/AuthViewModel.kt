@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserEntity
+import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.util.ResultState
@@ -32,7 +32,7 @@ class AuthViewModel  @Inject constructor(
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
 
-    private val _currentUser = MutableStateFlow<UserEntity?>(null)
+    private val _currentUser = MutableStateFlow<UserDto?>(null)
     val currentUser = _currentUser.asStateFlow()
 
 
@@ -52,23 +52,13 @@ class AuthViewModel  @Inject constructor(
        return authRepository.verifyPhoneNumberWithOtp(phoneNumber, activity)
     }
 
-//    suspend fun getCurrentUid() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            authRepository.getCurrentUserId().collect{ uid ->
-//                Log.d("user_uid", uid)
-//                _uid.value = uid
-//                id.value = uid
-//            }
-//        }
-//    }
-
 
     fun uploadImage(imageUri: Uri, userId: String): Flow<ResultState<String>> {
         return registrationRepository.uploadImage(imageUri,userId)
     }
 
 
-    fun insertUser(user: UserEntity): Flow<ResultState<String>> {
+    fun insertUser(user: UserDto): Flow<ResultState<String>> {
         return registrationRepository.insert(user)
     }
 
@@ -95,9 +85,10 @@ class AuthViewModel  @Inject constructor(
 
                     is ResultState.Success -> {
                         Log.d("user_info", "${currentUser.data}")
-                        if(currentUser.data != null) {
-                           _currentUser.value =  currentUser.data
-                        }
+                        _currentUser.value =  currentUser.data
+//                        if(currentUser.data != null) {
+//                           _currentUser.value =  currentUser.data
+//                        }
                         Log.d("user_info", "${_currentUser.value}")
                     }
 

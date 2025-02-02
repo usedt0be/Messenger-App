@@ -1,0 +1,13 @@
+package com.example.messengerapp.data.entity
+
+import androidx.compose.runtime.Immutable
+
+
+@Immutable
+data class ContactDto(
+    val id: String? = null,
+    val firstName: String? = null,
+    val secondName: String? = null,
+    val phoneNumber: String? = null,
+    val photoUrl: String? = null
+)
