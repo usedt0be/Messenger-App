@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.protobuf)
+
     id("com.google.gms.google-services")
 }
 
@@ -49,6 +51,25 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    protobuf{
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.25.0"
+        }
+        generateProtoTasks {
+            all().forEach {  task ->
+                task.builtins {
+                    register("java") {
+                        option("lite")
+                    }
+
+                    register("kotlin") {
+                        option("lite")
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -71,6 +92,11 @@ dependencies {
 
     //coil
     implementation(libs.coil.compose)
+
+    //dataStore, dataStoreProto
+    implementation(libs.dataStore)
+    implementation(libs.dataStoreProto)
+    implementation(libs.protobufLite)
 
     //accompanist-ui-controller
     implementation(libs.accompanist.system.ui.controller)

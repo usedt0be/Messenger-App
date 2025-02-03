@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,14 +40,9 @@ fun ContactsListScreen(
     navController: NavController = rememberNavController(),
     contactsViewModel: ContactsViewModel
 ) {
-
     var showBottomSheet by remember { mutableStateOf(false) }
 
-//    var firstName by remember { mutableStateOf("") }
-//    var secondName by remember { mutableStateOf("") }
-//    var phoneNumber by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-
     Scaffold(
         modifier = Modifier
             .imePadding(),
@@ -66,7 +62,12 @@ fun ContactsListScreen(
         },
         bottomBar = {
             NavBottomBar(navController = navController)
-        }) { paddingValues ->
+        },
+        topBar = {
+            Text(text = "Contacts Screen")
+        }
+
+    ) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -74,7 +75,9 @@ fun ContactsListScreen(
                 .background(color = AppTheme.colors.backgroundPrimary)
                 .padding(paddingValues)
         ) {
-            Text(text = "Contacts Screen")
+            LazyColumn(modifier = Modifier.fillMaxSize()
+            ) {
+            }
         }
 
         ContactsBottomSheet(
@@ -82,7 +85,7 @@ fun ContactsListScreen(
             isVisible = showBottomSheet,
             onCreateContact = { firstName, secondName, phoneNumber ->
                 scope.launch(Dispatchers.IO) {
-                    contactsViewModel.getContact(
+                    contactsViewModel.addContact(
                         firstName = firstName,
                         secondName = secondName,
                         phoneNumber = phoneNumber

@@ -15,6 +15,9 @@ firebaseStorage = "21.0.0"
 dagger = "2.51.1"
 navigationCompose = "2.8.3"
 coil = "2.7.0"
+dataStore = "1.1.2"
+protobuf = "3.25.0"
+protobufPlugin = "0.9.4"
 accompanist = "0.32.0"
 phoneNumber = "8.13.7"
 
@@ -54,6 +57,11 @@ navigation-compose = {module = "androidx.navigation:navigation-compose", version
 
 coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coil"}
 
+dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+dataStoreProto = { group = "androidx.datastore", name = "datastore-core", version.ref = "dataStore" }
+protobufLite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+
+
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
 phoneNumber = { group = "com.googlecode.libphonenumber", name = "libphonenumber", version.ref = "phoneNumber" }
@@ -61,4 +69,4 @@ phoneNumber = { group = "com.googlecode.libphonenumber", name = "libphonenumber"
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+protobuf = {id = "com.google.protobuf", version.ref = "protobufPlugin"}

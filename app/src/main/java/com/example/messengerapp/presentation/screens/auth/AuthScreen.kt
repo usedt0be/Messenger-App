@@ -45,10 +45,10 @@ import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
-import com.example.messengerapp.presentation.component.ConfirmNumberDialog
-import com.example.messengerapp.presentation.component.CountryCodePicker
-import com.example.messengerapp.presentation.component.CountryField
-import com.example.messengerapp.presentation.component.PhoneNumberField
+import com.example.messengerapp.presentation.component.auth.ConfirmNumberDialog
+import com.example.messengerapp.presentation.component.auth.CountryCodePicker
+import com.example.messengerapp.presentation.component.auth.CountryField
+import com.example.messengerapp.presentation.component.auth.PhoneNumberField
 import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel

@@ -27,7 +27,7 @@ import com.example.messengerapp.data.entity.AuthData
 import com.example.messengerapp.data.entity.UserDto
 import com.example.messengerapp.domain.AuthRepository
 import com.example.messengerapp.domain.RegistrationRepository
-import com.example.messengerapp.presentation.component.OtpTextField
+import com.example.messengerapp.presentation.component.auth.OtpTextField
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState

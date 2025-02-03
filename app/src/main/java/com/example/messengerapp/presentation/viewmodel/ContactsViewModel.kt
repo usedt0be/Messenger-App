@@ -21,7 +21,7 @@ class ContactsViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    suspend fun getContact(firstName: String, secondName: String?, phoneNumber: String) {
+    fun addContact(firstName: String, secondName: String?, phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
             contactsRepository.addContact(
                 firstName = firstName,
@@ -34,7 +34,6 @@ class ContactsViewModel @Inject constructor(
                         is ResultState.Error -> {}
                     }
             }
-
         }
     }
 
