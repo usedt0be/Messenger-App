@@ -37,10 +37,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.core.theme.AppTheme
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.RegistrationRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.repository.AuthRepository
+import com.example.messengerapp.domain.repository.RegistrationRepository
 import com.example.messengerapp.presentation.component.AccountInfoItem
 import com.example.messengerapp.presentation.component.LogOutDialog
 import com.example.messengerapp.presentation.navigation.NavBottomBar
@@ -209,10 +209,6 @@ fun ProfileScreenPreview() {
         override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
             TODO("Not yet implemented")
         }
-
-        override suspend fun getAuthData(): AuthData {
-            TODO("Not yet implemented")
-        }
     }
 
     val firestoreRepo = object : RegistrationRepository {
@@ -221,6 +217,10 @@ fun ProfileScreenPreview() {
         }
 
         override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun getRegistrationAuthData(): AuthData {
             TODO("Not yet implemented")
         }
     }

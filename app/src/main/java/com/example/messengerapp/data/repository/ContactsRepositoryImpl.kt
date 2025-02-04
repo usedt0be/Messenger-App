@@ -1,9 +1,9 @@
 package com.example.messengerapp.data.repository
 
 import android.util.Log
-import com.example.messengerapp.data.entity.ContactDto
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.ContactsRepository
+import com.example.messengerapp.data.dto.ContactDto
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.repository.ContactsRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue

@@ -2,9 +2,11 @@ package com.example.messengerapp.data.repository
 
 import android.net.Uri
 import android.util.Log
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.RegistrationRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.repository.RegistrationRepository
 import com.example.messengerapp.util.ResultState
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 class RegistrationRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val storage: FirebaseStorage
+    private val storage: FirebaseStorage,
+    private val firebaseAuth: FirebaseAuth
 ): RegistrationRepository {
 
     override fun insert(user: UserDto): Flow<ResultState<String>> = callbackFlow {
@@ -54,6 +57,12 @@ class RegistrationRepositoryImpl @Inject constructor(
         awaitClose {
             close()
         }
+    }
+
+    override suspend fun getRegistrationAuthData(): AuthData {
+        val uid = firebaseAuth.currentUser?.uid!!
+        val phoneNumber = firebaseAuth.currentUser?.phoneNumber!!
+        return AuthData(uid = uid, phoneNumber = phoneNumber)
     }
 
 }

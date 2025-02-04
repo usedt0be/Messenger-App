@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kapt)
+//    alias(libs.plugins.kapt)
     alias(libs.plugins.protobuf)
-
+    alias(libs.plugins.ksp)
     id("com.google.gms.google-services")
 }
 
@@ -75,7 +75,7 @@ android {
 dependencies {
     //dagger2
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     //firebase-auth
     implementation(libs.firebase.auth)
@@ -93,6 +93,11 @@ dependencies {
     //coil
     implementation(libs.coil.compose)
 
+    //room
+    implementation(libs.room)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
     //dataStore, dataStoreProto
     implementation(libs.dataStore)
     implementation(libs.dataStoreProto)
@@ -100,6 +105,7 @@ dependencies {
 
     //accompanist-ui-controller
     implementation(libs.accompanist.system.ui.controller)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

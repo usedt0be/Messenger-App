@@ -2,9 +2,10 @@ package com.example.messengerapp.data.repository
 
 import android.app.Activity
 import android.util.Log
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.AuthRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.models.Contact
+import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -105,6 +106,7 @@ class AuthRepositoryImpl @Inject constructor(
             .get()
             .addOnSuccessListener {
                 val user = it.documents.first().toObject(UserDto::class.java)
+                Log.d("current_USER", "$user")
                 if(user!=null) {
                     trySend(ResultState.Success(user))
                 }
@@ -115,12 +117,6 @@ class AuthRepositoryImpl @Inject constructor(
         awaitClose {
             close()
         }
-    }
-
-    override suspend fun getAuthData(): AuthData {
-        val uid = firebaseAuth.currentUser?.uid!!
-        val phoneNumber = firebaseAuth.currentUser?.phoneNumber!!
-        return AuthData(uid = uid, phoneNumber = phoneNumber)
     }
 
     override fun logOut(): Flow<ResultState<String>> {

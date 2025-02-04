@@ -2,8 +2,8 @@ package com.example.messengerapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.ContactsRepository
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.repository.ContactsRepository
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

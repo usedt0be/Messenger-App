@@ -1,4 +1,4 @@
-package com.example.messengerapp.domain
+package com.example.messengerapp.domain.repository
 
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.entity
+package com.example.messengerapp.data
 
 data class CountryData(
     val countryName: String,

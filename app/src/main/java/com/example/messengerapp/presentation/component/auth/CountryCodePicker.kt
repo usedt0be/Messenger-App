@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
-import com.example.messengerapp.data.entity.CountryData
+import com.example.messengerapp.data.CountryData
 import com.example.messengerapp.presentation.component.SearchTextField
 import com.example.messengerapp.util.CountriesUtils
 

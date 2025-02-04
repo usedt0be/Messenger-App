@@ -7,11 +7,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.data.entity.CountryData
-import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.RegistrationRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.data.CountryData
+import com.example.messengerapp.domain.repository.AuthRepository
+import com.example.messengerapp.domain.repository.RegistrationRepository
 import com.example.messengerapp.util.CountriesUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -89,7 +89,6 @@ class AuthViewModel  @Inject constructor(
                     is ResultState.Loading -> {
                         Log.d("user_info", "Loading...")
                     }
-
                     is ResultState.Success -> {
                         Log.d("user_info", "${currentUser.data}")
                         _currentUser.value =  currentUser.data
@@ -104,7 +103,7 @@ class AuthViewModel  @Inject constructor(
 
     fun getAuthData(){
         viewModelScope .launch(Dispatchers.IO) {
-            authData.value = authRepository.getAuthData()
+            authData.value = registrationRepository.getRegistrationAuthData()
         }
     }
 
