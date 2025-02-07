@@ -42,13 +42,11 @@ class RegistrationRepositoryImpl @Inject constructor(
 
         imageUri?.let { uri ->
             Log.d("user_id", "$uri")
-
             storageReference.putFile(uri)
                 .addOnSuccessListener{
                     it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
                         trySend(ResultState.Success(it.toString()))
                     }
-
                 }
                 .addOnFailureListener { exception ->
                     trySend(ResultState.Error(exception.message))
@@ -64,5 +62,4 @@ class RegistrationRepositoryImpl @Inject constructor(
         val phoneNumber = firebaseAuth.currentUser?.phoneNumber!!
         return AuthData(uid = uid, phoneNumber = phoneNumber)
     }
-
 }

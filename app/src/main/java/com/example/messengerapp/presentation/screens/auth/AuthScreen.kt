@@ -223,51 +223,51 @@ fun AuthScreen(
     }
 }
 
-@Composable
-@Preview
-fun AuthScreenPreview() {
-    val authRepository = object : AuthRepository {
-        override fun verifyPhoneNumberWithOtp(
-            phoneNumber: String,
-            activity: Activity
-        ): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun logOut(): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
-            TODO("Not yet implemented")
-        }
-    }
-    val firestoreRepo = object : RegistrationRepository {
-        override fun insert(user: UserDto): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getRegistrationAuthData(): AuthData {
-            TODO("Not yet implemented")
-        }
-
-        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-    }
-    val authViewModel = AuthViewModel(
-        authRepository = authRepository,
-        registrationRepository = firestoreRepo
-    )
-    AuthScreen(
-        authViewModel = authViewModel
-    )
-}
+//@Composable
+//@Preview
+//fun AuthScreenPreview() {
+//    val authRepository = object : AuthRepository {
+//        override fun verifyPhoneNumberWithOtp(
+//            phoneNumber: String,
+//            activity: Activity
+//        ): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun logOut(): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//    val firestoreRepo = object : RegistrationRepository {
+//        override fun insert(user: UserDto): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override suspend fun getRegistrationAuthData(): AuthData {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//    val authViewModel = AuthViewModel(
+//        authRepository = authRepository,
+//        registrationRepository = firestoreRepo
+//    )
+//    AuthScreen(
+//        authViewModel = authViewModel
+//    )
+//}

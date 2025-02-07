@@ -1,12 +1,9 @@
 package com.example.messengerapp.data.repository
 
-import android.provider.ContactsContract.Contacts
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.example.messengerapp.UserProto
 import com.example.messengerapp.data.dao.ContactDao
-import com.example.messengerapp.data.dto.ContactDto
-import com.example.messengerapp.data.dto.UserDto
-import com.example.messengerapp.data.entity.ContactEntity
 import com.example.messengerapp.data.mappers.toContact
 import com.example.messengerapp.data.mappers.toContactEntity
 import com.example.messengerapp.data.mappers.toUser
@@ -14,8 +11,9 @@ import com.example.messengerapp.data.mappers.toUserProto
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.UserStorageRepository
-
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -24,23 +22,33 @@ class UserStorageRepositoryImpl @Inject constructor(
     private val contactsDao: ContactDao
 ): UserStorageRepository {
 
+    private val _userFlow = MutableStateFlow<User?>(value = null)
+    override val userFlow: Flow<User?>
+        get() = _userFlow
 
-    override suspend fun saveUserToDataStore(user: UserProto) {
-        userDataStore.updateData { user }
+
+    override suspend fun saveUserToDataStore(user: User) {
+        Log.d("UseSavedTODataStore", "$user")
+        userDataStore.updateData { user.toUserProto() }
+        getUserFromDataStore()
     }
 
-    override fun getUserFromDataStore(): Flow<User?> {
-        return userDataStore.data.map { it.toUser()}
-    }
-
-
-    override fun insertAllContactsToDb(contacts:List<ContactDto>) {
-        val contactEntities = contacts.map { contactDto ->
-            contactDto.toContactEntity()
+    override suspend fun getUserFromDataStore() {
+        userDataStore.data.collectLatest { it ->
+            val user = it.toUser()
+            Log.d("user_FROM_DS", "$user")
+            _userFlow.value = user
+            Log.d("user_FROM_DS", "${_userFlow.value}")
         }
-        contactsDao.upsertAllContactsToDb(contacts = contactEntities)
     }
 
+    override fun insertAllContactsToDb(contacts:List<Contact>?) {
+        contacts?.map { contactDto ->
+            contactDto.toContactEntity()
+        }?.let {
+            contactsDao.upsertAllContactsToDb(it)
+        }
+    }
 
     override fun getContactsFromDb(): List<Contact> {
        return contactsDao.getContacts().map { contactEntity ->
@@ -48,8 +56,7 @@ class UserStorageRepositoryImpl @Inject constructor(
        }
     }
 
-    override fun insertContactToDb(contact: ContactEntity) {
-        contactsDao.upsertUser(contact)
+    override fun insertContactToDb(contact: Contact) {
+        contactsDao.upsertUser(contact = contact.toContactEntity())
     }
-
 }

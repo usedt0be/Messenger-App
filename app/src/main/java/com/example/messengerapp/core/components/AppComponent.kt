@@ -10,6 +10,7 @@ import com.example.messengerapp.core.storage.StorageModule
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.presentation.di.ContactsModule
 import com.example.messengerapp.presentation.di.RegistrationModule
+import com.example.messengerapp.presentation.di.UserStorageModule
 import dagger.BindsInstance
 import dagger.Component
 
@@ -17,6 +18,7 @@ import dagger.Component
     AuthModule::class,
     RegistrationModule::class,
     ContactsModule::class,
+    UserStorageModule::class,
     FirebaseModule::class,
     ViewModelFactoryModule::class,
     ViewModelModule::class,

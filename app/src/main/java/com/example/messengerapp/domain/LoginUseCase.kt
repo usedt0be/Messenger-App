@@ -1,16 +1,10 @@
 package com.example.messengerapp.domain
 
-import com.example.messengerapp.data.dto.UserDto
-import com.example.messengerapp.data.mappers.toContact
-import com.example.messengerapp.data.mappers.toUserProto
-import com.example.messengerapp.domain.models.User
+import android.util.Log
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.UserStorageRepository
 import com.example.messengerapp.util.ResultState
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 
@@ -19,19 +13,21 @@ class LoginUseCase @Inject constructor(
     private val userStorageRepository: UserStorageRepository
 ) {
 
-    suspend operator fun invoke(phoneNumber: String) {
-        val user = userStorageRepository.getUserFromDataStore().firstOrNull()
+    val userFlow = userStorageRepository.userFlow
 
-        if(user == null) {
+    suspend operator fun invoke(phoneNumber: String) {
+        val userData = userFlow.firstOrNull()
+        Log.d("user_LoginUseCase", "$userData")
+        if(userData == null) {
             authRepository.getCurrentUser(phoneNumber).collect { resultState ->
                 when(resultState) {
                     is ResultState.Success -> {
-                        resultState.data?.let { userDto ->
-                            val userProto = userDto.toUserProto()
-                            userStorageRepository.saveUserToDataStore(userProto)
-                            val contacts = userDto.contacts.map { it?.toContact() }
+                        resultState.data?.let { user ->
+                            Log.d("userUseCaseInvoked", "$user")
+                            userStorageRepository.saveUserToDataStore(user)
+                            userStorageRepository.getUserFromDataStore()
+                            val contacts = user.contacts.filterNotNull()
                             userStorageRepository.insertAllContactsToDb(contacts = contacts)
-
                         }
                     }
                     is ResultState.Error -> {}

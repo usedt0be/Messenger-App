@@ -32,8 +32,8 @@ class ContactsRepositoryImpl @Inject constructor(
 
             val newContact = newUserDoc?.let { newUser ->
                 ContactDto(
-                    id = newUser.userId,
-                    phoneNumber = newUser.phoneNumber,
+                    id = newUser.userId!!,
+                    phoneNumber = newUser.phoneNumber!!,
                     firstName = firstName,
                     secondName = secondName,
                     photoUrl = newUser.imageUrl

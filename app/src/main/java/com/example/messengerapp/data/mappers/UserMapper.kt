@@ -4,6 +4,16 @@ import com.example.messengerapp.UserProto
 import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.domain.models.User
 
+fun UserDto.toUser() = User(
+    id = userId ?: "",
+    firstName = firstName ?:"",
+    secondName = secondName,
+    phoneNumber = phoneNumber ?:"",
+    imageUrl = imageUrl?: "",
+    contacts = contacts.map {
+        it?.toContact()
+    }
+)
 
 fun UserProto?.toUser() = if(this == null) null else {
     User(
@@ -25,4 +35,11 @@ fun UserDto.toUserProto() = UserProto.newBuilder()
     .build()
 
 
+fun User.toUserProto() = UserProto.newBuilder()
+    .setUserId(id)
+    .setPhoneNumber(phoneNumber)
+    .setFirstName(firstName)
+    .setSecondName(secondName)
+    .setImageUrl(imageUrl)
+    .build()
 
