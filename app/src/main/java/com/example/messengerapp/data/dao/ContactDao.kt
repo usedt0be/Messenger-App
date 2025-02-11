@@ -11,6 +11,9 @@ interface ContactDao {
     @Query("SELECT * FROM contacts")
     fun getContacts(): List<ContactEntity>
 
+    @Query("SELECT * FROM contacts WHERE id = :contactId")
+    fun getContactById(contactId: String): ContactEntity
+
     @Upsert
     fun upsertUser(contact:ContactEntity)
 
@@ -18,5 +21,5 @@ interface ContactDao {
     fun upsertAllContactsToDb(contacts: List<ContactEntity>)
 
     @Delete
-    fun deleteContacts(contact: ContactEntity)
+    fun deleteContact(contact: ContactEntity)
 }

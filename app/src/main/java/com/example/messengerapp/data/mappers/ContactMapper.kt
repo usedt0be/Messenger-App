@@ -16,7 +16,7 @@ fun ContactDto.toContactEntity() = ContactEntity(
 
 
 fun ContactDto.toContact() = Contact(
-    id = id ?: "",
+    id = Contact.Id(value = id),
     firstName = firstName   ?:"",
     secondName = secondName,
     phoneNumber = phoneNumber ?: "",
@@ -26,7 +26,7 @@ fun ContactDto.toContact() = Contact(
 
 
 fun ContactEntity.toContact() = Contact(
-    id = id,
+    id = Contact.Id(value = id),
     firstName = firstName,
     secondName = secondName,
     phoneNumber = phoneNumber,
@@ -35,7 +35,7 @@ fun ContactEntity.toContact() = Contact(
 
 
 fun Contact.toContactEntity() = ContactEntity(
-    id = id,
+    id = id.value,
     firstName = firstName,
     secondName = secondName,
     phoneNumber = phoneNumber,

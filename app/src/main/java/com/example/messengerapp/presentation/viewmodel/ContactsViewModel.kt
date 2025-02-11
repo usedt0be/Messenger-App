@@ -1,10 +1,16 @@
 package com.example.messengerapp.presentation.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.repository.ContactsRepository
-import com.example.messengerapp.util.ResultState
+import com.example.messengerapp.domain.usecases.AddContactUseCase
+import com.example.messengerapp.domain.usecases.DeleteContactUseCase
+import com.example.messengerapp.domain.usecases.GetContactByIdUseCase
+import com.example.messengerapp.domain.usecases.GetContactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +18,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
-    private val contactsRepository: ContactsRepository
+    private val contactsRepository: ContactsRepository,
+    private val getContactsUseCase: GetContactsUseCase,
+    private val getContactByIdUseCase: GetContactByIdUseCase,
+    private val addContactUseCase: AddContactUseCase,
+    private val deleteContactUseCase: DeleteContactUseCase,
 ): ViewModel() {
 
     private val _contact = MutableStateFlow<UserDto?>(null)
@@ -21,20 +31,28 @@ class ContactsViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    fun addContact(firstName: String, secondName: String?, phoneNumber: String) {
+    private val _contacts = MutableStateFlow<List<Contact>?>(null)
+    val contacts = _contacts.asStateFlow()
+
+    init {
+
+        Log.d("contactsVM", "INIT")
         viewModelScope.launch(Dispatchers.IO) {
-            contactsRepository.addContact(
-                firstName = firstName,
-                secondName = secondName,
-                phoneNumber = phoneNumber
-            ).collect{ resultState ->
-                    when(resultState) {
-                        is ResultState.Loading -> {}
-                        is ResultState.Success -> {}
-                        is ResultState.Error -> {}
-                    }
-            }
+            _contacts.value = getContactsUseCase.invoke()
+        }
+        Log.d("contactsVM.value", "$contacts")
+    }
+
+    fun addContact(phoneNumber: String, firstName: String, secondName: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addContactUseCase.invoke(phoneNumber, firstName, secondName)
         }
     }
 
+
+    fun deleteContact(contact: Contact){
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteContactUseCase.invoke(contact)
+        }
+    }
 }

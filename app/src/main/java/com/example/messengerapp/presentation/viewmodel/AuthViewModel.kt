@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.AuthData
 import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.data.CountryData
-import com.example.messengerapp.domain.LoginUseCase
+import com.example.messengerapp.domain.usecases.LoginUseCase
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.RegistrationRepository
@@ -21,6 +21,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

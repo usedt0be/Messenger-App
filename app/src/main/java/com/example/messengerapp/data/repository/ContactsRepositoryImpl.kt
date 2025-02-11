@@ -3,6 +3,8 @@ package com.example.messengerapp.data.repository
 import android.util.Log
 import com.example.messengerapp.data.dto.ContactDto
 import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.data.mappers.toContact
+import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.repository.ContactsRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.auth.FirebaseAuth
@@ -19,9 +21,8 @@ class ContactsRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ): ContactsRepository {
 
-    override fun addContact(firstName:String, secondName: String?, phoneNumber: String): Flow<ResultState<String>> = callbackFlow {
+    override fun addContact(firstName:String, secondName: String?, phoneNumber: String): Flow<ResultState<Contact>> = callbackFlow {
         trySend(ResultState.Loading())
-
         val query = firestore.collection("users")
             .whereEqualTo("phoneNumber", phoneNumber)
             .get()
@@ -58,7 +59,9 @@ class ContactsRepositoryImpl @Inject constructor(
             }
             currentUserDocReference?.update("contacts", FieldValue.arrayUnion(newContact))
 
-            trySend(ResultState.Success(newContact.toString()))
+            newContact?.let {
+                trySend(ResultState.Success(newContact.toContact()))
+            }
         } else {
             trySend(ResultState.Error(message = "user was not found"))
         }
@@ -66,4 +69,5 @@ class ContactsRepositoryImpl @Inject constructor(
             close()
         }
     }
+
 }

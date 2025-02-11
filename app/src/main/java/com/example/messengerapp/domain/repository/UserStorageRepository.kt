@@ -16,4 +16,8 @@ interface UserStorageRepository {
     fun getContactsFromDb(): List<Contact>
 
     fun insertContactToDb(contact: Contact)
+
+    fun deleteContact(contact: Contact)
+
+    fun getContactById(id: String): Contact
 }

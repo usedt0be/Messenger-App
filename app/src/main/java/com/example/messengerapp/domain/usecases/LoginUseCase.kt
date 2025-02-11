@@ -1,4 +1,4 @@
-package com.example.messengerapp.domain
+package com.example.messengerapp.domain.usecases
 
 import android.util.Log
 import com.example.messengerapp.domain.repository.AuthRepository

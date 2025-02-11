@@ -1,6 +1,5 @@
-package com.example.messengerapp.presentation.screens.messenger
+package com.example.messengerapp.presentation.screens.profile
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -48,11 +47,8 @@ fun ProfileScreen(
     authViewModel: AuthViewModel,
     navController: NavController = rememberNavController()
 ) {
-
-    val user = authViewModel.currentUser.collectAsState().value
-    Log.d("userUi", "$user")
-    val usr = authViewModel.usr.collectAsState().value
-    Log.d("userUiusr", "$usr")
+    val user = authViewModel.usr.collectAsState().value
+//    Log.d("userUiusr", "$usr")
     val painter = rememberAsyncImagePainter(model = user?.imageUrl)
 
     var showLogOutDialog by remember { mutableStateOf(false) }

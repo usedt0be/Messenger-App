@@ -14,7 +14,6 @@ import com.example.messengerapp.domain.repository.UserStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserStorageRepositoryImpl @Inject constructor(
@@ -51,12 +50,22 @@ class UserStorageRepositoryImpl @Inject constructor(
     }
 
     override fun getContactsFromDb(): List<Contact> {
-       return contactsDao.getContacts().map { contactEntity ->
+       val contacts =  contactsDao.getContacts().map { contactEntity ->
            contactEntity.toContact()
        }
+        Log.d("contactsREPO", "$contacts")
+        return contacts
     }
 
     override fun insertContactToDb(contact: Contact) {
         contactsDao.upsertUser(contact = contact.toContactEntity())
+    }
+
+    override fun deleteContact(contact: Contact) {
+        contactsDao.deleteContact(contact = contact.toContactEntity())
+    }
+
+    override fun getContactById(id: String): Contact {
+        return contactsDao.getContactById(id).toContact()
     }
 }
