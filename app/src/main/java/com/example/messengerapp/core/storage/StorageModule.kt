@@ -11,11 +11,13 @@ import com.example.messengerapp.data.dao.ContactDao
 import com.example.messengerapp.data.proto.UserSerializer
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 
 private const val USER_PREFERENCES_NAME = "user_prefs"
 
 @Module
+
 object StorageModule {
     @Provides
     fun provideUserDataStore(
@@ -31,6 +33,7 @@ object StorageModule {
 
 
     @Provides
+    @Singleton
     fun provideMessengerDatabase(@ApplicationContext context: Context): MessengerDatabase {
         return Room.databaseBuilder(
             context = context,

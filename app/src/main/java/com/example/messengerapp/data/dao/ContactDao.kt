@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.messengerapp.data.entity.ContactEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContactDao {
     @Query("SELECT * FROM contacts")
-    fun getContacts(): List<ContactEntity>
+    fun getContacts(): Flow<List<ContactEntity>>
 
     @Query("SELECT * FROM contacts WHERE id = :contactId")
     fun getContactById(contactId: String): ContactEntity

@@ -21,7 +21,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,18 +33,19 @@ class AuthViewModel  @Inject constructor(
     private val loginUseCase: LoginUseCase
 ): ViewModel()  {
 
-    val usr = loginUseCase.userFlow.stateIn(
+    val user = loginUseCase.userFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = null
     )
+
     val authData: MutableState<AuthData?> = mutableStateOf(null)
 
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
 
-    private val _currentUser = MutableStateFlow<User?>(null)
-    val currentUser = _currentUser.asStateFlow()
+//    private val _currentUser = MutableStateFlow<User?>(null)
+//    val currentUser = _currentUser.asStateFlow()
 
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
@@ -103,8 +103,8 @@ class AuthViewModel  @Inject constructor(
                     }
                     is ResultState.Success -> {
                         Log.d("user_info", "${currentUser.data}")
-                        _currentUser.value =  currentUser.data
-                        Log.d("user_info", "${_currentUser.value}")
+//                        _currentUser.value =  currentUser.data
+//                        Log.d("user_info", "${_currentUser.value}")
                         loginUseCase.invoke(phoneNumber = phoneNumber)
                     }
                     is ResultState.Error -> {}

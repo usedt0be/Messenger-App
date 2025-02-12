@@ -13,7 +13,9 @@ import com.example.messengerapp.presentation.di.RegistrationModule
 import com.example.messengerapp.presentation.di.UserStorageModule
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
+@Singleton
 @Component(modules = [
     AuthModule::class,
     RegistrationModule::class,

@@ -11,9 +11,17 @@ import com.example.messengerapp.data.mappers.toUserProto
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.UserStorageRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 class UserStorageRepositoryImpl @Inject constructor(
@@ -25,6 +33,22 @@ class UserStorageRepositoryImpl @Inject constructor(
     override val userFlow: Flow<User?>
         get() = _userFlow
 
+    private val _contactsFlow = MutableStateFlow<List<Contact?>>(emptyList())
+
+    override val contactsFlow: StateFlow<List<Contact?>>
+        get() = _contactsFlow.asStateFlow()
+
+
+
+    override suspend fun getContacts() {
+        contactsDao.getContacts().collect{ contactEntities ->
+            Log.d("contacts_repo_get", "$contactEntities")
+            val contacts = contactEntities.map {
+                it.toContact()
+            }
+            _contactsFlow.value = contacts
+        }
+    }
 
     override suspend fun saveUserToDataStore(user: User) {
         Log.d("UseSavedTODataStore", "$user")
@@ -49,12 +73,12 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getContactsFromDb(): List<Contact> {
-       val contacts =  contactsDao.getContacts().map { contactEntity ->
-           contactEntity.toContact()
-       }
-        Log.d("contactsREPO", "$contacts")
-        return contacts
+    override suspend fun getContactsFromDb() {
+        contactsDao.getContacts().collect { it ->
+            val contacts = it.map { it.toContact() }
+//            _contactsFlow.value = contacts
+            Log.d("contactsREPO", "$contacts")
+        }
     }
 
     override fun insertContactToDb(contact: Contact) {

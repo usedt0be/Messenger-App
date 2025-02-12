@@ -1,8 +1,11 @@
 package com.example.messengerapp.presentation.screens.contacts
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -38,11 +44,11 @@ import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.ContactsBottomSheet
-import com.example.messengerapp.presentation.component.ContactsListItem
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.exp
 
 
 @Composable
@@ -52,13 +58,11 @@ fun ContactsListScreen(
     contactsViewModel: ContactsViewModel,
 ) {
     val contacts = contactsViewModel.contacts.collectAsState().value
-
     var showBottomSheet by remember { mutableStateOf(false) }
-
-    var longPressOffset by remember { mutableStateOf(Offset.Zero) }
-    var expanded by remember { mutableStateOf(false) }
-
     val scope = rememberCoroutineScope()
+
+
+    Log.d("contactUI", "$contacts")
 
     Scaffold(
         modifier = Modifier
@@ -90,25 +94,17 @@ fun ContactsListScreen(
         ) {
             if (contacts != null) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(contacts) { contact ->
                         ContactsListItem(
-                            contact = contact,
-                            modifier = Modifier
-                                .pointerInput(Unit){
-                                    detectTapGestures(
-                                        onLongPress = { offset ->
-                                            longPressOffset = offset
-                                            expanded = true
-                                        },
-                                    )
-                                },
+                            contact = contact!!,
+                            modifier = Modifier,
                             onClickContact = { contactId ->
                                 onClickContact(contactId)
                             },
                             onClickDelete = contactsViewModel::deleteContact
-
                         )
                     }
                 }
@@ -121,9 +117,6 @@ fun ContactsListScreen(
                 )
             }
         }
-
-
-
         ContactsBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             isVisible = showBottomSheet,
@@ -139,6 +132,7 @@ fun ContactsListScreen(
         )
     }
 }
+
 
 
 @Preview

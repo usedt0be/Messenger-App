@@ -47,8 +47,7 @@ fun ProfileScreen(
     authViewModel: AuthViewModel,
     navController: NavController = rememberNavController()
 ) {
-    val user = authViewModel.usr.collectAsState().value
-//    Log.d("userUiusr", "$usr")
+    val user = authViewModel.user.collectAsState().value
     val painter = rememberAsyncImagePainter(model = user?.imageUrl)
 
     var showLogOutDialog by remember { mutableStateOf(false) }

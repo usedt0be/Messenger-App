@@ -85,7 +85,6 @@ fun NavigationGraph(
                 navController = navController,
                 contactsViewModel = contactsViewModel,
                 onClickContact = {
-                    navController.navigate("")
                 }
             )
         }

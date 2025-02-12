@@ -9,9 +9,13 @@ import com.example.messengerapp.util.ResultState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 class RegistrationRepositoryImpl @Inject constructor(
@@ -61,5 +65,16 @@ class RegistrationRepositoryImpl @Inject constructor(
         val uid = firebaseAuth.currentUser?.uid!!
         val phoneNumber = firebaseAuth.currentUser?.phoneNumber!!
         return AuthData(uid = uid, phoneNumber = phoneNumber)
+    }
+
+    val customscope = CoroutineScope(SupervisorJob())
+
+    suspend fun dd() {
+      val vb =  supervisorScope {
+
+      }
+     val d =   customscope.launch { this
+
+        }
     }
 }

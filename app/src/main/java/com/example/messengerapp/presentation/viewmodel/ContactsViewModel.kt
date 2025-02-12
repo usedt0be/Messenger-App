@@ -13,7 +13,10 @@ import com.example.messengerapp.domain.usecases.GetContactByIdUseCase
 import com.example.messengerapp.domain.usecases.GetContactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,24 +28,28 @@ class ContactsViewModel @Inject constructor(
     private val deleteContactUseCase: DeleteContactUseCase,
 ): ViewModel() {
 
+    val contacts = getContactsUseCase.contactsFlow.stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+
     private val _contact = MutableStateFlow<UserDto?>(null)
     val contact = _contact.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    private val _contacts = MutableStateFlow<List<Contact>?>(null)
-    val contacts = _contacts.asStateFlow()
-
     init {
-
-        Log.d("contactsVM", "INIT")
-        viewModelScope.launch(Dispatchers.IO) {
-            _contacts.value = getContactsUseCase.invoke()
+        viewModelScope.launch {
+            getContacts()
         }
-        Log.d("contactsVM.value", "$contacts")
     }
-
+    private fun getContacts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getContactsUseCase.invoke()
+        }
+    }
     fun addContact(phoneNumber: String, firstName: String, secondName: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             addContactUseCase.invoke(phoneNumber, firstName, secondName)
@@ -52,6 +59,7 @@ class ContactsViewModel @Inject constructor(
 
     fun deleteContact(contact: Contact){
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("deleting_contact", "$contact")
             deleteContactUseCase.invoke(contact)
         }
     }
