@@ -1,8 +1,7 @@
-package com.example.messengerapp.domain
+package com.example.messengerapp.domain.repository
 
 import android.app.Activity
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
+import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.flow.Flow
 
@@ -20,7 +19,5 @@ interface AuthRepository {
 
     fun checkUserExists(phoneNumber: String): Flow<Boolean>
 
-    fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>>
-
-    suspend fun getAuthData(): AuthData
+    fun getCurrentUser(phoneNumber: String): Flow<ResultState<User>>
 }

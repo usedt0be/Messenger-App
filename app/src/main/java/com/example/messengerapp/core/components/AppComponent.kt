@@ -6,19 +6,25 @@ import com.example.messengerapp.presentation.di.ViewModelModule
 import com.example.messengerapp.MainActivity
 import com.example.messengerapp.core.annotations.ApplicationContext
 import com.example.messengerapp.core.firebase.FirebaseModule
+import com.example.messengerapp.core.storage.StorageModule
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.presentation.di.ContactsModule
 import com.example.messengerapp.presentation.di.RegistrationModule
+import com.example.messengerapp.presentation.di.UserStorageModule
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
+@Singleton
 @Component(modules = [
     AuthModule::class,
     RegistrationModule::class,
     ContactsModule::class,
+    UserStorageModule::class,
     FirebaseModule::class,
     ViewModelFactoryModule::class,
     ViewModelModule::class,
+    StorageModule::class,
 ])
 interface AppComponent {
     @Component.Builder

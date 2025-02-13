@@ -1,0 +1,51 @@
+package com.example.messengerapp.core.storage
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
+import androidx.room.Room
+import com.example.messengerapp.UserProto
+import com.example.messengerapp.core.annotations.ApplicationContext
+import com.example.messengerapp.data.dao.ContactDao
+import com.example.messengerapp.data.proto.UserSerializer
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
+
+
+private const val USER_PREFERENCES_NAME = "user_prefs"
+
+@Module
+
+object StorageModule {
+    @Provides
+    fun provideUserDataStore(
+        @ApplicationContext context: Context,
+        userSerializer: UserSerializer
+    ): DataStore<UserProto> {
+        return DataStoreFactory.create(
+            serializer = userSerializer,
+            produceFile = {context.dataStoreFile(fileName = USER_PREFERENCES_NAME)},
+            corruptionHandler = null,
+        )
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideMessengerDatabase(@ApplicationContext context: Context): MessengerDatabase {
+        return Room.databaseBuilder(
+            context = context,
+            klass = MessengerDatabase::class.java,
+            name = "contacts_db"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+
+
+    @Provides
+    fun provideContactsDao(messengerDb: MessengerDatabase): ContactDao {
+        return messengerDb.contactsDao()
+    }
+}

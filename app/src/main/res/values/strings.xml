@@ -9,4 +9,5 @@
     <string name="change_number">Change number</string>
     <string name="number_is_correct">Yes</string>
     <string name="number_confirmation_promt">Number is correct?</string>
+    <string name="contact_photo">Contact photo</string>
 </resources>

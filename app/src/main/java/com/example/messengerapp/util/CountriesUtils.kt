@@ -1,7 +1,7 @@
 package com.example.messengerapp.util
 
 import com.example.messengerapp.R
-import com.example.messengerapp.data.entity.CountryData
+import com.example.messengerapp.data.CountryData
 
 
 object CountriesUtils {

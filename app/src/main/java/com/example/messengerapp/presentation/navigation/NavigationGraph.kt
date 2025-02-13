@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.presentation.screens.auth.AuthScreen
 import com.example.messengerapp.presentation.screens.auth.OtpScreen
-import com.example.messengerapp.presentation.screens.messenger.ChatsListScreen
-import com.example.messengerapp.presentation.screens.messenger.ContactsListScreen
-import com.example.messengerapp.presentation.screens.messenger.ProfileScreen
+import com.example.messengerapp.presentation.screens.chat.ChatsListScreen
+import com.example.messengerapp.presentation.screens.contacts.ContactsListScreen
+import com.example.messengerapp.presentation.screens.profile.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
@@ -83,8 +83,15 @@ fun NavigationGraph(
             val contactsViewModel: ContactsViewModel = viewModel(factory = factory)
             ContactsListScreen(
                 navController = navController,
-                contactsViewModel = contactsViewModel
+                contactsViewModel = contactsViewModel,
+                onClickContact = {
+                }
             )
+        }
+
+        composable(route = "contacts/{contactId}") { backStackEntry ->
+            val contactId = backStackEntry.arguments?.getString("contactId")
+
         }
     }
 }

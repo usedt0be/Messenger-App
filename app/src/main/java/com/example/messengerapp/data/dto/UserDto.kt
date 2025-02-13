@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.entity
+package com.example.messengerapp.data.dto
 
 import androidx.compose.runtime.Immutable
 

@@ -1,8 +1,5 @@
-package com.example.messengerapp.presentation.screens.messenger
+package com.example.messengerapp.presentation.screens.profile
 
-import android.app.Activity
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -31,23 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.messengerapp.core.theme.AppTheme
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.RegistrationRepository
 import com.example.messengerapp.presentation.component.AccountInfoItem
 import com.example.messengerapp.presentation.component.LogOutDialog
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
@@ -56,10 +47,7 @@ fun ProfileScreen(
     authViewModel: AuthViewModel,
     navController: NavController = rememberNavController()
 ) {
-
-    val user = authViewModel.currentUser.collectAsState().value
-    Log.d("userUi", "$user")
-
+    val user = authViewModel.user.collectAsState().value
     val painter = rememberAsyncImagePainter(model = user?.imageUrl)
 
     var showLogOutDialog by remember { mutableStateOf(false) }
@@ -183,50 +171,52 @@ fun ProfileScreen(
 
 
 
-@Preview
-@Composable
-fun ProfileScreenPreview() {
-    val authRepository = object : AuthRepository {
-        override fun verifyPhoneNumberWithOtp(
-            phoneNumber: String,
-            activity: Activity
-        ): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun logOut(): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getAuthData(): AuthData {
-            TODO("Not yet implemented")
-        }
-    }
-
-    val firestoreRepo = object : RegistrationRepository {
-        override fun insert(user: UserDto): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
-            TODO("Not yet implemented")
-        }
-    }
-    val authViewModel = AuthViewModel(
-        authRepository = authRepository,
-        registrationRepository = firestoreRepo
-    )
-    ProfileScreen(authViewModel = authViewModel)
-}
+//@Preview
+//@Composable
+//fun ProfileScreenPreview() {
+//    val authRepository = object : AuthRepository {
+//        override fun verifyPhoneNumberWithOtp(
+//            phoneNumber: String,
+//            activity: Activity
+//        ): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun logOut(): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<User>> {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//
+//    val firestoreRepo = object : RegistrationRepository {
+//        override fun insert(user: UserDto): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override suspend fun getRegistrationAuthData(): AuthData {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//    val authViewModel = AuthViewModel(
+//        authRepository = authRepository,
+//        registrationRepository = firestoreRepo,
+//        loginUseCase = LoginUseCase()
+//    )
+//    val viewModel =
+//    ProfileScreen(authViewModel = authViewModel)
+//}

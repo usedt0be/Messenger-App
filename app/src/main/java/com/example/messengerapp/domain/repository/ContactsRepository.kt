@@ -1,0 +1,9 @@
+package com.example.messengerapp.domain.repository
+
+import com.example.messengerapp.domain.models.Contact
+import com.example.messengerapp.util.ResultState
+import kotlinx.coroutines.flow.Flow
+
+interface ContactsRepository {
+    fun addContact(firstName:String, secondName: String?, phoneNumber: String): Flow<ResultState<Contact>>
+}

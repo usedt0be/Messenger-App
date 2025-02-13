@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.component
+package com.example.messengerapp.presentation.component.auth
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row

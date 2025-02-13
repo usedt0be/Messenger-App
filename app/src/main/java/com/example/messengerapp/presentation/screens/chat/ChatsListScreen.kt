@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.screens.messenger
+package com.example.messengerapp.presentation.screens.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import com.example.messengerapp.presentation.navigation.NavBottomBar
 
 @Composable
 fun ChatsListScreen(navController: NavController = rememberNavController()) {
-
     Scaffold(bottomBar = {
         NavBottomBar(navController = navController)
     }) {

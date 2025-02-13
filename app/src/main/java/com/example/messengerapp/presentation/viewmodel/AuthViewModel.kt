@@ -7,18 +7,22 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messengerapp.data.entity.AuthData
-import com.example.messengerapp.data.entity.UserDto
-import com.example.messengerapp.data.entity.CountryData
-import com.example.messengerapp.domain.AuthRepository
-import com.example.messengerapp.domain.RegistrationRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.data.CountryData
+import com.example.messengerapp.domain.usecases.LoginUseCase
+import com.example.messengerapp.domain.models.User
+import com.example.messengerapp.domain.repository.AuthRepository
+import com.example.messengerapp.domain.repository.RegistrationRepository
 import com.example.messengerapp.util.CountriesUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,14 +30,22 @@ import javax.inject.Inject
 class AuthViewModel  @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationRepository: RegistrationRepository,
+    private val loginUseCase: LoginUseCase
 ): ViewModel()  {
+
+    val user = loginUseCase.userFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
+    )
+
     val authData: MutableState<AuthData?> = mutableStateOf(null)
 
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
 
-    private val _currentUser = MutableStateFlow<UserDto?>(null)
-    val currentUser = _currentUser.asStateFlow()
+//    private val _currentUser = MutableStateFlow<User?>(null)
+//    val currentUser = _currentUser.asStateFlow()
 
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
@@ -89,11 +101,11 @@ class AuthViewModel  @Inject constructor(
                     is ResultState.Loading -> {
                         Log.d("user_info", "Loading...")
                     }
-
                     is ResultState.Success -> {
                         Log.d("user_info", "${currentUser.data}")
-                        _currentUser.value =  currentUser.data
-                        Log.d("user_info", "${_currentUser.value}")
+//                        _currentUser.value =  currentUser.data
+//                        Log.d("user_info", "${_currentUser.value}")
+                        loginUseCase.invoke(phoneNumber = phoneNumber)
                     }
                     is ResultState.Error -> {}
                 }
@@ -104,7 +116,7 @@ class AuthViewModel  @Inject constructor(
 
     fun getAuthData(){
         viewModelScope .launch(Dispatchers.IO) {
-            authData.value = authRepository.getAuthData()
+            authData.value = registrationRepository.getRegistrationAuthData()
         }
     }
 
