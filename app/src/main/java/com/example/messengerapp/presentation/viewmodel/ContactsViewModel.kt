@@ -1,7 +1,6 @@
 package com.example.messengerapp.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.dto.UserDto
@@ -14,7 +13,6 @@ import com.example.messengerapp.domain.usecases.GetContactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -37,8 +35,8 @@ class ContactsViewModel @Inject constructor(
     private val _contact = MutableStateFlow<UserDto?>(null)
     val contact = _contact.asStateFlow()
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage = _errorMessage.asStateFlow()
+    private val _errorMessage = addContactUseCase.error
+    val errorMessage = _errorMessage
 
     init {
         viewModelScope.launch {

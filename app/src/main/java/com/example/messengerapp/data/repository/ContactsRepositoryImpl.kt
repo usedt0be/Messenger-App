@@ -28,6 +28,8 @@ class ContactsRepositoryImpl @Inject constructor(
             .get()
             .await()
 
+        Log.d("ErrorState_REPO", "${query.isEmpty}")
+
         if (!query.isEmpty) {
             val newUserDoc = query.documents.first().toObject(UserDto::class.java)
 
@@ -63,7 +65,8 @@ class ContactsRepositoryImpl @Inject constructor(
                 trySend(ResultState.Success(newContact.toContact()))
             }
         } else {
-            trySend(ResultState.Error(message = "user was not found"))
+            Log.d("ErrorState_REPO2", "INVOKED else")
+            trySend(ResultState.Error(message = "User was not found"))
         }
         awaitClose {
             close()
