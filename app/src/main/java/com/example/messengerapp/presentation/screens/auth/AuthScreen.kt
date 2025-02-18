@@ -1,7 +1,6 @@
 package com.example.messengerapp.presentation.screens.auth
 
 import android.app.Activity
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,26 +34,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
-import com.example.messengerapp.data.AuthData
-import com.example.messengerapp.data.dto.UserDto
-import com.example.messengerapp.domain.repository.AuthRepository
-import com.example.messengerapp.domain.repository.RegistrationRepository
+import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.component.auth.ConfirmNumberDialog
 import com.example.messengerapp.presentation.component.auth.CountryCodePicker
 import com.example.messengerapp.presentation.component.auth.CountryField
 import com.example.messengerapp.presentation.component.auth.PhoneNumberField
-import com.example.messengerapp.presentation.component.SnackBar
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -179,7 +172,9 @@ fun AuthScreen(
         ModalBottomSheet(
             onDismissRequest = {
                 showBottomSheet = false
-            }, sheetState = sheetState, containerColor = AppTheme.colors.backgroundSecondary
+            },
+            sheetState = sheetState,
+            containerColor = AppTheme.colors.backgroundSecondary
         ) {
             CountryCodePicker(countryList = authViewModel.countriesDataList.value,
                 onQueryChange = authViewModel::findCountryCode,

@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -61,12 +62,10 @@ fun ContactsBottomSheet(
             modifier = modifier,
             contentWindowInsets = {WindowInsets.ime}
         ) {
-
             var firstName by remember { mutableStateOf("") }
             var secondName by remember { mutableStateOf("") }
             var phoneNumber by remember { mutableStateOf("+") }
             Log.d("phoneNumber", phoneNumber)
-
 
 
             Column(
@@ -98,7 +97,9 @@ fun ContactsBottomSheet(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text
                     ),
+                    textStyle = AppTheme.typography.body2,
                     colors = TextFieldDefaults.colors(
+                        focusedTextColor = AppTheme.colors.textPrimary,
                         focusedLabelColor = AppTheme.colors.onSuccess,
                         focusedIndicatorColor = AppTheme.colors.onSuccess,
                         focusedContainerColor = Color.Transparent,
@@ -106,6 +107,7 @@ fun ContactsBottomSheet(
                         unfocusedLabelColor = AppTheme.colors.tertiary,
                         unfocusedIndicatorColor = AppTheme.colors.tertiary,
                         unfocusedContainerColor = Color.Transparent,
+
                     ),
                     shape = RoundedCornerShape(percent = 20)
                 )
@@ -183,13 +185,16 @@ fun ContactsBottomSheet(
                             phoneNumber
                         )
                     },
+                    enabled = firstName != "",
                     modifier = Modifier
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     shape = RoundedCornerShape( percent = 20),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.colors.accentPrimary,
-                        contentColor = AppTheme.colors.textPrimary
+                        contentColor = AppTheme.colors.textPrimary,
+                        disabledContainerColor = AppTheme.colors.textTertiary,
+                        disabledContentColor = AppTheme.colors.textPrimary
                     )
                 ) {
                     Text(text = "Create contact")
