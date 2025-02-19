@@ -8,6 +8,7 @@ import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.repository.ContactsRepository
 import com.example.messengerapp.domain.usecases.AddContactUseCase
 import com.example.messengerapp.domain.usecases.DeleteContactUseCase
+import com.example.messengerapp.domain.usecases.GetAuthTokenUseCase
 import com.example.messengerapp.domain.usecases.GetContactByIdUseCase
 import com.example.messengerapp.domain.usecases.GetContactsUseCase
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,7 @@ class ContactsViewModel @Inject constructor(
     private val getContactByIdUseCase: GetContactByIdUseCase,
     private val addContactUseCase: AddContactUseCase,
     private val deleteContactUseCase: DeleteContactUseCase,
+    private val getCurrentTokenUseCase: GetAuthTokenUseCase
 ): ViewModel() {
 
     val contacts = getContactsUseCase.contactsFlow.stateIn(
@@ -41,13 +43,16 @@ class ContactsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getContacts()
+            getCurrentTokenUseCase.invoke()
         }
     }
+
     private fun getContacts() {
         viewModelScope.launch(Dispatchers.IO) {
             getContactsUseCase.invoke()
         }
     }
+
     fun addContact(phoneNumber: String, firstName: String, secondName: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             addContactUseCase.invoke(phoneNumber, firstName, secondName)

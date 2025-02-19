@@ -103,8 +103,29 @@ dependencies {
     implementation(libs.dataStoreProto)
     implementation(libs.protobufLite)
 
+    //ktor
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.cio)
+
+    implementation(libs.ktor.okhttp)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.websockets)
+
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.content.negotiation)
+
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.serialization)
+    implementation(libs.okhttp.interceptor.logging)
+    implementation(libs.okhttp)
+    //timber
+    implementation(libs.timber)
+
     //accompanist-ui-controller
     implementation(libs.accompanist.system.ui.controller)
+
+
 
 
     implementation(libs.androidx.core.ktx)

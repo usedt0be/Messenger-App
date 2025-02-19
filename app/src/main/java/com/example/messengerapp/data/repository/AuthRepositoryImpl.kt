@@ -37,6 +37,17 @@ class AuthRepositoryImpl @Inject constructor(
         Log.d("VERIFY_already_authorized", "${firebaseAuth.currentUser != null}")
     }
 
+
+    override suspend fun getAuthToken(): String?{
+        return try {
+            val token = firebaseAuth.currentUser?.getIdToken(true)?.await()?.token
+            Log.d("AuthToken", "$token")
+            token
+        } catch (e:Exception) {
+            null
+        }
+    }
+
     override fun verifyPhoneNumberWithOtp(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
         return callbackFlow {
             val onVerificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -119,6 +130,8 @@ class AuthRepositoryImpl @Inject constructor(
             close()
         }
     }
+
+
 
     override fun logOut(): Flow<ResultState<String>> {
        return callbackFlow {
