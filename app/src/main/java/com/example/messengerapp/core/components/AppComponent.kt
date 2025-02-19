@@ -6,7 +6,8 @@ import com.example.messengerapp.presentation.di.ViewModelModule
 import com.example.messengerapp.MainActivity
 import com.example.messengerapp.core.annotations.ApplicationContext
 import com.example.messengerapp.core.firebase.FirebaseModule
-import com.example.messengerapp.core.storage.StorageModule
+import com.example.messengerapp.core.network.di.NetworkModule
+import com.example.messengerapp.core.storage.di.StorageModule
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.presentation.di.ContactsModule
 import com.example.messengerapp.presentation.di.RegistrationModule
@@ -25,6 +26,7 @@ import javax.inject.Singleton
     ViewModelFactoryModule::class,
     ViewModelModule::class,
     StorageModule::class,
+    NetworkModule::class
 ])
 interface AppComponent {
     @Component.Builder

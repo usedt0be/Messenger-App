@@ -3,7 +3,7 @@ package com.example.messengerapp.data.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import com.example.messengerapp.UserProto
-import com.example.messengerapp.data.dao.ContactDao
+import com.example.messengerapp.core.storage.dao.ContactDao
 import com.example.messengerapp.data.mappers.toContact
 import com.example.messengerapp.data.mappers.toContactEntity
 import com.example.messengerapp.data.mappers.toUser

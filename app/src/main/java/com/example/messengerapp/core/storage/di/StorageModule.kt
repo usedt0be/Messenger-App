@@ -1,4 +1,4 @@
-package com.example.messengerapp.core.storage
+package com.example.messengerapp.core.storage.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -7,7 +7,8 @@ import androidx.datastore.dataStoreFile
 import androidx.room.Room
 import com.example.messengerapp.UserProto
 import com.example.messengerapp.core.annotations.ApplicationContext
-import com.example.messengerapp.data.dao.ContactDao
+import com.example.messengerapp.core.storage.MessengerDatabase
+import com.example.messengerapp.core.storage.dao.ContactDao
 import com.example.messengerapp.data.proto.UserSerializer
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,6 @@ import javax.inject.Singleton
 private const val USER_PREFERENCES_NAME = "user_prefs"
 
 @Module
-
 object StorageModule {
     @Provides
     fun provideUserDataStore(
@@ -26,7 +26,7 @@ object StorageModule {
     ): DataStore<UserProto> {
         return DataStoreFactory.create(
             serializer = userSerializer,
-            produceFile = {context.dataStoreFile(fileName = USER_PREFERENCES_NAME)},
+            produceFile = { context.dataStoreFile(fileName = USER_PREFERENCES_NAME) },
             corruptionHandler = null,
         )
     }

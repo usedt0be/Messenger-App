@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.dao
+package com.example.messengerapp.core.storage.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
