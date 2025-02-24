@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -55,6 +56,11 @@ class UserStorageRepositoryImpl @Inject constructor(
         userDataStore.updateData { user.toUserProto() }
         getUserFromDataStore()
     }
+
+    override suspend fun deleteUserFromDataStore(user: User) {
+
+    }
+
 
     override suspend fun getUserFromDataStore() {
         userDataStore.data.collectLatest { it ->

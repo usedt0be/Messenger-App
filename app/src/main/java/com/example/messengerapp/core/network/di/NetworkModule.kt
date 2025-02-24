@@ -19,8 +19,8 @@ private const val HTTP_CONNECT_TIMEOUT = 60_000L
 object NetworkModule {
 
     @Provides
-    fun provideJson() {
-        Json {
+    fun provideJson() : Json {
+        return Json {
             ignoreUnknownKeys = true
             encodeDefaults = true
 
@@ -50,5 +50,4 @@ object NetworkModule {
             .baseUrl("$BASE_URL/")
             .build()
     }
-
 }

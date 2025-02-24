@@ -1,6 +1,7 @@
 package com.example.messengerapp.domain.usecases
 
 import android.util.Log
+import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.UserStorageRepository
 import com.example.messengerapp.util.ResultState
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userStorageRepository: UserStorageRepository
+    private val userStorageRepository: UserStorageRepository,
+    private val tokensPersistence: TokensPersistence
 ) {
 
     val userFlow = userStorageRepository.userFlow
@@ -28,6 +30,10 @@ class LoginUseCase @Inject constructor(
                             userStorageRepository.getUserFromDataStore()
                             val contacts = user.contacts.filterNotNull()
                             userStorageRepository.insertAllContactsToDb(contacts = contacts)
+                            val token = authRepository.getAuthToken()
+                            token?.let {
+                                tokensPersistence.saveToken(it)
+                            }
                         }
                     }
                     is ResultState.Error -> {}

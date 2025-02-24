@@ -1,4 +1,4 @@
-package com.example.messengerapp.core.network
+package com.example.messengerapp.data.network
 
 import retrofit2.http.DELETE
 import retrofit2.http.GET

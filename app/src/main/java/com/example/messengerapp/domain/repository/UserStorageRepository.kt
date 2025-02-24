@@ -14,6 +14,8 @@ interface UserStorageRepository {
 
     suspend fun saveUserToDataStore(user: User)
 
+    suspend fun deleteUserFromDataStore(user: User)
+
     suspend fun getUserFromDataStore()
 
     fun insertAllContactsToDb(contacts:List<Contact>?)

@@ -1,6 +1,6 @@
-package com.example.messengerapp.data.dto
+package com.example.messengerapp.domain.models
 
-data class MessageDto(
+data class Message(
     val senderId: String,
     val text: String,
     val senderName: String,

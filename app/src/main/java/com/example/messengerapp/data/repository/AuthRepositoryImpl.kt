@@ -38,7 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getAuthToken(): String?{
+    override suspend fun getAuthToken(): String? {
         return try {
             val token = firebaseAuth.currentUser?.getIdToken(true)?.await()?.token
             Log.d("AuthToken", "$token")

@@ -117,6 +117,7 @@ dependencies {
     //retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.serialization)
+    //okhttp
     implementation(libs.okhttp.interceptor.logging)
     implementation(libs.okhttp)
     //timber
