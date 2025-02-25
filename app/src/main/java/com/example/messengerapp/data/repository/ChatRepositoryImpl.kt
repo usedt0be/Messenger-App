@@ -59,5 +59,10 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
 
+//    override suspend fun getChatDialog(ownId: String, userId: String) {
+//
+//        chatApi.getDialogByUserId(dialogUserId = userId)
+//    }
+
 
 }

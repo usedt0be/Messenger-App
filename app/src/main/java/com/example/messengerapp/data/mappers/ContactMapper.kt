@@ -6,7 +6,7 @@ import com.example.messengerapp.domain.models.Contact
 
 
 fun ContactDto.toContactEntity() = ContactEntity(
-    id = id ?: "",
+    id = id,
     firstName = firstName ?: "",
     secondName = secondName,
     phoneNumber = phoneNumber ?: "",

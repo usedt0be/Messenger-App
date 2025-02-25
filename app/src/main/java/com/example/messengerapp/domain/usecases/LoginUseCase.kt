@@ -1,6 +1,7 @@
 package com.example.messengerapp.domain.usecases
 
 import android.util.Log
+import com.example.messengerapp.core.entity.AuthToken
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.UserStorageRepository
@@ -32,7 +33,7 @@ class LoginUseCase @Inject constructor(
                             userStorageRepository.insertAllContactsToDb(contacts = contacts)
                             val token = authRepository.getAuthToken()
                             token?.let {
-                                tokensPersistence.saveToken(it)
+                                tokensPersistence.saveToken(AuthToken(value = it))
                             }
                         }
                     }

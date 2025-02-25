@@ -66,6 +66,7 @@ object StorageModule {
 
 
     @Provides
+    @Singleton
     fun provideContactsDao(messengerDb: MessengerDatabase): ContactDao {
         return messengerDb.contactsDao()
     }
