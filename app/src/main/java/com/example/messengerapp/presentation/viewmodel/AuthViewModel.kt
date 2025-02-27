@@ -14,6 +14,7 @@ import com.example.messengerapp.domain.usecases.LoginUseCase
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.RegistrationRepository
+import com.example.messengerapp.domain.usecases.LogOutUseCase
 import com.example.messengerapp.util.CountriesUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class AuthViewModel  @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationRepository: RegistrationRepository,
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val logOutUseCase: LogOutUseCase
 ): ViewModel()  {
 
     val user = loginUseCase.userFlow.stateIn(
@@ -92,7 +94,6 @@ class AuthViewModel  @Inject constructor(
         }
     }
 
-
     fun getCurrentUser(phoneNumber: String) {
         Log.d("user_phone (getCurrentUser)", phoneNumber)
         viewModelScope.launch(Dispatchers.IO) {
@@ -121,11 +122,15 @@ class AuthViewModel  @Inject constructor(
     }
 
      suspend fun logOut(): Flow<ResultState<String>> {
-        val logOutResult = viewModelScope.async(Dispatchers.IO) {
-            authRepository.logOut()
-        }.await()
-
-        return logOutResult
+        val logoutResult =  viewModelScope.async(Dispatchers.IO) {
+             logOutUseCase.invoke()
+         }.await()
+//        val logOutResult = viewModelScope.async(Dispatchers.IO) {
+//            authRepository.logOut()
+//        }.await()
+//
+//        return logOutResult
+         return logoutResult
     }
 
     fun findCountryCode(query: String) {

@@ -80,6 +80,7 @@ fun ChatTitle(
 fun ChatTitlePreview(){
     ChatTitle(contact = Contact(
         id = Contact.Id(value = "415"),
+        ownerId = "52443",
         firstName = "Legenda",
         secondName = "Alabai",
         photo =  "",

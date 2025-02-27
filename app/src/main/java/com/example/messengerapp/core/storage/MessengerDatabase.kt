@@ -6,7 +6,7 @@ import com.example.messengerapp.core.storage.dao.ContactDao
 import com.example.messengerapp.data.entity.ContactEntity
 
 
-@Database(version = 1, entities = [ContactEntity::class], exportSchema = false)
+@Database(version = 2, entities = [ContactEntity::class], exportSchema = false)
 abstract class MessengerDatabase(): RoomDatabase(){
     abstract fun contactsDao(): ContactDao
 }

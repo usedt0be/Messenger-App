@@ -1,5 +1,6 @@
 package com.example.messengerapp.presentation.screens.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -153,6 +154,7 @@ fun ProfileScreen(
             onConfirm = {
                 coroutineScope.launch {
                     authViewModel.logOut().collect { logOutResult ->
+//                        Log.d("logout_UI", "${logOutResult.data}")
                         when (logOutResult) {
                             is ResultState.Success -> {
                                 navController.navigate(Screens.SignUpScreen.route)

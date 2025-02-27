@@ -1,17 +1,13 @@
 package com.example.messengerapp.core.storage.token
 
-import androidx.compose.ui.input.key.Key
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.messengerapp.core.entity.AuthToken
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -19,16 +15,7 @@ private val TOKEN_KEY = stringPreferencesKey(name = "auth_token")
 
 class TokensPersistenceImpl @Inject constructor(
     private val dataStorePrefs: DataStore<Preferences>
-): TokensPersistence {
-
-//
-//    override val token: Flow<AuthToken?>
-//        get() = flow {
-//            val token = dataStorePrefs.data.first()[TOKEN_KEY]
-//            token?.let {
-//                emit(AuthToken(value = token))
-//            }
-//        }
+) : TokensPersistence {
 
 
     override fun saveToken(token: AuthToken): Flow<Unit> {
@@ -40,11 +27,10 @@ class TokensPersistenceImpl @Inject constructor(
         }
     }
 
-    override fun deleteToken(token: AuthToken): Flow<Unit> = flow {
+    override suspend fun deleteToken() {
         dataStorePrefs.edit {
-            it.remove(TOKEN_KEY)
+            it.clear()
         }
-        emit(Unit)
     }
 
     override fun getToken(): Flow<AuthToken> {
@@ -53,12 +39,10 @@ class TokensPersistenceImpl @Inject constructor(
                 AuthToken(value = it)
             }
         }
-        return  flow {
+        return flow {
             token.first()
         }
     }
-
-
 
 
 }

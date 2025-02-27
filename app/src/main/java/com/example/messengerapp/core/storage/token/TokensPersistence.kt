@@ -9,7 +9,7 @@ interface TokensPersistence {
 
     fun saveToken(token: AuthToken): Flow<Unit>
 
-    fun deleteToken(token: AuthToken): Flow<Unit>
+    suspend fun deleteToken()
 
     fun getToken(): Flow<AuthToken>
 }

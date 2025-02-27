@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserStorageRepositoryImpl @Inject constructor(
@@ -34,34 +35,6 @@ class UserStorageRepositoryImpl @Inject constructor(
     override val userFlow: Flow<User?>
         get() = _userFlow
 
-    private val _contactsFlow = MutableStateFlow<List<Contact?>>(emptyList())
-
-    override val contactsFlow: StateFlow<List<Contact?>>
-        get() = _contactsFlow.asStateFlow()
-
-
-
-    override suspend fun getContacts() {
-        contactsDao.getContacts().collect{ contactEntities ->
-            Log.d("contacts_repo_get", "$contactEntities")
-            val contacts = contactEntities.map {
-                it.toContact()
-            }
-            _contactsFlow.value = contacts
-        }
-    }
-
-    override suspend fun saveUserToDataStore(user: User) {
-        Log.d("UseSavedTODataStore", "$user")
-        userDataStore.updateData { user.toUserProto() }
-        getUserFromDataStore()
-    }
-
-    override suspend fun deleteUserFromDataStore(user: User) {
-
-    }
-
-
     override suspend fun getUserFromDataStore() {
         userDataStore.data.collectLatest { it ->
             val user = it.toUser()
@@ -71,26 +44,20 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun insertAllContactsToDb(contacts:List<Contact>?) {
-        contacts?.map { contactDto ->
-            contactDto.toContactEntity()
-        }?.let {
-            contactsDao.upsertAllContactsToDb(it)
+    override suspend fun saveUserToDataStore(user: User) {
+        Log.d("UseSavedTODataStore", "$user")
+        userDataStore.updateData { user.toUserProto() }
+        getUserFromDataStore()
+    }
+
+    override suspend fun deleteUserFromDataStore() {
+        Timber.tag("user_deleteing").d("Invoked")
+
+        Log.d("user_delete", "invoked")
+        userDataStore.updateData {
+            it?.defaultInstanceForType
         }
     }
 
-
-    override fun insertContactToDb(contact: Contact) {
-        contactsDao.upsertUser(contact = contact.toContactEntity())
-    }
-
-    override fun deleteContact(contact: Contact) {
-        contactsDao.deleteContact(contact = contact.toContactEntity())
-    }
-
-    override suspend fun getContactById(id: String): Contact? {
-        val contact = contactsDao.getContactById(id)
-        Log.d("contact_REPOSITORY", "$contact")
-        return contact?.toContact()
-    }
+    
 }

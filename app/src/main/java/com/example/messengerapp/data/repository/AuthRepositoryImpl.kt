@@ -136,7 +136,7 @@ class AuthRepositoryImpl @Inject constructor(
     override fun logOut(): Flow<ResultState<String>> {
        return callbackFlow {
            firebaseAuth.signOut()
-           trySend(ResultState.Success("Signed Out"))
+           trySend(ResultState.Success(data ="Signed Out"))
            awaitClose {
                close()
            }

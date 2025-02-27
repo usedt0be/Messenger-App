@@ -11,7 +11,6 @@ import javax.inject.Inject
 
 class AddContactUseCase @Inject constructor(
     private val contactsRepository: ContactsRepository,
-    private val userStorageRepository: UserStorageRepository
 ) {
     val error = MutableSharedFlow<String?>()
 
@@ -24,7 +23,7 @@ class AddContactUseCase @Inject constructor(
             when(result) {
                 is ResultState.Success -> {
                     result.data?.let { contact ->
-                        userStorageRepository.insertContactToDb(contact = contact)
+                        contactsRepository.insertContactToDb(contact = contact)
                     }
                 }
                 is ResultState.Loading -> {
@@ -35,6 +34,5 @@ class AddContactUseCase @Inject constructor(
                 }
             }
         }
-
     }
 }
