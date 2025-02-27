@@ -10,6 +10,5 @@ interface ChatRepository {
     suspend fun sendMessage(text: String)
 
 
-    suspend fun getChatDialog(ownId: String, userId: String)
-
+    suspend fun getChatDialog(userId: String)
 }

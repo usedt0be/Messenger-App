@@ -2,6 +2,8 @@ package com.example.messengerapp.core.network.di
 
 import com.example.messengerapp.core.network.interceptor.AuthHeaderInterceptor
 import com.example.messengerapp.core.storage.token.TokensPersistence
+import com.example.messengerapp.data.network.ChatApiService
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.flow.firstOrNull
@@ -54,9 +56,16 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(json: Json, httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .addConverterFactory(json.asConverterFactory("application.json, charset=UTF8".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(httpClient)
             .baseUrl("$BASE_URL/")
             .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun bindChatApiService(retrofit: Retrofit):ChatApiService {
+        return retrofit.create(ChatApiService::class.java)
     }
 }

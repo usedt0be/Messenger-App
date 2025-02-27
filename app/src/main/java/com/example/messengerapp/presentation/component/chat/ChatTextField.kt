@@ -1,20 +1,14 @@
-package com.example.messengerapp.presentation.component
+package com.example.messengerapp.presentation.component.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -30,8 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
-import kotlin.math.max
-import kotlin.math.min
 
 
 @Composable
@@ -43,9 +35,7 @@ fun ChatTextField(
 ){
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = AppTheme.colors.backgroundSecondary),
+        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -54,25 +44,27 @@ fun ChatTextField(
             onValueChange = { messageText ->
                 onMessageTextChanged(messageText)
             },
+            textStyle = AppTheme.typography.body2,
             placeholder = {
                 Text(
                     text = "Write your message",
-                    style = AppTheme.typography.caption1,
+                    style = AppTheme.typography.body2,
                     color = AppTheme.colors.textTertiary
                 )
             },
+            shape = RoundedCornerShape(percent = 50),
             modifier = Modifier.fillMaxWidth(0.82f)
                 .heightIn(min = 48.dp, max = 124.dp)
-                .padding(start = 16.dp),
+                .padding(start = 16.dp, bottom = 8.dp),
 
             colors = TextFieldDefaults.colors(
                 focusedTextColor = AppTheme.colors.textPrimary,
                 focusedIndicatorColor = Color.Transparent,
-                focusedContainerColor = AppTheme.colors.backgroundSecondary,
+                focusedContainerColor = AppTheme.colors.backgroundPrimary,
                 cursorColor = AppTheme.colors.onSuccess,
-                unfocusedTextColor = AppTheme.colors.textPrimary,
+                unfocusedTextColor = AppTheme.colors.textTertiary,
                 unfocusedIndicatorColor = Color.Transparent,
-                unfocusedContainerColor = AppTheme.colors.backgroundSecondary,
+                unfocusedContainerColor = AppTheme.colors.backgroundPrimary,
             )
         )
 
@@ -82,7 +74,7 @@ fun ChatTextField(
             },
             modifier = Modifier
                 .align(Alignment.Bottom)
-                .padding(bottom = 4.dp, end = 8.dp)
+                .padding(bottom = 8.dp, end = 16.dp)
                 .background(
                     shape = CircleShape,
                     color = AppTheme.colors.textButton

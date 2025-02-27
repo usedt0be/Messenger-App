@@ -1,5 +1,6 @@
 package com.example.messengerapp.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -8,11 +9,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.presentation.screens.auth.AuthScreen
 import com.example.messengerapp.presentation.screens.auth.OtpScreen
+import com.example.messengerapp.presentation.screens.chat.ChatScreen
 import com.example.messengerapp.presentation.screens.chat.ChatsListScreen
 import com.example.messengerapp.presentation.screens.contacts.ContactsListScreen
 import com.example.messengerapp.presentation.screens.profile.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
+import com.example.messengerapp.presentation.viewmodel.ChatViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -84,14 +87,31 @@ fun NavigationGraph(
             ContactsListScreen(
                 navController = navController,
                 contactsViewModel = contactsViewModel,
-                onClickContact = {
-                }
+                onClickContact = { contactId ->
+                    navController.navigate(route = Screens.DialogChatScreen.route + "/${contactId.value}")
+                },
             )
         }
 
-        composable(route = "contacts/{contactId}") { backStackEntry ->
-            val contactId = backStackEntry.arguments?.getString("contactId")
 
+
+        composable(route = Screens.DialogChatScreen.route + "/{id}") { backStackEntry ->
+            val chatViewModel: ChatViewModel = viewModel(factory = factory)
+            val contactId = backStackEntry.arguments?.getString("id") ?: "000"
+            Log.d("contactId_dialog", "$contactId")
+            ChatScreen(
+                contactId = contactId,
+                chatViewModel = chatViewModel,
+                onClickBackToChats = {
+                    navController.popBackStack()
+                },
+                onSendMessageClick = {}
+            )
         }
+
+//        composable(route = "contacts/{contactId}") { backStackEntry ->
+//            val contactId = backStackEntry.arguments?.getString("contactId")
+//
+//        }
     }
 }

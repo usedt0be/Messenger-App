@@ -95,10 +95,6 @@ okhttp-interceptor-logging = { module = "com.squareup.okhttp3:logging-intercepto
 
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-
-
-
-
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
 phoneNumber = { group = "com.googlecode.libphonenumber", name = "libphonenumber", version.ref = "phoneNumber" }

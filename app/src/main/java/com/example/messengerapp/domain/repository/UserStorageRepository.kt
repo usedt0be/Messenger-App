@@ -20,11 +20,9 @@ interface UserStorageRepository {
 
     fun insertAllContactsToDb(contacts:List<Contact>?)
 
-    suspend fun getContactsFromDb()
-
     fun insertContactToDb(contact: Contact)
 
     fun deleteContact(contact: Contact)
 
-    fun getContactById(id: String): Contact
+    suspend fun getContactById(id: String): Contact?
 }

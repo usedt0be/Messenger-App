@@ -8,17 +8,15 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
-    private val chatApi: ChatApiService
+    private val chatApi: ChatApiService,
 ):ChatRepository{
     private var chatsSocketSession: WebSocketSession? = null
     private var messagesSocketSession: WebSocketSession? = null
@@ -33,7 +31,6 @@ class ChatRepositoryImpl @Inject constructor(
                 ?.map { it ->
                     val stringFrame = it.readText()
                     val message = Json.decodeFromString<MessageDto>(stringFrame)
-
                 }
             }
         } catch (e: Exception) {
@@ -54,15 +51,12 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatDialog(ownId: String, userId: String) {
-        TODO("Not yet implemented")
+    override suspend fun getChatDialog(userId: String) {
+        chatApi.getDialogByUserId(dialogUserId = userId)
     }
 
 
-//    override suspend fun getChatDialog(ownId: String, userId: String) {
-//
-//        chatApi.getDialogByUserId(dialogUserId = userId)
-//    }
+
 
 
 }

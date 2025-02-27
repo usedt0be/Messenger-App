@@ -3,9 +3,9 @@ package com.example.messengerapp.domain.models
 data class Contact(
     val id: Id,
     val firstName: String,
-    val secondName: String? = null,
+    val secondName: String?,
     val phoneNumber: String,
-    val photo: String? = null
+    val photo: String?
 ) {
     @JvmInline
     value class Id(val value: String)

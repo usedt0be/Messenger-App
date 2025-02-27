@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-//    alias(libs.plugins.kapt)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
     id("com.google.gms.google-services")

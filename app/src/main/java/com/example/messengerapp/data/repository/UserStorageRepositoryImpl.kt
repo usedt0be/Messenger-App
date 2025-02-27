@@ -79,13 +79,6 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getContactsFromDb() {
-        contactsDao.getContacts().collect { it ->
-            val contacts = it.map { it.toContact() }
-//            _contactsFlow.value = contacts
-            Log.d("contactsREPO", "$contacts")
-        }
-    }
 
     override fun insertContactToDb(contact: Contact) {
         contactsDao.upsertUser(contact = contact.toContactEntity())
@@ -95,7 +88,9 @@ class UserStorageRepositoryImpl @Inject constructor(
         contactsDao.deleteContact(contact = contact.toContactEntity())
     }
 
-    override fun getContactById(id: String): Contact {
-        return contactsDao.getContactById(id).toContact()
+    override suspend fun getContactById(id: String): Contact? {
+        val contact = contactsDao.getContactById(id)
+        Log.d("contact_REPOSITORY", "$contact")
+        return contact?.toContact()
     }
 }

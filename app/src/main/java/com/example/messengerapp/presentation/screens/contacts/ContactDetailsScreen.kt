@@ -54,7 +54,8 @@ fun ContactsScreenPreview() {
             id = Contact.Id(value = "512"),
             firstName = "Alexey",
             secondName = "Savage",
-            phoneNumber = "+7800773535"
+            phoneNumber = "+7800773535",
+            photo = ""
         )
     )
 }

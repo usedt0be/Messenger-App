@@ -25,16 +25,17 @@ class LoginUseCase @Inject constructor(
             authRepository.getCurrentUser(phoneNumber).collect { resultState ->
                 when(resultState) {
                     is ResultState.Success -> {
+                        val token = authRepository.getAuthToken()
+                        Log.d("userUseCase_token", "$token")
+                        token?.let {
+                            tokensPersistence.saveToken(AuthToken(value = it))
+                        }
                         resultState.data?.let { user ->
                             Log.d("userUseCaseInvoked", "$user")
                             userStorageRepository.saveUserToDataStore(user)
                             userStorageRepository.getUserFromDataStore()
                             val contacts = user.contacts.filterNotNull()
                             userStorageRepository.insertAllContactsToDb(contacts = contacts)
-                            val token = authRepository.getAuthToken()
-                            token?.let {
-                                tokensPersistence.saveToken(AuthToken(value = it))
-                            }
                         }
                     }
                     is ResultState.Error -> {}
