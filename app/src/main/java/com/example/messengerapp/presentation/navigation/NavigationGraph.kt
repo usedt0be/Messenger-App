@@ -43,7 +43,6 @@ fun NavigationGraph(
             route = Screens.SignUpScreen.route
         ) {
             AuthScreen(
-//                activity = activity,
                 navController = navController,
                 authViewModel = authViewModel,
             )
