@@ -17,14 +17,12 @@ class GetCurrentUserUseCase @Inject constructor(
         return flow { authRepository.getCurrentUser(phoneNumber)
             .collect { currentUser ->
                 when (currentUser) {
-                    is ResultState.Loading -> {
-                        Log.d("user_info", "Loading...")
-
-                    }
+                    is ResultState.Loading -> {}
                     is ResultState.Success -> {
                         emit(currentUser.data)
                         Log.d("user_info", "${currentUser.data}")
                     }
+
                     is ResultState.Error -> {}
                 }
             }

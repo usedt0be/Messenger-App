@@ -1,5 +1,6 @@
 package com.example.messengerapp.core.network.interceptor
 
+import android.util.Log
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -16,11 +17,12 @@ internal class AuthHeaderInterceptor @Inject constructor(
         val request = chain.request()
 
         val token = runBlocking { tokensPersistence.getToken().firstOrNull() }
+        Log.d("AuthToken_INTERCEPTOR", "$token")
 
         val newRequest = request.newBuilder()
             .run {
                 removeHeader(name = ACCESS_TOKEN_HEADER)
-                addHeader(name = ACCESS_TOKEN_HEADER, value = "Bearer $token")
+                addHeader(name = ACCESS_TOKEN_HEADER, value = "Bearer ${token?.value}")
             }.build()
 
         return chain.proceed(newRequest)

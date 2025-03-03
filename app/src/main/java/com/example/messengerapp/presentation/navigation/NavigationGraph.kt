@@ -30,6 +30,8 @@ fun NavigationGraph(
 
     val currentUser = firebaseAuth.currentUser
 
+    Log.d("AuthUser_StartApp", "${currentUser?.uid}")
+
     NavHost(
         navController = navController,
         startDestination = if(currentUser != null) {

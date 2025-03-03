@@ -3,13 +3,9 @@ package com.example.messengerapp.core.network.di
 import com.example.messengerapp.core.network.interceptor.AuthHeaderInterceptor
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.network.ChatApiService
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -1,7 +1,10 @@
 package com.example.messengerapp.data.repository
 
+import com.example.messengerapp.data.dto.ChatDto
 import com.example.messengerapp.data.dto.MessageDto
+import com.example.messengerapp.data.mappers.toChat
 import com.example.messengerapp.data.network.ChatApiService
+import com.example.messengerapp.domain.models.Chat
 import com.example.messengerapp.domain.models.Message
 import com.example.messengerapp.domain.repository.ChatRepository
 import io.ktor.websocket.Frame
@@ -51,12 +54,8 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatDialog(userId: String) {
-        chatApi.getDialogByUserId(dialogUserId = userId)
+    override suspend fun getChatDialog(userId: String): Chat {
+        return chatApi.getDialogChat(dialogUserId = userId).toChat()
     }
-
-
-
-
 
 }

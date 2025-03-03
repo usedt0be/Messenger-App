@@ -33,16 +33,12 @@ class TokensPersistenceImpl @Inject constructor(
         }
     }
 
-    override fun getToken(): Flow<AuthToken> {
-        val token = dataStorePrefs.data.map { prefs ->
-            prefs[TOKEN_KEY]?.let {
-                AuthToken(value = it)
-            }
-        }
-        return flow {
-            token.first()
+    override fun getToken(): Flow<AuthToken?> = dataStorePrefs.data.map { token ->
+        token[TOKEN_KEY]?.let {
+            AuthToken(value = it)
         }
     }
+
 
 
 }

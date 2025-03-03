@@ -18,6 +18,4 @@ class GetContactsUseCase @Inject constructor(
     suspend operator fun invoke() {
         contactsRepository.getContacts()
     }
-
-
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -92,6 +93,13 @@ fun ContactsListScreen(
                 .background(color = AppTheme.colors.backgroundPrimary)
                 .padding(paddingValues)
         ) {
+
+            Button(onClick = {
+                contactsViewModel.getToken()
+            }) {
+                Text("Token")
+            }
+
             if (contacts != null) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -103,6 +111,7 @@ fun ContactsListScreen(
                             modifier = Modifier,
                             onClickContact = { contactId ->
                                 onClickContact(contactId)
+                                contactsViewModel.getChatDialogByContactId(contactId = contactId.value)
                             },
                             onClickDelete = contactsViewModel::deleteContact
                         )

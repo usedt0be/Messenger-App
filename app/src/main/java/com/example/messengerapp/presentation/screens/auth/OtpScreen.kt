@@ -71,12 +71,12 @@ fun OtpScreen(
                         when(it) {
                             is ResultState.Loading -> {
                                 if(authViewModel.userExists.value == true) {
-                                    Log.d("user_otp", "INVOKED")
-                                    authViewModel.signIn()
+
                                 }
                             }
                             is ResultState.Success -> {
                                 if(authViewModel.userExists.value == true) {
+                                    authViewModel.signIn()
                                     withContext(Dispatchers.Main) {
                                         navController.navigate(Screens.BottomBarScreens.ProfileScreen.route)
                                     }

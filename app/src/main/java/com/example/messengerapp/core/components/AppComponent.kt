@@ -30,6 +30,7 @@ import javax.inject.Singleton
     NetworkModule::class,
     ChatModule::class
 ])
+
 interface AppComponent {
     @Component.Builder
     interface Builder {

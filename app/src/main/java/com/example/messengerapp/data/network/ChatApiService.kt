@@ -10,9 +10,9 @@ import retrofit2.http.Path
 
 interface ChatApiService {
 
-    @POST("chats/dialog/{userId}")
-    suspend fun getDialogByUserId(
-        @Path("userID") dialogUserId: String
+    @GET("chats/dialog/{userId}")  //gets chat by CONTACT_id
+    suspend fun getDialogChat(
+        @Path("userId") dialogUserId: String
     ): ChatDto
 
     @GET("chats/{id}/messages")
