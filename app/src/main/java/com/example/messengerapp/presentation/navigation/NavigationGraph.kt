@@ -1,6 +1,5 @@
 package com.example.messengerapp.presentation.navigation
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.messengerapp.core.viewmodel.daggerViewModel
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.screens.auth.AuthScreen
 import com.example.messengerapp.presentation.screens.auth.OtpScreen
@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 fun NavigationGraph(
     firebaseAuth: FirebaseAuth,
     factory: ViewModelProvider.Factory,
-    authViewModel: AuthViewModel = viewModel(factory = factory)
+    authViewModel: AuthViewModel = viewModel(factory = factory),
 ) {
     val navController = rememberNavController()
 
@@ -103,13 +103,18 @@ fun NavigationGraph(
 
 
         composable(
-            route = Screens.DialogChatScreen.route + "/{id}"
+            route = Screens.DialogChatScreen.route + "/{chat_participant_id}",
+            arguments = listOf(
+                navArgument("chat_participant_id") {
+                    type = NavType.StringType
+                }
+            )
         ) { backStackEntry ->
-            val chatViewModel: ChatViewModel = viewModel(factory = factory)
-            val contactId = backStackEntry.arguments?.getString("id") ?: "000"
-            Log.d("contactId_dialog", "$contactId")
+            val chatParticipantId = backStackEntry.arguments?.getString("chat_participant_id") ?: "000"
+            val chatViewModel: ChatViewModel = daggerViewModel()
+            Log.d("contactId_dialog", "$chatParticipantId")
             ChatScreen(
-                contactId = contactId,
+                contactId = chatParticipantId,
                 chatViewModel = chatViewModel,
                 onClickBackToChats = {
                     navController.popBackStack()

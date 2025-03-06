@@ -9,6 +9,7 @@ import com.example.messengerapp.core.firebase.FirebaseModule
 import com.example.messengerapp.core.network.di.NetworkModule
 import com.example.messengerapp.core.storage.di.StorageModule
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
+import com.example.messengerapp.core.viewmodel.factory.StateHandleViewModelFactory
 import com.example.messengerapp.presentation.di.ChatModule
 import com.example.messengerapp.presentation.di.ContactsModule
 import com.example.messengerapp.presentation.di.RegistrationModule
@@ -42,5 +43,8 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+
     fun inject(activity: MainActivity)
+
+    fun getViewModelFactory(): StateHandleViewModelFactory
 }
