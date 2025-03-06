@@ -6,7 +6,7 @@ data class Contact(
     val firstName: String,
     val secondName: String?,
     val phoneNumber: String,
-    val photo: String?
+    val photo: String
 ) {
     @JvmInline
     value class Id(val value: String)

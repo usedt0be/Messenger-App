@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.screens.contacts
+package com.example.messengerapp.presentation.component.contacts
 
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem

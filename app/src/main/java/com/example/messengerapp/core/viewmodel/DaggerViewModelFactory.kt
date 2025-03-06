@@ -20,3 +20,4 @@ class DaggerViewModelFactory @Inject constructor(
         }
     }
 }
+

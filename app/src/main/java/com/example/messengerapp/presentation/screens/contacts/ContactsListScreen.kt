@@ -1,17 +1,17 @@
 package com.example.messengerapp.presentation.screens.contacts
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,8 +37,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.domain.models.Contact
-import com.example.messengerapp.presentation.component.ContactsBottomSheet
+import com.example.messengerapp.presentation.component.contacts.ContactsBottomSheet
 import com.example.messengerapp.presentation.component.SnackBar
+import com.example.messengerapp.presentation.component.contacts.ContactsListItem
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +95,9 @@ fun ContactsListScreen(
                 .padding(paddingValues)
         ) {
 
-            Button(onClick = {
+            Button(
+                modifier = Modifier.padding(bottom = 20.dp),
+                onClick = {
                 contactsViewModel.getToken()
             }) {
                 Text("Token")
@@ -102,10 +105,9 @@ fun ContactsListScreen(
 
             if (contacts != null) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    items(contacts) { contact ->
+                    itemsIndexed(contacts) { index: Int, contact ->
                         ContactsListItem(
                             contact = contact!!,
                             modifier = Modifier,
@@ -115,6 +117,12 @@ fun ContactsListScreen(
                             },
                             onClickDelete = contactsViewModel::deleteContact
                         )
+                        if(index != contacts.lastIndex) {
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                color = AppTheme.colors.textTertiary
+                            )
+                        }
                     }
                 }
             } else {

@@ -79,7 +79,6 @@ class ContactsViewModel @Inject constructor(
         viewModelScope.launch {
             val token = tokensPersistence.getToken().firstOrNull()
             Log.d("AuthToken_VM", "$token")
-
         }
     }
 }

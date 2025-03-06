@@ -22,7 +22,7 @@ fun ContactDto.toContact() = Contact(
     firstName = firstName   ?:"",
     secondName = secondName ?: "",
     phoneNumber = phoneNumber ?: "",
-    photo = photoUrl
+    photo = photoUrl ?:"",
 )
 
 

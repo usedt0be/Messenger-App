@@ -3,12 +3,14 @@ package com.example.messengerapp.data.repository
 import com.example.messengerapp.data.dto.ChatDto
 import com.example.messengerapp.data.dto.MessageDto
 import com.example.messengerapp.data.mappers.toChat
+import com.example.messengerapp.data.mappers.toMessage
 import com.example.messengerapp.data.network.ChatApiService
 import com.example.messengerapp.domain.models.Chat
 import com.example.messengerapp.domain.models.Message
 import com.example.messengerapp.domain.repository.ChatRepository
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
+import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -28,12 +30,12 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun observeChat(chatId: String): Flow<Message>{
         return try {
             flow {
-            messagesSocketSession?.incoming
+                messagesSocketSession?.incoming
                 ?.receiveAsFlow()
                 ?.filterIsInstance<Frame.Text>()
                 ?.map { it ->
                     val stringFrame = it.readText()
-                    val message = Json.decodeFromString<MessageDto>(stringFrame)
+                    val message = Json.decodeFromString<MessageDto>(stringFrame).toMessage()
                 }
             }
         } catch (e: Exception) {
@@ -55,7 +57,11 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getChatDialog(userId: String): Chat {
-        return chatApi.getDialogChat(dialogUserId = userId).toChat()
+        return chatApi.getDialogChat(dialogUserId = userId).data.toChat()
     }
 
+    override suspend fun closeMessageSessionConnection() {
+        messagesSocketSession?.close()
+        messagesSocketSession = null
+    }
 }

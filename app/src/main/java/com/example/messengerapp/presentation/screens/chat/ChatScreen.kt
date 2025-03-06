@@ -26,23 +26,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.chat.ChatTextField
 import com.example.messengerapp.presentation.component.chat.ChatTitle
 import com.example.messengerapp.presentation.viewmodel.ChatViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun ChatScreen(
     contactId: String,
-    chatViewModel: ChatViewModel = viewModel(),
+    chatViewModel: ChatViewModel ,
+    onTopBarClick: (Contact.Id) -> Unit,
     onClickBackToChats:() -> Unit,
     onSendMessageClick:() -> Unit
 ) {
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        Log.d("chat_digalog_effect", "Invoked")
-        scope.launch {
+        Log.d("chat_dialog_effect", "Invoked")
+        scope.launch(Dispatchers.IO) {
             chatViewModel.getContact(contactId)
         }
     }
@@ -51,7 +54,6 @@ fun ChatScreen(
 
     val contact = chatViewModel.contact.collectAsState().value
     Log.d("chat_dialog_contact", "$contact")
-
     Scaffold(
         topBar = {
             contact?.let {
@@ -60,8 +62,12 @@ fun ChatScreen(
                     onClickBackToChats = {
                         onClickBackToChats()
                     },
-                    modifier = Modifier.windowInsetsPadding(insets = WindowInsets.statusBars)
-
+                    modifier = Modifier.windowInsetsPadding(insets = WindowInsets.statusBars),
+                    onChatTitleClick = {
+                        onTopBarClick(
+                            Contact.Id(value = contactId)
+                        )
+                    }
                 )
             }
         },
@@ -95,9 +101,6 @@ fun ChatScreen(
             ) {
 
             }
-
-
-
         }
     }
 }

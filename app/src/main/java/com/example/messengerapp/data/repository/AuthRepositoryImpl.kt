@@ -42,7 +42,7 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val user = firebaseAuth.currentUser
             Log.d("AuthTOken_User", "${user.toString()}")
-            val token = firebaseAuth.currentUser?.getIdToken(false)?.await()?.token
+            val token = firebaseAuth.currentUser?.getIdToken(true)?.await()?.token
             Log.d("AuthToken", "$token")
             token
         } catch (e:Exception) {

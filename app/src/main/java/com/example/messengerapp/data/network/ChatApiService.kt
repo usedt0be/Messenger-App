@@ -2,10 +2,10 @@ package com.example.messengerapp.data.network
 
 import com.example.messengerapp.data.dto.ChatDto
 import com.example.messengerapp.data.dto.MessageDto
+import com.example.messengerapp.data.dto.ResponseMeta
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ChatApiService {
@@ -13,13 +13,13 @@ interface ChatApiService {
     @GET("chats/dialog/{userId}")  //gets chat by CONTACT_id
     suspend fun getDialogChat(
         @Path("userId") dialogUserId: String
-    ): ChatDto
+    ): ResponseMeta<ChatDto>
 
     @GET("chats/{id}/messages")
     suspend fun getMessagesForChat(
         @Header("Authorization") token: String,
         @Path("id") chatId: String
-    ): List<MessageDto>
+    ): ResponseMeta<List<MessageDto>>
 
 
     @DELETE("chats/{id}")

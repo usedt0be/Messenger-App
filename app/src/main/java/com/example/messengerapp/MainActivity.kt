@@ -24,11 +24,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         (applicationContext as MessengerApp).appComponent.inject(this)
         setContent {
-            AppTheme{
-                    NavigationGraph(
-                        factory = factory,
-                        firebaseAuth = firebaseAuth
-                    )
+            AppTheme {
+                NavigationGraph(
+                    factory = factory,
+                    firebaseAuth = firebaseAuth
+                )
             }
         }
     }

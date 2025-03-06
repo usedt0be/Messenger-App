@@ -2,6 +2,7 @@ package com.example.messengerapp.presentation.component.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -30,13 +31,17 @@ import com.example.messengerapp.domain.models.Contact
 fun ChatTitle(
     contact: Contact,
     modifier: Modifier = Modifier,
-    onClickBackToChats:() -> Unit
+    onClickBackToChats:() -> Unit,
+    onChatTitleClick: () -> Unit
 ){
 
     Row(
         modifier = modifier.fillMaxWidth()
             .background(color = AppTheme.colors.backgroundSecondary)
-            .heightIn(min = 64.dp),
+            .heightIn(min = 64.dp)
+            .clickable {
+                onChatTitleClick()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
@@ -86,7 +91,7 @@ fun ChatTitlePreview(){
         photo =  "",
         phoneNumber = "+57262"
     ),
-        onClickBackToChats = {}
-
+        onClickBackToChats = {},
+        onChatTitleClick = {}
     )
 }

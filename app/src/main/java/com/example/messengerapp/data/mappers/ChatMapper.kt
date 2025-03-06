@@ -17,7 +17,6 @@ fun ChatDto.toChat(): Chat =
 fun MessageDto.toMessage(): Message =
     Message(
         senderId = senderId,
-        senderName = senderName,
         text = text,
         time = time
     )

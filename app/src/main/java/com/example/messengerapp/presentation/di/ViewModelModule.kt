@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.messengerapp.core.viewmodel.ViewModelKey
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.presentation.viewmodel.ChatViewModel
+import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import dagger.Binds
 import dagger.Module
@@ -29,5 +30,11 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(ChatViewModel::class)
     fun bindChatViewModel(chatViewModel: ChatViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ContactDetailsViewModel::class)
+    fun bindContactDetailsViewModel(contactDetailsViewModel: ContactDetailsViewModel): ViewModel
 }
 
