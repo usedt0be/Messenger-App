@@ -15,7 +15,6 @@ internal class AuthHeaderInterceptor @Inject constructor(
 ): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-
         val token = runBlocking { tokensPersistence.getToken().firstOrNull() }
         Log.d("AuthToken_INTERCEPTOR", "$token")
 

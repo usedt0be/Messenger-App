@@ -68,13 +68,6 @@ class ContactsViewModel @Inject constructor(
         }
     }
 
-    fun getChatDialogByContactId(contactId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val chat = getChatDialogByContactIdUseCase.invoke(userId = contactId)
-            Log.d("chat_CONTACTS_VM", "$chat")
-        }
-    }
-
     fun getToken(){
         viewModelScope.launch {
             val token = tokensPersistence.getToken().firstOrNull()

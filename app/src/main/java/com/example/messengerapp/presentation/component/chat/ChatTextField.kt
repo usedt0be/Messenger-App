@@ -30,7 +30,7 @@ import com.example.messengerapp.core.theme.AppTheme
 fun ChatTextField(
     messageText: String,
     onMessageTextChanged:(String) -> Unit,
-    onSendMessageClick:() -> Unit,
+    onSendMessageClick:(String) -> Unit,
     modifier: Modifier = Modifier
 ){
 
@@ -70,7 +70,7 @@ fun ChatTextField(
 
         IconButton(
             onClick = {
-                onSendMessageClick()
+                onSendMessageClick(messageText)
             },
             modifier = Modifier
                 .align(Alignment.Bottom)

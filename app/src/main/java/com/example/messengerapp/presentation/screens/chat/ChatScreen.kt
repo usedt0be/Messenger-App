@@ -24,12 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.chat.ChatTextField
 import com.example.messengerapp.presentation.component.chat.ChatTitle
-import com.example.messengerapp.presentation.viewmodel.ChatViewModel
+import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -37,7 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatScreen(
     contactId: String,
-    chatViewModel: ChatViewModel ,
+    chatViewModel: DialogChatViewModel,
     onTopBarClick: (Contact.Id) -> Unit,
     onClickBackToChats:() -> Unit,
     onSendMessageClick:() -> Unit
@@ -50,6 +49,7 @@ fun ChatScreen(
         }
     }
     val scrollState = rememberLazyListState()
+
     var messageText by remember { mutableStateOf("") }
 
     val contact = chatViewModel.contact.collectAsState().value
@@ -78,8 +78,7 @@ fun ChatScreen(
                     messageText = message
                 },
                 onSendMessageClick = {
-
-
+                    chatViewModel.sendMessage(text = messageText)
                 },
                 modifier = Modifier.fillMaxWidth()
                     .background(color = AppTheme.colors.backgroundSecondary)

@@ -10,4 +10,5 @@ import dagger.Module
 interface ChatModule {
     @Binds
     fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
+
 }

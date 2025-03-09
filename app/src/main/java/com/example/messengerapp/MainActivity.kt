@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
-
         setContent {
             AppTheme {
                 ViewModelFactoryProvider(appComponent.getViewModelFactory()) {

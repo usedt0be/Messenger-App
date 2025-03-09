@@ -3,11 +3,11 @@ package com.example.messengerapp.domain.usecases
 import com.example.messengerapp.domain.repository.ChatRepository
 import javax.inject.Inject
 
-class SendMessageUseCase @Inject constructor(
+
+class GetChatsUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-
-    suspend operator fun invoke(text: String){
-        chatRepository.sendMessage(text = text)
+    suspend operator fun invoke(userId: String){
+        chatRepository.getChatsForUser(userId)
     }
 }

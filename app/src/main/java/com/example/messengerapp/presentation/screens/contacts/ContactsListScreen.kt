@@ -113,7 +113,6 @@ fun ContactsListScreen(
                             modifier = Modifier,
                             onClickContact = { contactId ->
                                 onClickContact(contactId)
-                                contactsViewModel.getChatDialogByContactId(contactId = contactId.value)
                             },
                             onClickDelete = contactsViewModel::deleteContact
                         )

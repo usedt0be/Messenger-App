@@ -5,6 +5,12 @@ import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.network.ChatApiService
 import dagger.Module
 import dagger.Provides
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -56,6 +62,25 @@ object NetworkModule {
             .client(httpClient)
             .baseUrl("$BASE_URL/")
             .build()
+    }
+
+
+
+    @Provides
+    @Singleton
+    fun provideHttpClient(): HttpClient {
+        return HttpClient(CIO) {
+            install(Logging)
+            install(WebSockets)
+            install(ContentNegotiation) {
+                json(
+                    Json{
+                        prettyPrint = true
+                        isLenient = true
+                    }
+                )
+            }
+        }
     }
 
 

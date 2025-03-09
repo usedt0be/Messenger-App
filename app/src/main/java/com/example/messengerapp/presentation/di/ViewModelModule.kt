@@ -5,12 +5,11 @@ import com.example.messengerapp.core.viewmodel.ViewModelKey
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.core.viewmodel.factory.ViewModelAssistedFactory
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
-import com.example.messengerapp.presentation.viewmodel.ChatViewModel
+import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import dagger.Binds
 import dagger.Module
-import dagger.assisted.AssistedFactory
 import dagger.multibindings.IntoMap
 
 
@@ -33,8 +32,8 @@ interface ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ChatViewModel::class)
-    fun bindChatViewModelFactory(factory: ChatViewModel.Factory): ViewModelAssistedFactory<*>
+    @ViewModelKey(DialogChatViewModel::class)
+    fun bindChatViewModelFactory(factory: DialogChatViewModel.Factory): ViewModelAssistedFactory<*>
 
 
 

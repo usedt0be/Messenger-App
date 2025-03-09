@@ -9,6 +9,8 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 
 interface ChatApiService {
+    @GET("/chats")
+    suspend fun getChatsForUser(): ResponseMeta<List<ChatDto>>
 
     @GET("chats/dialog/{userId}")  //gets chat by CONTACT_id
     suspend fun getDialogChat(
@@ -27,5 +29,10 @@ interface ChatApiService {
         @Header("Authorization") token: String,
         @Path("id") chatId: String
     )
+
+
+    companion object {
+        val BASE_SOCKET_URL = "ws://10.0.2.2:8080"
+    }
 
 }
