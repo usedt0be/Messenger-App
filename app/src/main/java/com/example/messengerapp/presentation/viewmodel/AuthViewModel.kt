@@ -14,9 +14,9 @@ import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.RegistrationRepository
 import com.example.messengerapp.domain.usecases.GetCurrentUserUseCase
-import com.example.messengerapp.domain.usecases.LogOutUseCase
-import com.example.messengerapp.domain.usecases.LoginUseCase
-import com.example.messengerapp.util.CountriesUtils
+import com.example.messengerapp.domain.usecases.auth.LogOutUseCase
+import com.example.messengerapp.domain.usecases.auth.LoginUseCase
+import com.example.messengerapp.util.AppUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -47,7 +47,7 @@ class AuthViewModel @Inject constructor(
 
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
-    private val rootCountryList = CountriesUtils.countriesList
+    private val rootCountryList = AppUtils.countriesList
     val countriesDataList : MutableState<List<CountryData>> = mutableStateOf(rootCountryList)
 
     private val _currentCountry = MutableStateFlow<CountryData?>(null)
@@ -122,11 +122,6 @@ class AuthViewModel @Inject constructor(
         val logoutResult =  viewModelScope.async(Dispatchers.IO) {
              logOutUseCase.invoke()
          }.await()
-//        val logOutResult = viewModelScope.async(Dispatchers.IO) {
-//            authRepository.logOut()
-//        }.await()
-//
-//        return logOutResult
          return logoutResult
     }
 

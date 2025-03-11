@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -23,9 +24,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.domain.models.Contact
+import com.example.messengerapp.presentation.component.Message
 import com.example.messengerapp.presentation.component.chat.ChatTextField
 import com.example.messengerapp.presentation.component.chat.ChatTitle
 import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
@@ -38,9 +41,9 @@ fun ChatScreen(
     contactId: String,
     chatViewModel: DialogChatViewModel,
     onTopBarClick: (Contact.Id) -> Unit,
-    onClickBackToChats:() -> Unit,
-    onSendMessageClick:() -> Unit
+    onClickBackToChats: () -> Unit,
 ) {
+    val messages = chatViewModel.messages.collectAsState().value
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Log.d("chat_dialog_effect", "Invoked")
@@ -51,54 +54,65 @@ fun ChatScreen(
     val scrollState = rememberLazyListState()
 
     var messageText by remember { mutableStateOf("") }
+    Log.d("message_text", "$messageText")
 
     val contact = chatViewModel.contact.collectAsState().value
     Log.d("chat_dialog_contact", "$contact")
-    Scaffold(
-        topBar = {
-            contact?.let {
-                ChatTitle(
-                    contact = contact,
-                    onClickBackToChats = {
-                        onClickBackToChats()
-                    },
-                    modifier = Modifier.windowInsetsPadding(insets = WindowInsets.statusBars),
-                    onChatTitleClick = {
-                        onTopBarClick(
-                            Contact.Id(value = contactId)
-                        )
-                    }
-                )
-            }
-        },
-        bottomBar = {
-            ChatTextField(
-                messageText = messageText,
-                onMessageTextChanged = { message ->
-                    messageText = message
+
+    Scaffold(topBar = {
+        contact?.let {
+            ChatTitle(contact = contact,
+                onClickBackToChats = {
+                    onClickBackToChats()
+                    chatViewModel.disconnect()
                 },
-                onSendMessageClick = {
-                    chatViewModel.sendMessage(text = messageText)
-                },
-                modifier = Modifier.fillMaxWidth()
-                    .background(color = AppTheme.colors.backgroundSecondary)
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .windowInsetsPadding(WindowInsets.ime)
-            )
-        },
-        contentWindowInsets = WindowInsets.ime
+                modifier = Modifier.windowInsetsPadding(insets = WindowInsets.statusBars),
+                onChatTitleClick = {
+                    onTopBarClick(
+                        Contact.Id(value = contactId)
+                    )
+                })
+        }
+    }, bottomBar = {
+        ChatTextField(messageText = messageText,
+            onMessageTextChanged = { message ->
+                messageText = message
+            },
+            onSendMessageClick = {
+                chatViewModel.sendMessage(text = messageText)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = AppTheme.colors.backgroundSecondary)
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .windowInsetsPadding(WindowInsets.ime)
+        )
+    }, contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
-
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxHeight()
                     .weight(1f)
                     .background(color = AppTheme.colors.secondary)
             ) {
-
+                messages?.let { messages ->
+                    items(items = messages) { message ->
+                        Message(
+                            message = message, modifier = Modifier.align(
+                                    if (message.senderId == contactId) {
+                                        Alignment.Start
+                                    } else {
+                                        Alignment.End
+                                    }
+                                )
+                        )
+                    }
+                }
             }
         }
     }

@@ -1,8 +1,7 @@
-package com.example.messengerapp.domain.usecases
+package com.example.messengerapp.domain.usecases.contacts
 
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.repository.ContactsRepository
-import com.example.messengerapp.domain.repository.UserStorageRepository
 import javax.inject.Inject
 
 class DeleteContactUseCase @Inject constructor(

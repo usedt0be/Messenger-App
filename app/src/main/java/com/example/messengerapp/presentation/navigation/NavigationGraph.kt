@@ -119,9 +119,6 @@ fun NavigationGraph(
                 onClickBackToChats = {
                     navController.popBackStack()
                 },
-                onSendMessageClick = {
-
-                },
                 onTopBarClick = { id ->
                     navController.navigate(
                         Screens.ContactDetailsScreen.route + "/${id.value}"

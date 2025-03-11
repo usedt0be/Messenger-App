@@ -1,4 +1,4 @@
-package com.example.messengerapp.domain.usecases
+package com.example.messengerapp.domain.usecases.chat
 
 
 

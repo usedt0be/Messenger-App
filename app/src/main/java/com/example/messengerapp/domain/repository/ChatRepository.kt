@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface ChatRepository {
     suspend fun initMessagesSession(chatId: String): ResultState<Unit>
 
-    suspend fun observeChat(chatId: String): Flow<Message>
+    fun observeChat(chatId: String): Flow<Message>
 
     suspend fun sendMessage(text: String)
 
@@ -17,4 +17,8 @@ interface ChatRepository {
     suspend fun getChatsForUser(userId: String): List<Chat>
 
     suspend fun closeMessageSessionConnection()
+
+    suspend fun checkSessionState(): Boolean?
+
+    suspend fun observeSession()
 }

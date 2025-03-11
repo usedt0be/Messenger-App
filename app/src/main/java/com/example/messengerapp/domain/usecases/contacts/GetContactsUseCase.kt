@@ -1,11 +1,8 @@
-package com.example.messengerapp.domain.usecases
+package com.example.messengerapp.domain.usecases.contacts
 
-import android.provider.ContactsContract.Contacts
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.domain.repository.ContactsRepository
-import com.example.messengerapp.domain.repository.UserStorageRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class GetContactsUseCase @Inject constructor(

@@ -3,7 +3,7 @@ package com.example.messengerapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.domain.models.Contact
-import com.example.messengerapp.domain.usecases.GetContactByIdUseCase
+import com.example.messengerapp.domain.usecases.contacts.GetContactByIdUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

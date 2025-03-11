@@ -1,4 +1,4 @@
-package com.example.messengerapp.domain.usecases
+package com.example.messengerapp.domain.usecases.chat
 
 import com.example.messengerapp.domain.repository.ChatRepository
 import javax.inject.Inject
