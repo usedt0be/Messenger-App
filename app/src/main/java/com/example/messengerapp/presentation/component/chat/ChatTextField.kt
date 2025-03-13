@@ -36,9 +36,10 @@ fun ChatTextField(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+        horizontalArrangement = Arrangement.SpaceBetween,
 
+
+    ) {
         OutlinedTextField(
             value = messageText,
             onValueChange = { messageText ->
@@ -89,7 +90,6 @@ fun ChatTextField(
 
         }
     }
-
 
 }
 

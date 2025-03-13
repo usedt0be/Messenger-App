@@ -10,6 +10,6 @@ class ObserveMessagesUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ): ViewModel() {
 
-    operator fun invoke(chatId: String): Flow<Message> = chatRepository.observeChat(chatId)
+    operator fun invoke(): Flow<Message> = chatRepository.observeChat()
 
 }

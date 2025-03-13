@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -36,9 +37,9 @@ class DialogChatViewModel @AssistedInject constructor(
     private val checkChatStatusUseCase: CheckChatStatusUseCase
 ): ViewModel() {
 
-    private val _messages = MutableStateFlow<List<Message>?>(emptyList())
+    private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages
-        get() = _messages
+        get() = _messages.asStateFlow()
 
     init {
         savedStateHandle.get<String>("chat_participant_id")?.let { participantId ->
@@ -47,11 +48,17 @@ class DialogChatViewModel @AssistedInject constructor(
                     Log.d("chat_Info", "$chat")
                     val result = initMessagesSessionUseCase.invoke(chat.chatId)
                     Log.d("chat_status_res", "$result")
+                    val messagesList: MutableList<Message> = mutableListOf()
                     when (result) {
                         is ResultState.Success -> {
+                            Log.d("chat_status_connection1", "${checkChatStatusUseCase.invoke()}")
+                            observeMessagesUseCase.invoke().collect { message ->
+                                Log.d("chat_message_VM", "$message")
+                                messagesList.add(message)
+                                Log.d("chat_message_VM2", "$messagesList")
+                                _messages.update { messagesList.toList().reversed() }
+                            }
                             Log.d("chat_status_connection2", "${checkChatStatusUseCase.invoke()}")
-                            delay(5000)
-                            Log.d("chat_status_connection3", "${checkChatStatusUseCase.invoke()}")
                         }
                         is ResultState.Error -> {
                             Log.d("chat_status", "error ${result.message}")
@@ -86,6 +93,9 @@ class DialogChatViewModel @AssistedInject constructor(
         }
     }
 
+    override fun onCleared() {
+        Log.d("CHAT_VM_CLEARED", "INVOKED")
+    }
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<DialogChatViewModel>
 }

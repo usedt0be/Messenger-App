@@ -17,7 +17,6 @@ import com.example.messengerapp.presentation.navigation.NavBottomBar
 
 @Composable
 fun ChatsListScreen(
-
     navController: NavController = rememberNavController()
 ) {
     Scaffold(bottomBar = {

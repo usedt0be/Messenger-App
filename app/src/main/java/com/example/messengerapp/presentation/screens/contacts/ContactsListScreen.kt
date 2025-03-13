@@ -94,16 +94,7 @@ fun ContactsListScreen(
                 .background(color = AppTheme.colors.backgroundPrimary)
                 .padding(paddingValues)
         ) {
-
-            Button(
-                modifier = Modifier.padding(bottom = 20.dp),
-                onClick = {
-                contactsViewModel.getToken()
-            }) {
-                Text("Token")
-            }
-
-            if (contacts != null) {
+            contacts?.let {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -124,15 +115,15 @@ fun ContactsListScreen(
                         }
                     }
                 }
-            } else {
-                Text(
-                    text = "Add your first contact",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                )
             }
+            Text(
+                text = "Add your first contact",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            )
         }
+
         ContactsBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             isVisible = showBottomSheet,
@@ -145,7 +136,7 @@ fun ContactsListScreen(
                     )
                 }
                 showBottomSheet = false
-            },
+            }
         )
     }
 }

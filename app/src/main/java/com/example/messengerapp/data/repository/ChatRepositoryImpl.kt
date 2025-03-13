@@ -16,15 +16,21 @@ import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
+import io.ktor.websocket.FrameType
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
@@ -50,8 +56,8 @@ class ChatRepositoryImpl @Inject constructor(
                 headers.append(name = HttpHeaders.Authorization, value = "Bearer ${token?.value}")
                 url("ws://10.0.2.2:8080/chats/$chatId/ws")
             }
-
             if(messagesSocketSession?.isActive == true) {
+//                Log.d("chat_SESSION", "${messagesSocketSession.toString()}")
                 ResultState.Success(Unit)
             }else {
                 ResultState.Error(message = "socket is not active")
@@ -61,21 +67,22 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun observeChat(chatId: String): Flow<Message> {
+    override fun observeChat(): Flow<Message> {
         return try {
-            flow {
                 messagesSocketSession?.incoming
                     ?.receiveAsFlow()
-                    ?.filterIsInstance<Frame.Text>()
-                    ?.map {
-                        val stringFrame = it.readText()
-                        val message = Json.decodeFromString<MessageDto>(stringFrame)
-                        message.toMessage()
-                }
-            }
+                    ?.filter { frame ->  frame is Frame.Text }
+                    ?.map { frame ->
+                        Log.d("chat_FRAME_map", "text: $frame")
+                        val frameString = (frame as? Frame.Text)?.readText() ?: ""
+                        val messageDto = Json.decodeFromString<MessageDto>(frameString)
+                        Log.d("chat_DTO", "text: $messageDto")
+                        messageDto.toMessage()
+                    }
+                    ?: flow {  }
         } catch (e: Exception) {
             e.printStackTrace()
-            flow {  }
+            flow { }
         }
     }
 
@@ -112,17 +119,26 @@ class ChatRepositoryImpl @Inject constructor(
         val res = messagesSocketSession?.isActive
         return res
     }
-
-    override suspend fun observeSession() {
+    suspend fun observeSessions() {
         Log.d("chat_observer", "invoked" )
+
+            val d = messagesSocketSession?.incoming?.receive()
+                ?.data
+
+    }
+    override suspend fun observeSession() {
         messagesSocketSession?.incoming?.consumeEach { frame ->
             when(frame) {
-                is Frame.Text -> Log.d("chat_websocket_frame", "text ${frame.readText()}")
+                is Frame.Text -> {
+                    Log.d("chat_websocket_frame", "text ${frame.readText()}")
+                }
                 is Frame.Binary -> Log.d("chat_websocket_frame", "Received binary data")
                 is Frame.Ping -> Log.d("chat_websocket_frame", "Received PING")
                 is Frame.Pong -> Log.d("chat_websocket_frame", "Received PONG")
                 is Frame.Close -> Log.d("chat_websocket_frame", "WebSocket closed")
             }
         }
-    }
+  }
+
+
 }

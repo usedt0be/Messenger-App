@@ -17,11 +17,11 @@ interface ChatApiService {
         @Path("userId") dialogUserId: String
     ): ResponseMeta<ChatDto>
 
-    @GET("chats/{id}/messages")
-    suspend fun getMessagesForChat(
-        @Header("Authorization") token: String,
-        @Path("id") chatId: String
-    ): ResponseMeta<List<MessageDto>>
+//    @GET("chats/{id}/messages")
+//    suspend fun getMessagesForChat(
+//        @Header("Authorization") token: String,
+//        @Path("id") chatId: String
+//    ): ResponseMeta<List<MessageDto>>
 
 
     @DELETE("chats/{id}")
