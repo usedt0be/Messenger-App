@@ -15,9 +15,12 @@ interface AuthRepository {
         otp:String
     ): Flow<ResultState<String>>
 
+
     fun logOut():Flow<ResultState<String>>
 
     fun checkUserExists(phoneNumber: String): Flow<Boolean>
 
     fun getCurrentUser(phoneNumber: String): Flow<ResultState<User>>
+
+    suspend fun getAuthToken(): String?
 }

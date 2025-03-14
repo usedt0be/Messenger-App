@@ -1,11 +1,12 @@
-package com.example.messengerapp.core.viewmodel
+package com.example.messengerapp.core.viewmodel.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import javax.inject.Provider
 
-class DaggerViewModelFactory @Inject constructor(
+
+class DefaultDaggerViewModelFactory @Inject constructor(
     private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -20,3 +21,4 @@ class DaggerViewModelFactory @Inject constructor(
         }
     }
 }
+

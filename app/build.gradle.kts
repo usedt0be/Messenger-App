@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-//    alias(libs.plugins.kapt)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
     id("com.google.gms.google-services")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -43,9 +44,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -103,8 +102,31 @@ dependencies {
     implementation(libs.dataStoreProto)
     implementation(libs.protobufLite)
 
+    //ktor
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.cio)
+
+    implementation(libs.ktor.okhttp)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.websockets)
+
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.content.negotiation)
+
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.serialization)
+    //okhttp
+    implementation(libs.okhttp.interceptor.logging)
+    implementation(libs.okhttp)
+    //timber
+    implementation(libs.timber)
+
     //accompanist-ui-controller
     implementation(libs.accompanist.system.ui.controller)
+
+    //serializatation
+    implementation(libs.kotlinx.serialization)
 
 
     implementation(libs.androidx.core.ktx)

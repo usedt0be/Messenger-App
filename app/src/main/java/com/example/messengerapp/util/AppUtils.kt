@@ -2,9 +2,20 @@ package com.example.messengerapp.util
 
 import com.example.messengerapp.R
 import com.example.messengerapp.data.CountryData
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
-object CountriesUtils {
+object AppUtils {
+    fun formatTimeStamp(
+        timestamp: Long
+    ): String {
+        val date = Date(timestamp)
+        val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return formatter.format(date)
+    }
+
     val countriesList: List<CountryData> = listOf(
         CountryData(countryName = "Bangladesh", countryPhoneCode = "+880", countryFlag = R.drawable.bd_bangladesh),
         CountryData(countryName = "Belgium", countryPhoneCode = "+32", countryFlag = R.drawable.be_belgium),

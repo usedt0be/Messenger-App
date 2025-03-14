@@ -1,17 +1,12 @@
-package com.example.messengerapp.domain.usecases
+package com.example.messengerapp.domain.usecases.contacts
 
-import android.util.Log
 import com.example.messengerapp.domain.repository.ContactsRepository
-import com.example.messengerapp.domain.repository.UserStorageRepository
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class AddContactUseCase @Inject constructor(
     private val contactsRepository: ContactsRepository,
-    private val userStorageRepository: UserStorageRepository
 ) {
     val error = MutableSharedFlow<String?>()
 
@@ -24,7 +19,7 @@ class AddContactUseCase @Inject constructor(
             when(result) {
                 is ResultState.Success -> {
                     result.data?.let { contact ->
-                        userStorageRepository.insertContactToDb(contact = contact)
+                        contactsRepository.insertContactToDb(contact = contact)
                     }
                 }
                 is ResultState.Loading -> {
@@ -35,6 +30,5 @@ class AddContactUseCase @Inject constructor(
                 }
             }
         }
-
     }
 }

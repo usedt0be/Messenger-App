@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.screens.contacts
+package com.example.messengerapp.presentation.component.contacts
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -106,6 +106,7 @@ fun ContactsListItemPreview() {
     ContactsListItem(
         contact = Contact(
             id = Contact.Id(value = "512"),
+            ownerId = "d525",
             firstName = "Example",
             secondName = "Andreevich",
             phoneNumber = "+79089438573",

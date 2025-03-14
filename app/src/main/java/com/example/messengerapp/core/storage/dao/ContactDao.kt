@@ -1,4 +1,4 @@
-package com.example.messengerapp.data.dao
+package com.example.messengerapp.core.storage.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContactDao {
-    @Query("SELECT * FROM contacts")
-    fun getContacts(): Flow<List<ContactEntity>>
+    @Query("SELECT * FROM contacts WHERE ownerId = :ownerId")
+    fun getContacts(ownerId: String): Flow<List<ContactEntity?>>
 
     @Query("SELECT * FROM contacts WHERE id = :contactId")
     fun getContactById(contactId: String): ContactEntity

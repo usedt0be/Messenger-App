@@ -1,26 +1,24 @@
 package com.example.messengerapp.presentation.screens.contacts
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,15 +31,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.domain.models.Contact
-import com.example.messengerapp.presentation.component.ContactsBottomSheet
+import com.example.messengerapp.presentation.component.contacts.ContactsBottomSheet
 import com.example.messengerapp.presentation.component.SnackBar
+import com.example.messengerapp.presentation.component.contacts.ContactsListItem
 import com.example.messengerapp.presentation.navigation.NavBottomBar
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -55,25 +53,10 @@ fun ContactsListScreen(
     contactsViewModel: ContactsViewModel,
 ) {
     val contacts = contactsViewModel.contacts.collectAsState().value
-    val errorState by contactsViewModel.errorMessage.collectAsStateWithLifecycle(null)
-    Log.d("ErrorStateUI", "${errorState}")
     var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
-
-
-    LaunchedEffect(errorState) {
-        errorState?.let { it ->
-            scope.launch {
-                snackBarHostState.showSnackbar(
-                    message = it,
-                    duration = SnackbarDuration.Long
-                )
-            }
-        }
-    }//Not working correct
-
 
     Scaffold(
         modifier = Modifier
@@ -111,12 +94,11 @@ fun ContactsListScreen(
                 .background(color = AppTheme.colors.backgroundPrimary)
                 .padding(paddingValues)
         ) {
-            if (contacts != null) {
+            contacts?.let {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    items(contacts) { contact ->
+                    itemsIndexed(contacts) { index: Int, contact ->
                         ContactsListItem(
                             contact = contact!!,
                             modifier = Modifier,
@@ -125,17 +107,23 @@ fun ContactsListScreen(
                             },
                             onClickDelete = contactsViewModel::deleteContact
                         )
+                        if(index != contacts.lastIndex) {
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                color = AppTheme.colors.textTertiary
+                            )
+                        }
                     }
                 }
-            } else {
-                Text(
-                    text = "Add your first contact",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                )
             }
+            Text(
+                text = "Add your first contact",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            )
         }
+
         ContactsBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             isVisible = showBottomSheet,
@@ -148,7 +136,7 @@ fun ContactsListScreen(
                     )
                 }
                 showBottomSheet = false
-            },
+            }
         )
     }
 }
@@ -162,6 +150,6 @@ fun ContactsListPreview() {
     ContactsListScreen(
         navController = navController,
         contactsViewModel = viewModel(),
-        onClickContact = {}
+        onClickContact = {},
     )
 }

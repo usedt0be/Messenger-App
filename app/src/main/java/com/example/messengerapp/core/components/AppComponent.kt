@@ -6,8 +6,11 @@ import com.example.messengerapp.presentation.di.ViewModelModule
 import com.example.messengerapp.MainActivity
 import com.example.messengerapp.core.annotations.ApplicationContext
 import com.example.messengerapp.core.firebase.FirebaseModule
-import com.example.messengerapp.core.storage.StorageModule
+import com.example.messengerapp.core.network.di.NetworkModule
+import com.example.messengerapp.core.storage.di.StorageModule
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
+import com.example.messengerapp.core.viewmodel.factory.StateHandleViewModelFactory
+import com.example.messengerapp.presentation.di.ChatModule
 import com.example.messengerapp.presentation.di.ContactsModule
 import com.example.messengerapp.presentation.di.RegistrationModule
 import com.example.messengerapp.presentation.di.UserStorageModule
@@ -25,7 +28,10 @@ import javax.inject.Singleton
     ViewModelFactoryModule::class,
     ViewModelModule::class,
     StorageModule::class,
+    NetworkModule::class,
+    ChatModule::class
 ])
+
 interface AppComponent {
     @Component.Builder
     interface Builder {
@@ -37,5 +43,8 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+
     fun inject(activity: MainActivity)
+
+    fun getViewModelFactory(): StateHandleViewModelFactory
 }

@@ -6,23 +6,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface UserStorageRepository {
-    val userFlow: Flow<User?>
-
-    val contactsFlow: StateFlow<List<Contact?>>
-
-    suspend fun getContacts()
+//    val userFlow: Flow<User?>
 
     suspend fun saveUserToDataStore(user: User)
 
-    suspend fun getUserFromDataStore()
+    suspend fun deleteUserFromDataStore()
 
-    fun insertAllContactsToDb(contacts:List<Contact>?)
+    suspend fun getUserFromDataStore(): Flow<User?>
 
-    suspend fun getContactsFromDb()
-
-    fun insertContactToDb(contact: Contact)
-
-    fun deleteContact(contact: Contact)
-
-    fun getContactById(id: String): Contact
 }

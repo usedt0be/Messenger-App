@@ -33,7 +33,7 @@ import com.example.messengerapp.R
 import com.example.messengerapp.core.theme.AppTheme
 import com.example.messengerapp.data.CountryData
 import com.example.messengerapp.presentation.component.SearchTextField
-import com.example.messengerapp.util.CountriesUtils
+import com.example.messengerapp.util.AppUtils
 
 
 @Composable
@@ -157,6 +157,6 @@ fun CountryCodePicker() {
 //        query = "",
         onQueryChange = {},
         onCountryItemClick = {},
-        countryList = CountriesUtils.countriesList
+        countryList = AppUtils.countriesList
     )
 }

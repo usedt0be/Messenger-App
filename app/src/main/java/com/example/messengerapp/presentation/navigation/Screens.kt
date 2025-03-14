@@ -13,6 +13,10 @@ sealed class Screens(
 
     data object RegistrationScreen: Screens(route = "registration_screen")
 
+    data object DialogChatScreen: Screens(route = "dialog_chat_screen")
+
+    data object ContactDetailsScreen: Screens(route = "contact_details_screen")
+
     sealed class BottomBarScreens(route: String, val name: String, val icon: Int?):Screens(route) {
         data object ProfileScreen: BottomBarScreens(
             route = "profile_screen",

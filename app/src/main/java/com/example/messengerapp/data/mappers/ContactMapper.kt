@@ -6,7 +6,8 @@ import com.example.messengerapp.domain.models.Contact
 
 
 fun ContactDto.toContactEntity() = ContactEntity(
-    id = id ?: "",
+    id = id,
+    ownerId = ownerId,
     firstName = firstName ?: "",
     secondName = secondName,
     phoneNumber = phoneNumber ?: "",
@@ -17,25 +18,28 @@ fun ContactDto.toContactEntity() = ContactEntity(
 
 fun ContactDto.toContact() = Contact(
     id = Contact.Id(value = id),
+    ownerId = ownerId,
     firstName = firstName   ?:"",
-    secondName = secondName,
+    secondName = secondName ?: "",
     phoneNumber = phoneNumber ?: "",
-    photo = photoUrl
+    photo = photoUrl ?:"",
 )
 
 
 
 fun ContactEntity.toContact() = Contact(
     id = Contact.Id(value = id),
+    ownerId = ownerId,
     firstName = firstName,
-    secondName = secondName,
+    secondName = secondName ?: "",
     phoneNumber = phoneNumber,
-    photo = photo
+    photo = photo ?: ""
 )
 
 
 fun Contact.toContactEntity() = ContactEntity(
     id = id.value,
+    ownerId = ownerId,
     firstName = firstName,
     secondName = secondName,
     phoneNumber = phoneNumber,

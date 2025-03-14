@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
 import com.example.messengerapp.core.app.MessengerApp
 import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.core.viewmodel.ViewModelFactoryProvider
 import com.example.messengerapp.presentation.navigation.NavigationGraph
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
@@ -20,15 +21,18 @@ class MainActivity : ComponentActivity() {
     lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val appComponent = (applicationContext as MessengerApp).appComponent
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        (applicationContext as MessengerApp).appComponent.inject(this)
+        appComponent.inject(this)
         setContent {
-            AppTheme{
+            AppTheme {
+                ViewModelFactoryProvider(appComponent.getViewModelFactory()) {
                     NavigationGraph(
                         factory = factory,
                         firebaseAuth = firebaseAuth
                     )
+                }
             }
         }
     }

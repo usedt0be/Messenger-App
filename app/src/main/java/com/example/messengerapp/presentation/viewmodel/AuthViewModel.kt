@@ -8,48 +8,46 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messengerapp.data.AuthData
-import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.data.CountryData
-import com.example.messengerapp.domain.usecases.LoginUseCase
+import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.RegistrationRepository
-import com.example.messengerapp.util.CountriesUtils
+import com.example.messengerapp.domain.usecases.GetCurrentUserUseCase
+import com.example.messengerapp.domain.usecases.auth.LogOutUseCase
+import com.example.messengerapp.domain.usecases.auth.LoginUseCase
+import com.example.messengerapp.util.AppUtils
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class AuthViewModel  @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationRepository: RegistrationRepository,
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val logOutUseCase: LogOutUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ): ViewModel()  {
 
-    val user = loginUseCase.userFlow.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = null
-    )
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> get() =  _user.asStateFlow()
 
     val authData: MutableState<AuthData?> = mutableStateOf(null)
 
     private val _userExists = MutableStateFlow<Boolean?>(null)
     val userExists = _userExists.asStateFlow()
 
-//    private val _currentUser = MutableStateFlow<User?>(null)
-//    val currentUser = _currentUser.asStateFlow()
-
     val userNumber : MutableState<String?> = mutableStateOf(null)
 
-    private val rootCountryList = CountriesUtils.countriesList
+    private val rootCountryList = AppUtils.countriesList
     val countriesDataList : MutableState<List<CountryData>> = mutableStateOf(rootCountryList)
 
     private val _currentCountry = MutableStateFlow<CountryData?>(null)
@@ -92,22 +90,22 @@ class AuthViewModel  @Inject constructor(
         }
     }
 
-
     fun getCurrentUser(phoneNumber: String) {
         Log.d("user_phone (getCurrentUser)", phoneNumber)
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.getCurrentUser(phoneNumber = phoneNumber).collect { currentUser ->
-                when (currentUser) {
-                    is ResultState.Loading -> {
-                        Log.d("user_info", "Loading...")
-                    }
-                    is ResultState.Success -> {
-                        Log.d("user_info", "${currentUser.data}")
-//                        _currentUser.value =  currentUser.data
-//                        Log.d("user_info", "${_currentUser.value}")
-                        loginUseCase.invoke(phoneNumber = phoneNumber)
-                    }
-                    is ResultState.Error -> {}
+            getCurrentUserUseCase.invoke(phoneNumber).collectLatest { it ->
+                _user.value = it
+            }
+        }
+    }
+
+    fun signIn() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userNumber.value?.let {
+                 loginUseCase.invoke(phoneNumber = it)
+                     .collectLatest { userData ->
+                         Log.d("userDataVM", "$userData")
+                    _user.value = userData
                 }
             }
         }
@@ -121,11 +119,10 @@ class AuthViewModel  @Inject constructor(
     }
 
      suspend fun logOut(): Flow<ResultState<String>> {
-        val logOutResult = viewModelScope.async(Dispatchers.IO) {
-            authRepository.logOut()
-        }.await()
-
-        return logOutResult
+        val logoutResult =  viewModelScope.async(Dispatchers.IO) {
+             logOutUseCase.invoke()
+         }.await()
+         return logoutResult
     }
 
     fun findCountryCode(query: String) {
