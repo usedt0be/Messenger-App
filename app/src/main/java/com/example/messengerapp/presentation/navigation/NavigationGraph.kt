@@ -20,7 +20,7 @@ import com.example.messengerapp.presentation.screens.contacts.ContactsListScreen
 import com.example.messengerapp.presentation.screens.profile.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
-import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
+import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -111,11 +111,11 @@ fun NavigationGraph(
             )
         ) { backStackEntry ->
             val chatParticipantId = backStackEntry.arguments?.getString("chat_participant_id") ?: "000"
-            val chatViewModel: DialogChatViewModel = daggerViewModel()
+            val chatViewModel: ChatDialogViewModel = daggerViewModel()
             Log.d("contactId_dialog", "$chatParticipantId")
             ChatScreen(
                 contactId = chatParticipantId,
-                chatViewModel = chatViewModel,
+                chatDialogViewModel = chatViewModel,
                 onClickBackToChats = {
                     navController.popBackStack()
                 },

@@ -21,4 +21,6 @@ interface ChatRepository {
     suspend fun checkSessionState(): Boolean?
 
     suspend fun observeSession()
+
+    suspend fun getMessagesHistory(chatId: String): List<Message>
 }

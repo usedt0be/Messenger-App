@@ -5,7 +5,7 @@ import com.example.messengerapp.core.viewmodel.ViewModelKey
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.core.viewmodel.factory.ViewModelAssistedFactory
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
-import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
+import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import dagger.Binds
@@ -32,8 +32,8 @@ interface ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DialogChatViewModel::class)
-    fun bindChatViewModelFactory(factory: DialogChatViewModel.Factory): ViewModelAssistedFactory<*>
+    @ViewModelKey(ChatDialogViewModel::class)
+    fun bindChatViewModelFactory(factory: ChatDialogViewModel.Factory): ViewModelAssistedFactory<*>
 
 
 
