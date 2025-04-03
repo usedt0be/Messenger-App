@@ -126,11 +126,10 @@ fun ChatScreen(
                                 }, shape = RoundedCornerShape(percent = 25)
                             ),
                         contentAlignment = if (isParticipantId) {
-                                    Alignment.CenterStart
-                                } else {
-                                    Alignment.CenterEnd
-                                }
-
+                            Alignment.CenterStart
+                        } else {
+                            Alignment.CenterEnd
+                        }
                     )
                 }
             }

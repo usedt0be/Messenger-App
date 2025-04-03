@@ -11,7 +11,7 @@ object AppUtils {
     fun formatTimeStamp(
         timestamp: Long
     ): String {
-        val date = Date(timestamp)
+        val date = Date(timestamp * 1000)
         val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
         return formatter.format(date)
     }
