@@ -1,15 +1,9 @@
 package com.example.messengerapp.presentation.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.content.contentReceiver
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,14 +29,15 @@ fun Message(
         Column(modifier = modifier) {
             Text(
                 text = message.text,
-                modifier = Modifier.padding(start = 4.dp),
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp, ),
                 style = AppTheme.typography.caption1,
                 color = AppTheme.colors.textPrimary
             )
 
             Text(
                 text = time,
-                modifier = Modifier.padding(start = 4.dp, top = 4.dp),
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 2.dp)
+                    .align(Alignment.End),
                 style = AppTheme.typography.caption2,
                 color = AppTheme.colors.textPrimary
             )

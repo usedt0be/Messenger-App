@@ -79,7 +79,7 @@ class ChatRepositoryImpl @Inject constructor(
                         Log.d("chat_DTO", "text: $messageDto")
                         messageDto.toMessage()
                     }
-                    ?: flow {  }
+                    ?: flow { }
         } catch (e: Exception) {
             e.printStackTrace()
             flow { }
@@ -94,7 +94,7 @@ class ChatRepositoryImpl @Inject constructor(
                 Frame.Text(text = text)
             )
         } catch (
-            e:Exception
+            e: Exception
         ) {
             e.printStackTrace()
         }
@@ -119,26 +119,36 @@ class ChatRepositoryImpl @Inject constructor(
         val res = messagesSocketSession?.isActive
         return res
     }
-    suspend fun observeSessions() {
-        Log.d("chat_observer", "invoked" )
 
-            val d = messagesSocketSession?.incoming?.receive()
-                ?.data
+    suspend fun observeSessions() {
+        Log.d("chat_observer", "invoked")
+
+        val d = messagesSocketSession?.incoming?.receive()
+            ?.data
 
     }
+
     override suspend fun observeSession() {
         messagesSocketSession?.incoming?.consumeEach { frame ->
-            when(frame) {
+            when (frame) {
                 is Frame.Text -> {
                     Log.d("chat_websocket_frame", "text ${frame.readText()}")
                 }
+
                 is Frame.Binary -> Log.d("chat_websocket_frame", "Received binary data")
                 is Frame.Ping -> Log.d("chat_websocket_frame", "Received PING")
                 is Frame.Pong -> Log.d("chat_websocket_frame", "Received PONG")
                 is Frame.Close -> Log.d("chat_websocket_frame", "WebSocket closed")
             }
         }
-  }
+    }
+
+    override suspend fun getMessagesHistory(chatId: String): List<Message> {
+        val messages = chatApi.getMessagesForChat(chatId = chatId).data.map {
+            it.toMessage()
+        }
+        return messages
+    }
 
 
 }

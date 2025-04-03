@@ -36,7 +36,7 @@ import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.Message
 import com.example.messengerapp.presentation.component.chat.ChatTextField
 import com.example.messengerapp.presentation.component.chat.ChatTitle
-import com.example.messengerapp.presentation.viewmodel.DialogChatViewModel
+import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -44,17 +44,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatScreen(
     contactId: String,
-    chatViewModel: DialogChatViewModel,
+    chatDialogViewModel: ChatDialogViewModel,
     onTopBarClick: (Contact.Id) -> Unit,
     onClickBackToChats: () -> Unit,
 ) {
-    val messages by chatViewModel.messages.collectAsState()
-    Log.d("chat_messages_UI", "$messages")
+    val messages by chatDialogViewModel.messages.collectAsState()
+    Log.d("chat_messages_UI", "${messages.reversed()}")
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Log.d("chat_dialog_effect", "Invoked")
         scope.launch(Dispatchers.IO) {
-            chatViewModel.getContact(contactId)
+            chatDialogViewModel.getContact(contactId)
         }
     }
     val scrollState = rememberLazyListState()
@@ -62,14 +62,14 @@ fun ChatScreen(
     var messageText by remember { mutableStateOf("") }
     Log.d("message_text", "$messageText")
 
-    val contact = chatViewModel.contact.collectAsState().value
+    val contact = chatDialogViewModel.contact.collectAsState().value
 
     Scaffold(topBar = {
         contact?.let {
             ChatTitle(contact = contact,
                 onClickBackToChats = {
                     onClickBackToChats()
-                    chatViewModel.disconnect()
+                    chatDialogViewModel.disconnect()
                 },
                 modifier = Modifier.windowInsetsPadding(insets = WindowInsets.statusBars),
                 onChatTitleClick = {
@@ -85,7 +85,7 @@ fun ChatScreen(
                 messageText = message
             },
             onSendMessageClick = {
-                chatViewModel.sendMessage(text = messageText)
+                chatDialogViewModel.sendMessage(text = messageText)
                 messageText = ""
             },
             modifier = Modifier
@@ -109,7 +109,7 @@ fun ChatScreen(
                 state = scrollState,
                 reverseLayout = true
             ) {
-                items(items = messages) { message ->
+                items(items = messages.reversed()) { message ->
                     val isParticipantId = message.senderId == contactId
                     Log.d("chat_message_sender_contact_id", "sender ${message.senderId} , contact: $contactId")
                     Message(
@@ -126,11 +126,10 @@ fun ChatScreen(
                                 }, shape = RoundedCornerShape(percent = 25)
                             ),
                         contentAlignment = if (isParticipantId) {
-                                    Alignment.CenterStart
-                                } else {
-                                    Alignment.CenterEnd
-                                }
-
+                            Alignment.CenterStart
+                        } else {
+                            Alignment.CenterEnd
+                        }
                     )
                 }
             }
@@ -145,7 +144,7 @@ fun ChatScreenPreview(){
         onClickBackToChats = {},
         contactId = "dsad1",
         onTopBarClick = {},
-        chatViewModel = daggerViewModel()
+        chatDialogViewModel = daggerViewModel()
     )
 }
 
