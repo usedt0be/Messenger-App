@@ -1,8 +1,11 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
     id("com.google.gms.google-services")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -32,21 +35,38 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    protobuf{
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.25.0"
+        }
+        generateProtoTasks {
+            all().forEach {  task ->
+                task.builtins {
+                    register("java") {
+                        option("lite")
+                    }
+
+                    register("kotlin") {
+                        option("lite")
+                    }
+                }
+            }
         }
     }
 }
@@ -54,7 +74,7 @@ android {
 dependencies {
     //dagger2
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     //firebase-auth
     implementation(libs.firebase.auth)
@@ -71,6 +91,43 @@ dependencies {
 
     //coil
     implementation(libs.coil.compose)
+
+    //room
+    implementation(libs.room)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    //dataStore, dataStoreProto
+    implementation(libs.dataStore)
+    implementation(libs.dataStoreProto)
+    implementation(libs.protobufLite)
+
+    //ktor
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.cio)
+
+    implementation(libs.ktor.okhttp)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.websockets)
+
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.content.negotiation)
+
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.serialization)
+    //okhttp
+    implementation(libs.okhttp.interceptor.logging)
+    implementation(libs.okhttp)
+    //timber
+    implementation(libs.timber)
+
+    //accompanist-ui-controller
+    implementation(libs.accompanist.system.ui.controller)
+
+    //serializatation
+    implementation(libs.kotlinx.serialization)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

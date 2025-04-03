@@ -3,4 +3,11 @@
     <string name="user_photo">userPhoto</string>
     <string name="profile_image">profile image</string>
     <string name="icon_of_screen">Icon of screen</string>
+    <string name="confirm_log_out">Yes</string>
+    <string name="dismiss_log_out">No</string>
+    <string name="cancel_log_out">Cancel</string>
+    <string name="change_number">Change number</string>
+    <string name="number_is_correct">Yes</string>
+    <string name="number_confirmation_promt">Number is correct?</string>
+    <string name="contact_photo">Contact photo</string>
 </resources>

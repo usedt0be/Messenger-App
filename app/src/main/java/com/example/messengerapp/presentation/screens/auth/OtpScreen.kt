@@ -1,9 +1,13 @@
 package com.example.messengerapp.presentation.screens.auth
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.messengerapp.presentation.component.OtpTextField
+import androidx.navigation.compose.rememberNavController
+import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.presentation.component.auth.OtpTextField
 import com.example.messengerapp.presentation.navigation.Screens
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.util.ResultState
@@ -27,7 +33,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun OtpScreen(
     authViewModel: AuthViewModel,
-    navController: NavController
+    navController: NavController = rememberNavController()
 ) {
 
     var otp by remember { mutableStateOf("") }
@@ -35,17 +41,23 @@ fun OtpScreen(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier
+            .background(color = AppTheme.colors.backgroundPrimary)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(text = "Enter the verification code sent to your phone")
+        Text(
+            text = "Enter the verification code sent to your phone",
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.textPrimary
+        )
 
         OtpTextField(
             otp = otp,
-            onOtpChange = {
-                otp = it
+            onOtpChange = { otpChanged ->
+                otp = otpChanged
             },
             modifier = Modifier.padding(32.dp)
         )
@@ -54,13 +66,19 @@ fun OtpScreen(
             onClick = {
                 scope.launch(Dispatchers.IO) {
                     authViewModel.signInWithCredential(
-                        otp
+                      otp = otp
                     ).collect {
                         when(it) {
+                            is ResultState.Loading -> {
+                                if(authViewModel.userExists.value == true) {
+
+                                }
+                            }
                             is ResultState.Success -> {
                                 if(authViewModel.userExists.value == true) {
+                                    authViewModel.signIn()
                                     withContext(Dispatchers.Main) {
-                                        navController.navigate(Screens.BottomScreens.ProfileScreen.route)
+                                        navController.navigate(Screens.BottomBarScreens.ProfileScreen.route)
                                     }
                                 } else {
                                     withContext(Dispatchers.Main) {
@@ -68,25 +86,22 @@ fun OtpScreen(
                                     }
                                 }
                             }
-                            is ResultState.Loading -> {
-                                if(authViewModel.userExists.value != false) {
-                                    authViewModel.getCurrentUser(authViewModel.userNumber.value!!)
-                                }
-                            }
                             is ResultState.Error -> {}
                         }
-
                     }
                 }
-
             },
-            modifier = Modifier.padding(
-                top = 14.dp
-            )
+            colors = ButtonDefaults.buttonColors(
+                    contentColor = AppTheme.colors.textButton,
+                    containerColor = AppTheme.colors.accentPrimary
+            ),
+            modifier = Modifier.padding(top = 14.dp)
         ) {
-                Text(text = "Confirm")
+            Text(
+                text = "Confirm",
+                style = AppTheme.typography.button,
+            )
         }
-
     }
 }
 
@@ -99,5 +114,47 @@ fun OtpScreen(
 //@Composable
 //@Preview
 //fun OtpScreenPreview() {
-//    OtpScreen()
+//    val authRepository = object : AuthRepository {
+//        override fun verifyPhoneNumberWithOtp(
+//            phoneNumber: String,
+//            activity: Activity
+//        ): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun signWithCredential(otp: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun logOut(): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun getCurrentUser(phoneNumber: String): Flow<ResultState<UserDto>> {
+//            TODO("Not yet implemented")
+//        }
+//
+//
+//    }
+//    val firestoreRepo = object : RegistrationRepository {
+//        override fun insert(user: UserDto): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//        override suspend fun getRegistrationAuthData(): AuthData {
+//            TODO("Not yet implemented")
+//        }
+//
+//        override fun uploadImage(imageUri: Uri?, userId: String): Flow<ResultState<String>> {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//    val authViewModel = AuthViewModel(
+//        authRepository = authRepository,
+//        registrationRepository = firestoreRepo
+//    )
+//    OtpScreen(authViewModel = authViewModel)
 //}

@@ -2,38 +2,61 @@ package com.example.messengerapp.data.repository
 
 import android.app.Activity
 import android.util.Log
-import com.example.messengerapp.domain.AuthRepository
+import com.example.messengerapp.data.AuthData
+import com.example.messengerapp.data.dto.UserDto
+import com.example.messengerapp.data.mappers.toUser
+import com.example.messengerapp.domain.models.Contact
+import com.example.messengerapp.domain.models.User
+import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.util.ResultState
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ): AuthRepository {
 
     private lateinit var  onVerificationCode: String
 
     init {
         Log.d("VERIFY_authREPO", "AuthRepository created")
+        Log.d("VERIFY_already_authorized", "${firebaseAuth.currentUser != null}")
     }
 
-    override fun registerUserWithPhoneNumber(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
+
+    override suspend fun getAuthToken(): String? {
+        return try {
+            val user = firebaseAuth.currentUser
+            Log.d("AuthTOken_User", "${user.toString()}")
+            val token = firebaseAuth.currentUser?.getIdToken(true)?.await()?.token
+            Log.d("AuthToken", "$token")
+            token
+        } catch (e:Exception) {
+            null
+        }
+    }
+
+    override fun verifyPhoneNumberWithOtp(phoneNumber: String, activity: Activity): Flow<ResultState<String>> {
         return callbackFlow {
             val onVerificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {}
 
                 override fun onVerificationFailed(exception: FirebaseException) {
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                 }
 
                 override fun onCodeSent(verificationCode: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -45,7 +68,7 @@ class AuthRepositoryImpl @Inject constructor(
             trySend(ResultState.Loading())
 
             val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-                .setPhoneNumber("+$phoneNumber")
+                .setPhoneNumber(phoneNumber)
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(activity)
                 .setCallbacks(onVerificationCallback)
@@ -65,12 +88,12 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener {
                     if(it.isSuccessful) {
-                        trySend((ResultState.Success("otp verified")))
+                        trySend((ResultState.Success(data = "otp verified")))
                     }
                     close()
                 }
                 .addOnFailureListener{  exception ->
-                    trySend(ResultState.Error(exception))
+                    trySend(ResultState.Error(exception.message))
                     close(exception)
                 }
             awaitClose {
@@ -79,11 +102,47 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentUserId(): Flow<String> {
-        return flow{
-            emit(firebaseAuth.currentUser?.uid!!)
+    override fun checkUserExists(phoneNumber: String): Flow<Boolean> {
+        return flow {
+            val querySnapshot = firestore.collection("users")
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .get()
+                .await()
+            emit(!querySnapshot.isEmpty)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getCurrentUser(phoneNumber: String): Flow<ResultState<User>> = callbackFlow{
+        trySend(ResultState.Loading())
+        Log.d("user_phoneNumber", phoneNumber)
+        firestore.collection("users")
+            .whereEqualTo("phoneNumber", phoneNumber)
+            .get()
+            .addOnSuccessListener {
+                val user = it.documents.first().toObject(UserDto::class.java)
+                Log.d("current_USER", "$user")
+                if(user!=null) {
+                    trySend(ResultState.Success(user.toUser()))
+                }
+            }
+            .addOnFailureListener{
+                trySend(ResultState.Error(it.message))
+            }
+        awaitClose {
+            close()
         }
     }
 
+
+
+    override fun logOut(): Flow<ResultState<String>> {
+       return callbackFlow {
+           firebaseAuth.signOut()
+           trySend(ResultState.Success(data ="Signed Out"))
+           awaitClose {
+               close()
+           }
+       }
+    }
 
 }
