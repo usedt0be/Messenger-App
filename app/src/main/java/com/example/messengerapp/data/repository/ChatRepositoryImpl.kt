@@ -16,21 +16,15 @@ import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.FrameType
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
@@ -134,7 +128,6 @@ class ChatRepositoryImpl @Inject constructor(
                 is Frame.Text -> {
                     Log.d("chat_websocket_frame", "text ${frame.readText()}")
                 }
-
                 is Frame.Binary -> Log.d("chat_websocket_frame", "Received binary data")
                 is Frame.Ping -> Log.d("chat_websocket_frame", "Received PING")
                 is Frame.Pong -> Log.d("chat_websocket_frame", "Received PONG")
