@@ -1,6 +1,5 @@
 package com.example.messengerapp.core.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -20,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun PaginationColumn(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    preloadIndex: Int = 5,
+    loadIndex: Int = 5,
     loadItems: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,
@@ -32,7 +30,7 @@ fun PaginationColumn(
         derivedStateOf {
             val currentLastVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo
                 .lastOrNull()?.index ?: return@derivedStateOf true
-            currentLastVisibleItemIndex >= lazyListState.layoutInfo.totalItemsCount - 1 - preloadIndex
+            currentLastVisibleItemIndex >= lazyListState.layoutInfo.totalItemsCount - 1 - loadIndex
         }
     }
 
@@ -41,6 +39,7 @@ fun PaginationColumn(
             loadItems()
         }
     }
+
 
     LazyColumn(
         modifier = modifier,
@@ -51,9 +50,6 @@ fun PaginationColumn(
         content = content
     )
 }
-
-
-
 
 
 
