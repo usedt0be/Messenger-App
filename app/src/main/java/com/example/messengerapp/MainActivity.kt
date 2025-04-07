@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
-
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 

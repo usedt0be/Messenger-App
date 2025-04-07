@@ -1,5 +1,6 @@
 package com.example.messengerapp.core.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,9 +20,10 @@ import androidx.compose.ui.unit.dp
 fun PaginationColumn(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    loadIndex: Int = 5,
+    preloadIndex: Int = 5,
     loadItems: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    reverseLayout: Boolean = false,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     content: LazyListScope.() -> Unit
 ) {
@@ -30,43 +32,32 @@ fun PaginationColumn(
         derivedStateOf {
             val currentLastVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo
                 .lastOrNull()?.index ?: return@derivedStateOf true
-            currentLastVisibleItemIndex >= lazyListState.layoutInfo.totalItemsCount - 1 - loadIndex
+            Log.d("chat_COLUMN_last_index", "$currentLastVisibleItemIndex")
+            currentLastVisibleItemIndex >= lazyListState.layoutInfo.totalItemsCount - 1 - preloadIndex
         }
     }
+    Log.d("chat_COLUMN_PAGING_STATE", "$shouldStartPaginate")
 
     LaunchedEffect(shouldStartPaginate.value) {
+        Log.d("chat_COLUMN_PAGING_EFFECT", "triggered")
         if (shouldStartPaginate.value) {
+            Log.d("chat_COLUMN_PAGING_EFFECT", "triggered_true")
             loadItems()
         }
     }
 
-
-
     LazyColumn(
         modifier = modifier,
         state = lazyListState,
-        verticalArrangement = verticalArrangement,
         contentPadding= contentPadding,
+        reverseLayout = reverseLayout,
+        verticalArrangement = verticalArrangement,
         content = content
     )
 }
 
 
-@Composable
-fun LazyColumnPager(
-    modifier: Modifier = Modifier,
-    listState: LazyListState = rememberLazyListState(),
 
-) {
-
-    PaginationColumn(
-        loadItems = {},
-    ) { }
-    LazyColumn() {
-
-    }
-
-}
 
 
 
