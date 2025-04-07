@@ -24,6 +24,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ChatDialogViewModel @AssistedInject constructor(
@@ -48,15 +49,15 @@ class ChatDialogViewModel @AssistedInject constructor(
                     Log.d("chat_Info", "$chat")
                     val messages = getMessagesUseCase.invoke(chatId = chat.chatId , page = state.messagesPage)
                     Log.d("chat_first_messages", "$messages")
-                    state = state.copy(
-                        messages = messages,
-                        chat = chat
-                    )
+                    withContext(Dispatchers.Main) {
+                        state = state.copy(
+                            messages = messages,
+                            chat = chat
+                        )
+                    }
                     val initChatSessionResult = initMessagesSessionUseCase.invoke(chat.chatId)
                     Log.d("chat_status_res", "$initChatSessionResult")
-
                     val messagesList: MutableList<Message> = state.messages.toMutableList()
-
                     when (initChatSessionResult) {
                         is ResultState.Success -> {
                             Log.d("chat_status_connection1", "${checkChatStatusUseCase.invoke()}")
@@ -83,9 +84,12 @@ class ChatDialogViewModel @AssistedInject constructor(
 
     fun getContact(contactId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            state = state.copy(
-                chatParticipantContact = getContactByIdUseCase.invoke(contactId)
-            )
+            val contact = getContactByIdUseCase.invoke(contactId)
+            withContext(Dispatchers.Main) {
+                state = state.copy(
+                    chatParticipantContact = contact
+                )
+            }
         }
     }
 
@@ -93,17 +97,14 @@ class ChatDialogViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             state.chat?.let {
                 val newMessages = getMessagesUseCase(chatId = it.chatId, page = state.messagesPage)
-                Log.d("chat_newMessages","$newMessages")
-                state = state.copy(
-                    messages = state.messages + newMessages
-                )
-                Log.d("chat_All_messages", "${state.messages}")
+                withContext(Dispatchers.Main) {
+                    state = state.copy(
+                        messages = state.messages + newMessages
+                    )
+                }
             }
-
-
         }
         state = state.copy(messagesPage = state.messagesPage + 1)
-        Log.d("chat_current_page", "${state.messagesPage}")
     }
 
     fun sendMessage(text: String){
