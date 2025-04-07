@@ -51,7 +51,6 @@ class ChatRepositoryImpl @Inject constructor(
                 url("ws://10.0.2.2:8080/chats/$chatId/ws")
             }
             if(messagesSocketSession?.isActive == true) {
-//                Log.d("chat_SESSION", "${messagesSocketSession.toString()}")
                 ResultState.Success(Unit)
             }else {
                 ResultState.Error(message = "socket is not active")
@@ -114,14 +113,6 @@ class ChatRepositoryImpl @Inject constructor(
         return res
     }
 
-    suspend fun observeSessions() {
-        Log.d("chat_observer", "invoked")
-
-        val d = messagesSocketSession?.incoming?.receive()
-            ?.data
-
-    }
-
     override suspend fun observeSession() {
         messagesSocketSession?.incoming?.consumeEach { frame ->
             when (frame) {
@@ -136,8 +127,9 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessagesHistory(chatId: String): List<Message> {
-        val messages = chatApi.getMessagesForChat(chatId = chatId).data.map {
+    override suspend fun getMessages(chatId: String, page: Int): List<Message> {
+        Log.d("chat_current_page_repo", "$page")
+        val messages = chatApi.getMessagesWithPagination(chatId = chatId, page = page).data.map {
             it.toMessage()
         }
         return messages

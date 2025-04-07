@@ -13,14 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.core.ui.PaginationColumn
 import com.example.messengerapp.core.viewmodel.daggerViewModel
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.Message
@@ -48,8 +46,9 @@ fun ChatScreen(
     onTopBarClick: (Contact.Id) -> Unit,
     onClickBackToChats: () -> Unit,
 ) {
-    val messages by chatDialogViewModel.messages.collectAsState()
-    Log.d("chat_messages_UI", "${messages.reversed()}")
+    val state = chatDialogViewModel.state
+
+    Log.d("chat_messages_UI", "${state.messages.reversed()}")
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Log.d("chat_dialog_effect", "Invoked")
@@ -57,16 +56,15 @@ fun ChatScreen(
             chatDialogViewModel.getContact(contactId)
         }
     }
-    val scrollState = rememberLazyListState()
 
     var messageText by remember { mutableStateOf("") }
-    Log.d("message_text", "$messageText")
 
-    val contact = chatDialogViewModel.contact.collectAsState().value
+    val contact = state.chatParticipantContact
 
     Scaffold(topBar = {
         contact?.let {
-            ChatTitle(contact = contact,
+            ChatTitle(
+                contact = contact,
                 onClickBackToChats = {
                     onClickBackToChats()
                     chatDialogViewModel.disconnect()
@@ -80,7 +78,8 @@ fun ChatScreen(
             )
         }
     }, bottomBar = {
-        ChatTextField(messageText = messageText,
+        ChatTextField(
+            messageText = messageText,
             onMessageTextChanged = { message ->
                 messageText = message
             },
@@ -101,17 +100,14 @@ fun ChatScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .background(color = AppTheme.colors.backgroundPrimary)
-                    .fillMaxSize()
-                    .weight(1f),
-                state = scrollState,
+            PaginationColumn(
+                loadItems ={
+                    chatDialogViewModel.getNextMessagesPage()
+                },
                 reverseLayout = true
             ) {
-                items(items = messages.reversed()) { message ->
+                items(items = state.messages) { message ->
                     val isParticipantId = message.senderId == contactId
-                    Log.d("chat_message_sender_contact_id", "sender ${message.senderId} , contact: $contactId")
                     Message(
                         message = message,
                         modifier = Modifier
@@ -136,6 +132,7 @@ fun ChatScreen(
         }
     }
 }
+
 
 @Preview
 @Composable
