@@ -52,6 +52,7 @@ class ChatDialogViewModel @AssistedInject constructor(
                     withContext(Dispatchers.Main) {
                         state = state.copy(
                             messages = messages,
+                            messagesPage = state.messagesPage + 1,
                             chat = chat
                         )
                     }
@@ -99,12 +100,12 @@ class ChatDialogViewModel @AssistedInject constructor(
                 val newMessages = getMessagesUseCase(chatId = it.chatId, page = state.messagesPage)
                 withContext(Dispatchers.Main) {
                     state = state.copy(
-                        messages = state.messages + newMessages
+                        messages = state.messages + newMessages,
+                        messagesPage = state.messagesPage + 1
                     )
                 }
             }
         }
-        state = state.copy(messagesPage = state.messagesPage + 1)
     }
 
     fun sendMessage(text: String){
