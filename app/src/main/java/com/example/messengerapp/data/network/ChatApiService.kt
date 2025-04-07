@@ -23,6 +23,13 @@ interface ChatApiService {
     ): ResponseMeta<List<MessageDto>>
 
 
+    @GET("chats/{chatId}/{page}/{limit}")
+    suspend fun getMessagesWithPagination(
+        @Path("chatId") chatId: String,
+        @Path("page") page: Int,
+        @Path("limit") limit: Int = 20
+    ): ResponseMeta<List<MessageDto>>
+
     @DELETE("chats/{id}")
     suspend fun deleteChat(
         @Path("id") chatId: String

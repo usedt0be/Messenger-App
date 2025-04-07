@@ -16,21 +16,15 @@ import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.FrameType
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
@@ -57,7 +51,6 @@ class ChatRepositoryImpl @Inject constructor(
                 url("ws://10.0.2.2:8080/chats/$chatId/ws")
             }
             if(messagesSocketSession?.isActive == true) {
-//                Log.d("chat_SESSION", "${messagesSocketSession.toString()}")
                 ResultState.Success(Unit)
             }else {
                 ResultState.Error(message = "socket is not active")
@@ -120,21 +113,12 @@ class ChatRepositoryImpl @Inject constructor(
         return res
     }
 
-    suspend fun observeSessions() {
-        Log.d("chat_observer", "invoked")
-
-        val d = messagesSocketSession?.incoming?.receive()
-            ?.data
-
-    }
-
     override suspend fun observeSession() {
         messagesSocketSession?.incoming?.consumeEach { frame ->
             when (frame) {
                 is Frame.Text -> {
                     Log.d("chat_websocket_frame", "text ${frame.readText()}")
                 }
-
                 is Frame.Binary -> Log.d("chat_websocket_frame", "Received binary data")
                 is Frame.Ping -> Log.d("chat_websocket_frame", "Received PING")
                 is Frame.Pong -> Log.d("chat_websocket_frame", "Received PONG")
@@ -143,8 +127,9 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessagesHistory(chatId: String): List<Message> {
-        val messages = chatApi.getMessagesForChat(chatId = chatId).data.map {
+    override suspend fun getMessages(chatId: String, page: Int): List<Message> {
+        Log.d("chat_current_page_repo", "$page")
+        val messages = chatApi.getMessagesWithPagination(chatId = chatId, page = page).data.map {
             it.toMessage()
         }
         return messages
