@@ -1,6 +1,7 @@
 package com.example.messengerapp.core.network.di
 
 import com.example.messengerapp.core.network.interceptor.AuthHeaderInterceptor
+import com.example.messengerapp.core.network.interceptor.ServerErrorInterceptor
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.network.ChatApiService
 import dagger.Module
@@ -51,6 +52,7 @@ object NetworkModule {
             .writeTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
             .addNetworkInterceptor(interceptor = loggingInterceptor)
             .addInterceptor(interceptor = AuthHeaderInterceptor(tokensPersistence))
+            .addInterceptor(interceptor = ServerErrorInterceptor(tokensPersistence))
             .build()
     }
 
@@ -63,8 +65,6 @@ object NetworkModule {
             .baseUrl("$BASE_URL/")
             .build()
     }
-
-
 
     @Provides
     @Singleton
@@ -82,7 +82,6 @@ object NetworkModule {
             }
         }
     }
-
 
     @Provides
     @Singleton

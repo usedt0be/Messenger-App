@@ -64,7 +64,7 @@ class ChatDialogViewModel @AssistedInject constructor(
                             Log.d("chat_status_connection1", "${checkChatStatusUseCase.invoke()}")
                             observeMessagesUseCase.invoke().collect { message ->
                                 Log.d("chat_message_VM", "$message")
-                                messagesList.add(message)
+                                messagesList.add(0, message)
                                 Log.d("chat_message_VM2", "$messagesList")
                                 state = state.copy(messages = messagesList)
                             }

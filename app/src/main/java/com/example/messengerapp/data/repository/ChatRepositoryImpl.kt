@@ -37,7 +37,6 @@ class ChatRepositoryImpl @Inject constructor(
     private val tokensPersistence: TokensPersistence
 ):ChatRepository{
 
-
     private var chatsSocketSession: WebSocketSession? = null
     private var messagesSocketSession: WebSocketSession? = null
 

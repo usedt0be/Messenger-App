@@ -23,7 +23,7 @@ fun PaginationColumn(
     loadItems: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Bottom,
     content: LazyListScope.() -> Unit
 ) {
 

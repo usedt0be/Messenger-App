@@ -12,4 +12,6 @@ interface TokensPersistence {
     suspend fun deleteToken()
 
     fun getToken(): Flow<AuthToken?>
+
+    suspend fun getFreshToken(): Flow<AuthToken>
 }

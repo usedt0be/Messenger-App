@@ -3,6 +3,7 @@ package com.example.messengerapp.presentation.screens.chat
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +51,7 @@ fun ChatScreen(
 ) {
     val state = chatDialogViewModel.state
 
-    Log.d("chat_messages_UI", "${state.messages.reversed()}")
+    Log.d("chat_messages_UI", "${state.messages}")
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Log.d("chat_dialog_effect", "Invoked")
@@ -56,9 +59,7 @@ fun ChatScreen(
             chatDialogViewModel.getContact(contactId)
         }
     }
-
     var messageText by remember { mutableStateOf("") }
-
     val contact = state.chatParticipantContact
 
     Scaffold(topBar = {
@@ -95,39 +96,37 @@ fun ChatScreen(
         )
     }, contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
-        Column(
+        PaginationColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .background(color = AppTheme.colors.backgroundPrimary)
+                .padding(paddingValues),
+            loadItems = {
+                chatDialogViewModel.getNextMessagesPage()
+            },
+            reverseLayout = true
         ) {
-            PaginationColumn(
-                loadItems ={
-                    chatDialogViewModel.getNextMessagesPage()
-                },
-                reverseLayout = true
-            ) {
-                items(items = state.messages) { message ->
-                    val isParticipantId = message.senderId == contactId
-                    Message(
-                        message = message,
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
-                            .heightIn(min = 40.dp)
-                            .widthIn(min = 48.dp, max = 256.dp)
-                            .background(
-                                color = if (!isParticipantId) {
-                                    AppTheme.colors.onSuccess
-                                } else {
-                                    AppTheme.colors.tertiary
-                                }, shape = RoundedCornerShape(percent = 25)
-                            ),
-                        contentAlignment = if (isParticipantId) {
-                            Alignment.CenterStart
-                        } else {
-                            Alignment.CenterEnd
-                        }
-                    )
-                }
+            items(items = state.messages) { message ->
+                val isParticipantId = message.senderId == contactId
+                Message(
+                    message = message,
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
+                        .heightIn(min = 40.dp)
+                        .widthIn(min = 48.dp, max = 256.dp)
+                        .background(
+                            color = if (!isParticipantId) {
+                                AppTheme.colors.onSuccess
+                            } else {
+                                AppTheme.colors.tertiary
+                            }, shape = RoundedCornerShape(percent = 25)
+                        ),
+                    contentAlignment = if (isParticipantId) {
+                        Alignment.CenterStart
+                    } else {
+                        Alignment.CenterEnd
+                    }
+                )
             }
         }
     }
