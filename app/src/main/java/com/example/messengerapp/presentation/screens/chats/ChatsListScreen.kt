@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.screens.chat
+package com.example.messengerapp.presentation.screens.chats
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

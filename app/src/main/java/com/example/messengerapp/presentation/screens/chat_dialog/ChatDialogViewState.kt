@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.screens.chat
+package com.example.messengerapp.presentation.screens.chat_dialog
 
 import com.example.messengerapp.domain.models.Chat
 import com.example.messengerapp.domain.models.Contact

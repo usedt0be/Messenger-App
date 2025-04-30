@@ -1,4 +1,4 @@
-package com.example.messengerapp.presentation.viewmodel
+package com.example.messengerapp.presentation.screens.chat_dialog
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -17,7 +17,6 @@ import com.example.messengerapp.domain.usecases.chat.InitMessagesSessionUseCase
 import com.example.messengerapp.domain.usecases.chat.ObserveMessagesUseCase
 import com.example.messengerapp.domain.usecases.chat.SendMessageUseCase
 import com.example.messengerapp.domain.usecases.contacts.GetContactByIdUseCase
-import com.example.messengerapp.presentation.screens.chat.ChatDialogViewState
 import com.example.messengerapp.util.ResultState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

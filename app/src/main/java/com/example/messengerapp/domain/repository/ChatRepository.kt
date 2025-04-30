@@ -22,5 +22,5 @@ interface ChatRepository {
 
     suspend fun observeSession()
 
-    suspend fun getMessages(chatId: String, page: Int): List<Message>
+    suspend fun getMessages(chatId: String, page: Int, limit: Int = 20): List<Message>
 }

@@ -126,13 +126,12 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(chatId: String, page: Int): List<Message> {
+    override suspend fun getMessages(chatId: String, page: Int, limit: Int): List<Message> {
         Log.d("chat_current_page_repo", "$page")
-        val messages = chatApi.getMessagesWithPagination(chatId = chatId, page = page).data.map {
+        val messages = chatApi.getMessagesForChat(chatId = chatId, page = page, limit = limit).data.map {
             it.toMessage()
         }
         return messages
     }
-
 
 }

@@ -14,6 +14,5 @@ fun ChatItem(
         modifier = Modifier
     ) {
 
-
     }
 }

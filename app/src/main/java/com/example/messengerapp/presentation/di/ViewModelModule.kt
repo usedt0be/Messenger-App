@@ -5,7 +5,7 @@ import com.example.messengerapp.core.viewmodel.ViewModelKey
 import com.example.messengerapp.core.viewmodel.di.ViewModelFactoryModule
 import com.example.messengerapp.core.viewmodel.factory.ViewModelAssistedFactory
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
-import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
+import com.example.messengerapp.presentation.screens.chat_dialog.ChatDialogViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import dagger.Binds

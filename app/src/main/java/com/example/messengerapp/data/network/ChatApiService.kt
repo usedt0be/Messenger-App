@@ -5,7 +5,6 @@ import com.example.messengerapp.data.dto.MessageDto
 import com.example.messengerapp.data.dto.ResponseMeta
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Path
 
 interface ChatApiService {
@@ -17,14 +16,9 @@ interface ChatApiService {
         @Path("userId") dialogUserId: String
     ): ResponseMeta<ChatDto>
 
-    @GET("chats/{chatId}/messages")
-    suspend fun getMessagesForChat(
-        @Path("chatId") chatId: String
-    ): ResponseMeta<List<MessageDto>>
-
 
     @GET("chats/{chatId}/{page}/{limit}")
-    suspend fun getMessagesWithPagination(
+    suspend fun getMessagesForChat(
         @Path("chatId") chatId: String,
         @Path("page") page: Int,
         @Path("limit") limit: Int = 20
@@ -39,5 +33,4 @@ interface ChatApiService {
     companion object {
         val BASE_SOCKET_URL = "ws://10.0.2.2:8080"
     }
-
 }

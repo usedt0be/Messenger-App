@@ -13,14 +13,14 @@ import com.example.messengerapp.core.viewmodel.daggerViewModel
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.screens.auth.AuthScreen
 import com.example.messengerapp.presentation.screens.auth.OtpScreen
-import com.example.messengerapp.presentation.screens.chat.ChatScreen
-import com.example.messengerapp.presentation.screens.chat.ChatsListScreen
+import com.example.messengerapp.presentation.screens.chat_dialog.ChatScreen
+import com.example.messengerapp.presentation.screens.chats.ChatsListScreen
 import com.example.messengerapp.presentation.screens.contacts.ContactDetailsScreen
 import com.example.messengerapp.presentation.screens.contacts.ContactsListScreen
 import com.example.messengerapp.presentation.screens.profile.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
-import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
+import com.example.messengerapp.presentation.screens.chat_dialog.ChatDialogViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import com.google.firebase.auth.FirebaseAuth
