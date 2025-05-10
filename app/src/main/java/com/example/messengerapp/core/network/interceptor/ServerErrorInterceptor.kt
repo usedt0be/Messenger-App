@@ -17,17 +17,18 @@ class ServerErrorInterceptor @Inject constructor(
         val request = chain.request()
         val response = chain.proceed(request)
         return if (response.code == UNAUTHORIZED) {
+            response.close()
             val newToken = runBlocking { tokensPersistence.getFreshToken().firstOrNull() }
             Log.d("Server_ERROR_INTERCEPTOR", "${newToken}")
              val newRequest = request.newBuilder()
                 .removeHeader("Authorization")
-                .addHeader(name = "Authorization", value = "Bearer $newToken")
+                .addHeader(name = "Authorization", value = "Bearer ${newToken?.value}")
                 .build()
-            Log.d("Server_ERROR_INTERCEPTOR", "Result ${chain.proceed(newRequest)}, ${newRequest}")
+//            Log.d("Server_ERROR_INTERCEPTOR", "Result ${chain.proceed(newRequest)}, ${newRequest}")
             chain.proceed(newRequest)
         } else {
             Log.d("Server_ERROR_INTERCEPTOR", "Else branch invoked")
-            chain.proceed(request)
+            response
         }
     }
 }

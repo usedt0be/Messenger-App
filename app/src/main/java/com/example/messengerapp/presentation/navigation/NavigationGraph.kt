@@ -1,6 +1,7 @@
 package com.example.messengerapp.presentation.navigation
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,6 +22,7 @@ import com.example.messengerapp.presentation.screens.profile.ProfileScreen
 import com.example.messengerapp.presentation.screens.registration.RegistrationScreen
 import com.example.messengerapp.presentation.viewmodel.AuthViewModel
 import com.example.messengerapp.presentation.screens.chat_dialog.ChatDialogViewModel
+import com.example.messengerapp.presentation.screens.chats.ChatsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactDetailsViewModel
 import com.example.messengerapp.presentation.viewmodel.ContactsViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -66,7 +68,7 @@ fun NavigationGraph(
         }
 
         composable(
-            route = Screens.RegistrationScreen.route
+            route = Screens.RegistrationScreen.route,
         ) {
             RegistrationScreen(
                 navController = navController,
@@ -84,8 +86,15 @@ fun NavigationGraph(
             )
         }
         
-        composable (route = Screens.BottomBarScreens.ChatListScreen.route ) {
-            ChatsListScreen(navController = navController)
+        composable (route = Screens.BottomBarScreens.ChatListScreen.route) {
+            val chatsViewModel: ChatsViewModel = viewModel(factory = factory)
+            ChatsListScreen(
+                chatsViewModel = chatsViewModel,
+                navController = navController,
+                onClickChat = { chatId ->
+                    navController.navigate(route = Screens.DialogChatScreen.route  + "/${chatId}")
+                }
+            )
         }
 
 

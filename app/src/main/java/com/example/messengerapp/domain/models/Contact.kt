@@ -1,5 +1,8 @@
 package com.example.messengerapp.domain.models
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class Contact(
     val id: Id,
     val ownerId: String,

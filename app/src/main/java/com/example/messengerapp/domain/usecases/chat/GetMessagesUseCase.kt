@@ -8,7 +8,7 @@ class GetMessagesUseCase @Inject constructor(
     private val chatRepositoryImpl: ChatRepository
 ) {
 
-    suspend operator fun invoke(chatId: String, page: Int, limit: Int = 20): List<Message> =
+    suspend operator fun invoke(chatId: String, page: Int): List<Message> =
         chatRepositoryImpl.getMessages(chatId = chatId, page = page)
 
 }

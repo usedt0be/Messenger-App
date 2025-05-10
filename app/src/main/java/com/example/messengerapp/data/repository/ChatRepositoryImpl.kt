@@ -3,13 +3,17 @@ package com.example.messengerapp.data.repository
 import android.util.Log
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.dto.MessageDto
+import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.data.mappers.toChat
+import com.example.messengerapp.data.mappers.toChatParticipant
 import com.example.messengerapp.data.mappers.toMessage
 import com.example.messengerapp.data.network.ChatApiService
 import com.example.messengerapp.domain.models.Chat
+import com.example.messengerapp.domain.models.ChatParticipant
 import com.example.messengerapp.domain.models.Message
 import com.example.messengerapp.domain.repository.ChatRepository
 import com.example.messengerapp.util.ResultState
+import com.google.firebase.firestore.FirebaseFirestore
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.url
@@ -19,8 +23,10 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -28,13 +34,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
     private val chatApi: ChatApiService,
     private val httpClient: HttpClient,
-    private val tokensPersistence: TokensPersistence
+    private val tokensPersistence: TokensPersistence,
+    private val firestore: FirebaseFirestore
 ):ChatRepository{
 
     private var chatsSocketSession: WebSocketSession? = null
@@ -96,7 +104,7 @@ class ChatRepositoryImpl @Inject constructor(
         return chatApi.getDialogChat(dialogUserId = userId).data.toChat()
     }
 
-    override suspend fun getChatsForUser(userId: String): List<Chat> {
+    override suspend fun getChatsForUser(): List<Chat> {
         val chats = chatApi.getChatsForUser().data.map { it.toChat() }
         Log.d("chats_get", "$chats")
         return chats
@@ -126,12 +134,33 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(chatId: String, page: Int, limit: Int): List<Message> {
+    override suspend fun getMessages(chatId: String, page: Int): List<Message> {
         Log.d("chat_current_page_repo", "$page")
-        val messages = chatApi.getMessagesForChat(chatId = chatId, page = page, limit = limit).data.map {
+        val messages = chatApi.getMessagesForChat(chatId = chatId, page = page).data.map {
             it.toMessage()
         }
         return messages
     }
+
+    override fun getChatParticipant(participantId: String): Flow<ResultState<ChatParticipant>> = flow {
+        try {
+            emit(ResultState.Loading())
+            val chatParticipant = firestore.collection("users")
+                .whereEqualTo("userId", participantId)
+                .get()
+                .await()
+                .documents
+                .first()
+                .toObject(UserDto::class.java)
+                ?.toChatParticipant()
+                ?.let {
+                    emit(ResultState.Success(it))
+                }
+        } catch (e: Exception) {
+            emit(ResultState.Error(message = e.message))
+            e.printStackTrace()
+        }
+    }
+
 
 }
