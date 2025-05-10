@@ -1,8 +1,7 @@
-package com.example.messengerapp.presentation.screens.chat
+package com.example.messengerapp.presentation.screens.chat_dialog
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.messengerapp.core.theme.AppTheme
+import com.example.messengerapp.core.ui.PaginationColumn
 import com.example.messengerapp.core.viewmodel.daggerViewModel
 import com.example.messengerapp.domain.models.Contact
 import com.example.messengerapp.presentation.component.Message
 import com.example.messengerapp.presentation.component.chat.ChatTextField
 import com.example.messengerapp.presentation.component.chat.ChatTitle
-import com.example.messengerapp.presentation.viewmodel.ChatDialogViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -48,8 +44,9 @@ fun ChatScreen(
     onTopBarClick: (Contact.Id) -> Unit,
     onClickBackToChats: () -> Unit,
 ) {
-    val messages by chatDialogViewModel.messages.collectAsState()
-    Log.d("chat_messages_UI", "${messages.reversed()}")
+    val state = chatDialogViewModel.state
+
+    Log.d("chat_messages_UI", "${state.messages}")
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Log.d("chat_dialog_effect", "Invoked")
@@ -57,16 +54,13 @@ fun ChatScreen(
             chatDialogViewModel.getContact(contactId)
         }
     }
-    val scrollState = rememberLazyListState()
-
     var messageText by remember { mutableStateOf("") }
-    Log.d("message_text", "$messageText")
-
-    val contact = chatDialogViewModel.contact.collectAsState().value
+    val contact = state.chatParticipantContact
 
     Scaffold(topBar = {
         contact?.let {
-            ChatTitle(contact = contact,
+            ChatTitle(
+                contact = contact,
                 onClickBackToChats = {
                     onClickBackToChats()
                     chatDialogViewModel.disconnect()
@@ -80,7 +74,8 @@ fun ChatScreen(
             )
         }
     }, bottomBar = {
-        ChatTextField(messageText = messageText,
+        ChatTextField(
+            messageText = messageText,
             onMessageTextChanged = { message ->
                 messageText = message
             },
@@ -96,46 +91,42 @@ fun ChatScreen(
         )
     }, contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
-        Column(
+        PaginationColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .background(color = AppTheme.colors.backgroundPrimary)
+                .padding(paddingValues),
+            loadItems = {
+                chatDialogViewModel.getNextMessagesPage()
+            },
+            reverseLayout = true
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .background(color = AppTheme.colors.backgroundPrimary)
-                    .fillMaxSize()
-                    .weight(1f),
-                state = scrollState,
-                reverseLayout = true
-            ) {
-                items(items = messages.reversed()) { message ->
-                    val isParticipantId = message.senderId == contactId
-                    Log.d("chat_message_sender_contact_id", "sender ${message.senderId} , contact: $contactId")
-                    Message(
-                        message = message,
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
-                            .heightIn(min = 40.dp)
-                            .widthIn(min = 48.dp, max = 256.dp)
-                            .background(
-                                color = if (!isParticipantId) {
-                                    AppTheme.colors.onSuccess
-                                } else {
-                                    AppTheme.colors.tertiary
-                                }, shape = RoundedCornerShape(percent = 25)
-                            ),
-                        contentAlignment = if (isParticipantId) {
-                            Alignment.CenterStart
-                        } else {
-                            Alignment.CenterEnd
-                        }
-                    )
-                }
+            items(items = state.messages) { message ->
+                val isParticipantId = message.senderId == contactId
+                Message(
+                    message = message,
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
+                        .heightIn(min = 40.dp)
+                        .widthIn(min = 48.dp, max = 256.dp)
+                        .background(
+                            color = if (!isParticipantId) {
+                                AppTheme.colors.onSuccess
+                            } else {
+                                AppTheme.colors.tertiary
+                            }, shape = RoundedCornerShape(percent = 25)
+                        ),
+                    contentAlignment = if (isParticipantId) {
+                        Alignment.CenterStart
+                    } else {
+                        Alignment.CenterEnd
+                    }
+                )
             }
         }
     }
 }
+
 
 @Preview
 @Composable

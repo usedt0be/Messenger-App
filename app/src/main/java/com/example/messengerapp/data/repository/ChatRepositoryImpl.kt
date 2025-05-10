@@ -3,46 +3,47 @@ package com.example.messengerapp.data.repository
 import android.util.Log
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.dto.MessageDto
+import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.data.mappers.toChat
+import com.example.messengerapp.data.mappers.toChatParticipant
 import com.example.messengerapp.data.mappers.toMessage
 import com.example.messengerapp.data.network.ChatApiService
 import com.example.messengerapp.domain.models.Chat
+import com.example.messengerapp.domain.models.ChatParticipant
 import com.example.messengerapp.domain.models.Message
 import com.example.messengerapp.domain.repository.ChatRepository
 import com.example.messengerapp.util.ResultState
+import com.google.firebase.firestore.FirebaseFirestore
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.FrameType
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
     private val chatApi: ChatApiService,
     private val httpClient: HttpClient,
-    private val tokensPersistence: TokensPersistence
+    private val tokensPersistence: TokensPersistence,
+    private val firestore: FirebaseFirestore
 ):ChatRepository{
-
 
     private var chatsSocketSession: WebSocketSession? = null
     private var messagesSocketSession: WebSocketSession? = null
@@ -57,7 +58,6 @@ class ChatRepositoryImpl @Inject constructor(
                 url("ws://10.0.2.2:8080/chats/$chatId/ws")
             }
             if(messagesSocketSession?.isActive == true) {
-//                Log.d("chat_SESSION", "${messagesSocketSession.toString()}")
                 ResultState.Success(Unit)
             }else {
                 ResultState.Error(message = "socket is not active")
@@ -104,7 +104,7 @@ class ChatRepositoryImpl @Inject constructor(
         return chatApi.getDialogChat(dialogUserId = userId).data.toChat()
     }
 
-    override suspend fun getChatsForUser(userId: String): List<Chat> {
+    override suspend fun getChatsForUser(): List<Chat> {
         val chats = chatApi.getChatsForUser().data.map { it.toChat() }
         Log.d("chats_get", "$chats")
         return chats
@@ -120,21 +120,12 @@ class ChatRepositoryImpl @Inject constructor(
         return res
     }
 
-    suspend fun observeSessions() {
-        Log.d("chat_observer", "invoked")
-
-        val d = messagesSocketSession?.incoming?.receive()
-            ?.data
-
-    }
-
     override suspend fun observeSession() {
         messagesSocketSession?.incoming?.consumeEach { frame ->
             when (frame) {
                 is Frame.Text -> {
                     Log.d("chat_websocket_frame", "text ${frame.readText()}")
                 }
-
                 is Frame.Binary -> Log.d("chat_websocket_frame", "Received binary data")
                 is Frame.Ping -> Log.d("chat_websocket_frame", "Received PING")
                 is Frame.Pong -> Log.d("chat_websocket_frame", "Received PONG")
@@ -143,11 +134,32 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessagesHistory(chatId: String): List<Message> {
-        val messages = chatApi.getMessagesForChat(chatId = chatId).data.map {
+    override suspend fun getMessages(chatId: String, page: Int): List<Message> {
+        Log.d("chat_current_page_repo", "$page")
+        val messages = chatApi.getMessagesForChat(chatId = chatId, page = page).data.map {
             it.toMessage()
         }
         return messages
+    }
+
+    override fun getChatParticipant(participantId: String): Flow<ResultState<ChatParticipant>> = flow {
+        try {
+            emit(ResultState.Loading())
+            val chatParticipant = firestore.collection("users")
+                .whereEqualTo("userId", participantId)
+                .get()
+                .await()
+                .documents
+                .first()
+                .toObject(UserDto::class.java)
+                ?.toChatParticipant()
+                ?.let {
+                    emit(ResultState.Success(it))
+                }
+        } catch (e: Exception) {
+            emit(ResultState.Error(message = e.message))
+            e.printStackTrace()
+        }
     }
 
 

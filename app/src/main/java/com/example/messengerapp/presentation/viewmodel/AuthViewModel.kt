@@ -13,7 +13,7 @@ import com.example.messengerapp.data.dto.UserDto
 import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.domain.repository.AuthRepository
 import com.example.messengerapp.domain.repository.RegistrationRepository
-import com.example.messengerapp.domain.usecases.GetCurrentUserUseCase
+import com.example.messengerapp.domain.usecases.auth.GetCurrentUserUseCase
 import com.example.messengerapp.domain.usecases.auth.LogOutUseCase
 import com.example.messengerapp.domain.usecases.auth.LoginUseCase
 import com.example.messengerapp.util.AppUtils

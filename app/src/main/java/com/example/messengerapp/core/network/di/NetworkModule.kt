@@ -1,6 +1,8 @@
 package com.example.messengerapp.core.network.di
 
+import android.util.Log
 import com.example.messengerapp.core.network.interceptor.AuthHeaderInterceptor
+import com.example.messengerapp.core.network.interceptor.ServerErrorInterceptor
 import com.example.messengerapp.core.storage.token.TokensPersistence
 import com.example.messengerapp.data.network.ChatApiService
 import dagger.Module
@@ -41,16 +43,20 @@ object NetworkModule {
         tokensPersistence: TokensPersistence
     ): OkHttpClient{
         val loggingInterceptor = HttpLoggingInterceptor { message ->
-            Timber.tag("OkHttp")
-            Timber.d(message = message)
+//            Timber.tag("OkHttp")
+//            Timber.d(message = message)
+            Log.d("OkHttp", "$message")
         }
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .connectTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
             .readTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
             .writeTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
-            .addNetworkInterceptor(interceptor = loggingInterceptor)
+            .addNetworkInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
             .addInterceptor(interceptor = AuthHeaderInterceptor(tokensPersistence))
+            .addInterceptor(interceptor = ServerErrorInterceptor(tokensPersistence))
             .build()
     }
 
@@ -63,8 +69,6 @@ object NetworkModule {
             .baseUrl("$BASE_URL/")
             .build()
     }
-
-
 
     @Provides
     @Singleton
@@ -82,7 +86,6 @@ object NetworkModule {
             }
         }
     }
-
 
     @Provides
     @Singleton

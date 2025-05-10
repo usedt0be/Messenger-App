@@ -2,6 +2,7 @@ package com.example.messengerapp.data.mappers
 
 import com.example.messengerapp.data.dto.ContactDto
 import com.example.messengerapp.data.entity.ContactEntity
+import com.example.messengerapp.domain.models.ChatParticipant
 import com.example.messengerapp.domain.models.Contact
 
 
@@ -44,4 +45,12 @@ fun Contact.toContactEntity() = ContactEntity(
     secondName = secondName,
     phoneNumber = phoneNumber,
     photo = photo
+)
+
+fun Contact.toChatParticipant() = ChatParticipant(
+    id = id.value,
+    firstName = firstName,
+    secondName = secondName,
+    photoUrl = photo,
+    phoneNumber = phoneNumber
 )

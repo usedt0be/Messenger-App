@@ -1,7 +1,9 @@
 package com.example.messengerapp.domain.repository
 
 import com.example.messengerapp.domain.models.Chat
+import com.example.messengerapp.domain.models.ChatParticipant
 import com.example.messengerapp.domain.models.Message
+import com.example.messengerapp.domain.models.User
 import com.example.messengerapp.util.ResultState
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +16,7 @@ interface ChatRepository {
 
     suspend fun getChatDialog(userId: String): Chat
 
-    suspend fun getChatsForUser(userId: String): List<Chat>
+    suspend fun getChatsForUser(): List<Chat>
 
     suspend fun closeMessageSessionConnection()
 
@@ -22,5 +24,7 @@ interface ChatRepository {
 
     suspend fun observeSession()
 
-    suspend fun getMessagesHistory(chatId: String): List<Message>
+    suspend fun getMessages(chatId: String, page: Int): List<Message>
+
+    fun getChatParticipant(participantId: String): Flow<ResultState<ChatParticipant>>
 }

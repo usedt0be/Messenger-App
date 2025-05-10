@@ -13,6 +13,8 @@ interface ContactsRepository {
 
     suspend fun getContactById(id: String): Contact?
 
+    fun getContactsFromFirebase(): Flow<List<Contact?>>
+
     fun deleteContact(contact: Contact)
 
     fun insertAllContactsToDb(contacts:List<Contact>?)

@@ -24,6 +24,7 @@ internal class AuthHeaderInterceptor @Inject constructor(
                 addHeader(name = ACCESS_TOKEN_HEADER, value = "Bearer ${token?.value}")
             }.build()
 
+//        Log.d("ACCESS_TOKEN_HEADERuthToken_INTERCEPTOR_INTERCEPTOR", "headers  ${chain.proceed(newRequest)}")
         return chain.proceed(newRequest)
     }
 }
